@@ -1,0 +1,41 @@
+<resources>
+    <string name="app_name">Recording</string>
+    <string name="instructions">Instructions</string>
+    <string name="edit_archives">Edit Archives</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="Service_level"><b><i>Service level</i></b> (Required)</string>
+
+    <string name="playback_error">An error occured while playing the track. Please try again later.</string>
+
+    <string name="permission_rationale">This app needs access to your mic to record audio, write access to save your recordings and phone state access to stop recording on incoming or outgoing calls.</string>
+    <string name="on_permission_denied">Application cannot function without these permissions.</string>
+
+    <string name="record">Record</string>
+    <string name="stop">Stop</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Resume</string>
+    <string name="edit">Edit</string>
+    <string name="done">Done</string>
+    <string name="email">Email</string>
+    <string name="send">Send</string>
+    <string name="transcribe">Transcribe</string>
+    <string name="cancel">cancel</string>
+
+    <string name="send_transcribtion">Send Transcribtion</string>
+    <string name="last_transcribe">Send Last Transcribtion</string>
+    <string name="play_recording">Play Recording</string>
+    <string name="play_last_recording">Play Last Recording</string>
+    <string name="create_new_records">Create New Records</string>
+
+    <string name="start_recording">Start Recording</string>
+    <string name="recording">Recording</string>
+    <string name="paused">Paused</string>
+    <string name="playing">Playing</string>
+    <string name="recording_completed">Recording Completed</string>
+    <string name="audio_archive">Audio Archive</string>
+    <string name="info">Info</string>
+
+    <string name="hint_name">Enter name here.</string>
+    <string name="hint_instructions">Enter instructions here.</string>
+</resources>

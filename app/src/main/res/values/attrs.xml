@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="drawableCenter" format="reference"/>
+    <declare-styleable name="CenterDrawableButton">
+        <attr name="drawableCenter"/>
+    </declare-styleable>
+</resources>

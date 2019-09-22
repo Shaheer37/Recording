@@ -1,0 +1,30 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="waves_background_size">300dp</dimen>
+    <dimen name="waves_view_size">290dp</dimen>
+
+    <dimen name="recording_status_font_size">20sp</dimen>
+
+    <dimen name="recording_duration_side_padding">10dp</dimen>
+    <dimen name="recording_duration_text_size">16dp</dimen>
+    <dimen name="recording_duration_pebble_radius">8dp</dimen>
+
+
+    <dimen name="recording_btn_pebble_radius">30dp</dimen>
+    <dimen name="recording_btn_text_size">16sp</dimen>
+
+
+    <dimen name="recording_btn_horizontal_margin">30dp</dimen>
+    <dimen name="recording_btn_vertical_margin">10dp</dimen>
+
+    <dimen name="recording_action_btn_size">60dp</dimen>
+    <dimen name="recording_action_btn_bottom_margin">10dp</dimen>
+
+    <dimen name="bottom_option_bar_height">56dp</dimen>
+    <dimen name="bottom_option_btn_padding">8dp</dimen>
+
+    <dimen name="options_btn_text_size">18sp</dimen>
+</resources>

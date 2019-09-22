@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+
+    <color name="grey">#d9e2e9</color>
+    <color name="darkBlue">#022358</color>
+    <color name="middleBlue">#044e7d</color>
+    <color name="lightBlue">#427696</color>
+    <color name="red">#f95753</color>
+    <color name="green">#27AD76</color>
+
+    <color name="recordingPrimaryDark">#002A4E</color>
+    <color name="recordingPrimary">#003261</color>
+</resources>

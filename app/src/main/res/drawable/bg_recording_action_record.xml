@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="oval">
+            <gradient android:angle="90" android:startColor="@color/darkBlue" android:endColor="@color/middleBlue"/>
+            <size android:width="@dimen/recording_action_btn_size" android:height="@dimen/recording_action_btn_size" />
+            <stroke android:width="2dp" android:color="@color/grey"/>
+        </shape>
+    </item>
+    <item
+        android:drawable="@drawable/ic_fiber_manual_record"
+        android:gravity="center"
+        android:left="15dp"
+        android:right="15dp"
+        android:top="15dp"
+        android:bottom="15dp"
+    />
+</layer-list>
