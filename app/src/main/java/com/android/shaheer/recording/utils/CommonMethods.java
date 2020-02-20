@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Environment;
 import android.support.v4.content.FileProvider;
 import android.text.Html;
 import android.text.Spanned;
@@ -24,6 +25,9 @@ import android.widget.Toast;
 import com.android.shaheer.recording.R;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class CommonMethods {
     public static final String TAG = CommonMethods.class.getSimpleName();

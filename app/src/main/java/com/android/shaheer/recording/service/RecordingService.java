@@ -20,6 +20,7 @@ import android.util.Log;
 import com.android.shaheer.recording.R;
 import com.android.shaheer.recording.activity.RecordingActivity;
 import com.android.shaheer.recording.storage.SessionManager;
+import com.android.shaheer.recording.utils.FilesUtil;
 import com.android.shaheer.recording.utils.Recorder;
 
 import java.text.SimpleDateFormat;
@@ -45,7 +46,6 @@ public class RecordingService extends Service implements Recorder.RecorderTickLi
     private TelephonyManager mTelephonyManager;
     private RecordingInterface mRecordingInterface;
 
-    private String mFileDir;
     private String mFileName;
 
     public RecordingService() {
@@ -56,7 +56,6 @@ public class RecordingService extends Service implements Recorder.RecorderTickLi
         super.onCreate();
         mServiceInterface = new ServiceInterface();
         mRecorder = new Recorder(getApplicationContext(),this);
-        mFileDir = mRecorder.getOutputDir();
         mFileName = mRecorder.getFileName();
         mTelephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
     }
@@ -124,7 +123,7 @@ public class RecordingService extends Service implements Recorder.RecorderTickLi
     public class ServiceInterface extends Binder {
         public boolean isRecording() {return (mRecorder.getmRecordingStatus() == Recorder.RecordingStatus.recording);}
         public boolean isPaused() {return (mRecorder.getmRecordingStatus() == Recorder.RecordingStatus.paused);}
-        public String getFilePath(){return mFileDir +"/"+ mFileName;}
+        public String getFilePath(){return FilesUtil.getDir(getApplicationContext()) +"/"+ mFileName;}
         public void pauseRecording(){
             performAction(ACTION_PAUSE);
         }
@@ -161,14 +160,6 @@ public class RecordingService extends Service implements Recorder.RecorderTickLi
                     }
                     break;
                 case TelephonyManager.CALL_STATE_OFFHOOK:
-                    if(mRecorder.getmRecordingStatus() != Recorder.RecordingStatus.paused){
-                        mRecorder.pauseRecording();
-                        notifyUpdate(Recorder.RecordingStatus.paused);
-                        if(mRecordingInterface != null){
-                            mRecordingInterface.onRecordingPause();
-                        }
-                    }
-                    break;
                 case TelephonyManager.CALL_STATE_RINGING:
                     if(mRecorder.getmRecordingStatus() != Recorder.RecordingStatus.paused){
                         mRecorder.pauseRecording();

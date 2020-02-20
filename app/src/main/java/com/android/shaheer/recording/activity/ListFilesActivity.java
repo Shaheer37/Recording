@@ -12,8 +12,10 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.android.shaheer.recording.R;
+import com.android.shaheer.recording.adapter.ListFilesAdapter;
 import com.android.shaheer.recording.model.RecordItem;
 import com.android.shaheer.recording.storage.SessionManager;
+import com.android.shaheer.recording.utils.FilesUtil;
 import com.android.shaheer.recording.utils.Player;
 
 import java.io.File;
@@ -23,14 +25,14 @@ import java.util.concurrent.TimeUnit;
 
 
 public class ListFilesActivity extends AppCompatActivity implements
-        com.android.shaheer.recording.adapter.ListFilesAdapter.ListInterface,
+        ListFilesAdapter.ListInterface,
         Player.PlayerEventListener
 {
     public static final String TAG = ListFilesActivity.class.getSimpleName();
     private static final int EDIT_SCREEN_IDENTIFIER = 101;
 
     private ListView listview;
-    private com.android.shaheer.recording.adapter.ListFilesAdapter adapter;
+    private ListFilesAdapter adapter;
     private Player mPlayer;
     private int playingFilePosition = -1;
 
@@ -50,7 +52,7 @@ public class ListFilesActivity extends AppCompatActivity implements
 
         recordList = new ArrayList();
         listview = (ListView) findViewById(R.id.audiolist);
-        adapter = new com.android.shaheer.recording.adapter.ListFilesAdapter(this, recordList, this);
+        adapter = new ListFilesAdapter(this, recordList, this);
 
         listview.setAdapter(adapter);
         listview.setTextFilterEnabled(true);
@@ -61,8 +63,7 @@ public class ListFilesActivity extends AppCompatActivity implements
     public void createList(){
         recordList = new ArrayList();
 //        File directory = getFilesDir();
-        File directory = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
-                + "/"+getString(R.string.app_name));
+        File directory = new File(FilesUtil.getDir(this));
         Log.e("File Dir: ", directory.getPath());
         final File list[] = directory.listFiles();
         for (int i = 0; i < list.length; i++) {
@@ -90,7 +91,7 @@ public class ListFilesActivity extends AppCompatActivity implements
         }
         Collections.reverse(recordList);
 
-        adapter = new com.android.shaheer.recording.adapter.ListFilesAdapter(this, recordList, this);
+        adapter = new ListFilesAdapter(this, recordList, this);
         listview.setAdapter(adapter);
     }
 
@@ -148,8 +149,7 @@ public class ListFilesActivity extends AppCompatActivity implements
     @Override
     public void playRecord(String fileAddr,final int itemPosition) {
 
-        File directory = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
-                + "/"+getString(R.string.app_name));
+        File directory = new File(FilesUtil.getDir(this));
 
         if(playingFilePosition == itemPosition){
             Log.e(TAG, "1");

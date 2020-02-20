@@ -31,9 +31,8 @@ import java.util.Locale;
 public class Recorder {
     private static final String TAG = Recorder.class.getSimpleName();
 
-    public static final String DATE_FORMAT = "dd-MMM-yyyy, h:mm:ss a";
+
     private static final short DELAY_MILLI = 100;
-    private static final String MERGED_FILE = "merged.m4a";
 
     public enum RecordingStatus{
         initiated, recording, paused, ended
@@ -51,13 +50,7 @@ public class Recorder {
     private File mOutputFile;
     public File getOutputFile() {return mOutputFile;}
 
-    private String mOutputDir;
-    public String getOutputDir() {return mOutputDir;}
-
-    private String mFileName;
-    public String getFileName() {return mFileName;}
-
-    private ArrayList<File> recordPieces;
+    private FilesUtil filesUtil;
 
     private int[] amplitudes = new int[100];
     private int i = 0;
@@ -75,20 +68,16 @@ public class Recorder {
 
 
     public Recorder(Context context, RecorderTickListener tickListener) {
+
+        filesUtil = new FilesUtil();
+
         mContext = context;
-        mFileName = getRecordName();
-        mOutputDir = getDir();
-        mOutputFile = getFileDir(null, mFileName);
-        recordPieces = new ArrayList<>();
+        mOutputFile = filesUtil.getFile(context, null);
         mTickListener = tickListener;
     }
 
-    public Recorder(Context context, String dir, String fileName, RecorderTickListener tickListener) {
-        mContext = context;
-        mFileName = (fileName!=null)?fileName:getRecordName();
-        mOutputFile = getFileDir(dir, mFileName);
-        recordPieces = new ArrayList<>();
-        mTickListener = tickListener;
+    public String getFileName() {
+        return mOutputFile.getName();
     }
 
     public boolean startRecording(File outputFile) {
@@ -124,26 +113,6 @@ public class Recorder {
         return true;
     }
 
-    private String getRecordName(){
-        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.getDefault());
-        return "RECORDING_"+ dateFormat.format(new Date())+ ".m4a";
-    }
-
-    private String getDir(){
-        return Environment.getExternalStorageDirectory().getAbsolutePath()
-                + "/"+mContext.getString(R.string.app_name);
-    }
-
-    private File getFileDir(String dir, String fileName) {
-        File file = new File(
-                (dir!=null)
-                    ?(dir+"/"+fileName)
-                    :(getDir()+"/"+fileName)
-        );
-        Log.e(TAG, file.getAbsolutePath());
-        return file;
-    }
-
     public void pauseRecording(){
         Log.e(TAG, "pauseRecording()");
         if(mRecordingStatus == RecordingStatus.recording) {
@@ -153,7 +122,6 @@ public class Recorder {
                 mRecorder.pause();
             } else {
                 stopRecording();
-                recordPieces.add(mOutputFile);
             }
         }
     }
@@ -166,8 +134,8 @@ public class Recorder {
                 mHandler.postDelayed(mTickExecutor, DELAY_MILLI);
                 mRecorder.resume();
             } else {
-                File file = getFileDir(null, getRecordName());
-                recordPieces.add(file);
+                File file = filesUtil.getFile(mContext, null);
+                filesUtil.addRecordingPiece(file);
                 Log.e(TAG, "is Recording started: "+startRecording(file));
             }
         }
@@ -179,62 +147,10 @@ public class Recorder {
             mRecorder.release();
             mRecorder = null;
             mHandler.removeCallbacks(mTickExecutor);
-            mergeFiles();
+            if (Build.VERSION.SDK_INT < 24) filesUtil.mergeFiles(mContext, mOutputFile);
         }
         else{
             Log.e(TAG, "recorder is null");
-        }
-    }
-
-    private boolean mergeFiles(){
-        if(recordPieces.size()>1){
-            Log.e(TAG, "more files");
-            File mergedFile = getFileDir(null, MERGED_FILE);
-            if(mergeMediaFiles(true, recordPieces.toArray(new File[recordPieces.size()]), mergedFile.getAbsolutePath())){
-                for(File record: recordPieces){
-                    record.delete();
-                }
-                recordPieces = new ArrayList<>();
-                mergedFile.renameTo(mOutputFile);
-                return true;
-            }else{
-                return false;
-            }
-
-        }else{
-            Log.e(TAG, "only one file");
-            return true;
-        }
-    }
-
-    private boolean mergeMediaFiles(boolean isAudio, File sourceFiles[], String targetFile) {
-        try {
-            String mediaKey = isAudio ? "soun" : "vide";
-            List<Movie> listMovies = new ArrayList<>();
-            for (File filename : sourceFiles) {
-                listMovies.add(MovieCreator.build(filename.getAbsolutePath()));
-            }
-            List<Track> listTracks = new LinkedList<>();
-            for (Movie movie : listMovies) {
-                for (Track track : movie.getTracks()) {
-                    if (track.getHandler().equals(mediaKey)) {
-                        listTracks.add(track);
-                    }
-                }
-            }
-            Movie outputMovie = new Movie();
-            if (!listTracks.isEmpty()) {
-                outputMovie.addTrack(new AppendTrack(listTracks.toArray(new Track[listTracks.size()])));
-            }
-            Container container = new DefaultMp4Builder().build(outputMovie);
-            FileChannel fileChannel = new RandomAccessFile(String.format(targetFile), "rw").getChannel();
-            container.writeContainer(fileChannel);
-            fileChannel.close();
-            return true;
-        }
-        catch (IOException e) {
-            Log.e(TAG, "Error merging media files. exception: "+e.getMessage());
-            return false;
         }
     }
 

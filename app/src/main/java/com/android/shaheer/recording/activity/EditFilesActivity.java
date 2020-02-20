@@ -25,6 +25,7 @@ import com.android.shaheer.recording.R;
 import com.android.shaheer.recording.adapter.EditFilesAdapter;
 import com.android.shaheer.recording.model.RecordItem;
 import com.android.shaheer.recording.storage.SessionManager;
+import com.android.shaheer.recording.utils.FilesUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -49,9 +50,7 @@ public class EditFilesActivity extends AppCompatActivity implements EditFilesAda
         mSessionManager = new SessionManager(this);
 
         recordList = new ArrayList<RecordItem>();
-//        File directory = getFilesDir();
-        File directory = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
-                + "/"+getString(R.string.app_name));
+        File directory = new File(FilesUtil.getDir(this));
         final File list[] = directory.listFiles();
         for (int i = 0; i < list.length; i++) {
             String name = list[i].getName();

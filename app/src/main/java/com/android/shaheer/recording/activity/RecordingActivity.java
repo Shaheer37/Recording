@@ -120,7 +120,7 @@ public class RecordingActivity extends AppCompatActivity implements
         sineWaveView.addWave(0.5f, 0.5f, 0, 0, 0); // Fist wave is for the shape of other waves.
         sineWaveView.addWave(0.5f, 2f, 0.5f, getResources().getColor(android.R.color.white), stroke);
         sineWaveView.addWave(0.1f, 2f, 0.7f, getResources().getColor(R.color.lightBlue), stroke);
-        sineWaveView.setBaseWaveAmplitudeScale(1);
+        sineWaveView.setBaseWaveAmplitudeScale(3);
 
         if (EasyPermissions.hasPermissions(this, Constants.PERMISSIONS)) {
             btnStartRecording.setEnabled(true);
