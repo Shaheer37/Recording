@@ -17,7 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:fullBackupContent="false">
-        <activity android:name=".activity.RecordingActivity"
+        <activity android:name=".record.RecordingActivity"
             android:theme="@style/Recording.NoActionBar"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -28,17 +28,17 @@
         </activity>
 
         <activity
-            android:name=".activity.ListFilesActivity"
+            android:name=".viewrecordings.ListFilesActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activity.EditFilesActivity"
+            android:name=".editrecordings.EditFilesActivity"
             android:label="@string/edit_archives"
             android:screenOrientation="portrait" />
 
         <service
-            android:name=".service.RecordingService"
+            android:name=".record.RecordingService"
             android:enabled="true"
             android:exported="false" />
     </application>

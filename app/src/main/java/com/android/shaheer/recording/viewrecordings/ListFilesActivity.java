@@ -1,10 +1,10 @@
-package com.android.shaheer.recording.activity;
+package com.android.shaheer.recording.viewrecordings;
 
 import android.content.Intent;
 import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
-import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,9 +12,9 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.android.shaheer.recording.R;
-import com.android.shaheer.recording.adapter.ListFilesAdapter;
+import com.android.shaheer.recording.editrecordings.EditFilesActivity;
 import com.android.shaheer.recording.model.RecordItem;
-import com.android.shaheer.recording.storage.SessionManager;
+import com.android.shaheer.recording.utils.SessionManager;
 import com.android.shaheer.recording.utils.FilesUtil;
 import com.android.shaheer.recording.utils.Player;
 

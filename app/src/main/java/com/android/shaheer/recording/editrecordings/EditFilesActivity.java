@@ -1,4 +1,4 @@
-package com.android.shaheer.recording.activity;
+package com.android.shaheer.recording.editrecordings;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -7,7 +7,7 @@ import android.graphics.Typeface;
 import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -22,9 +22,8 @@ import android.widget.Toast;
 
 
 import com.android.shaheer.recording.R;
-import com.android.shaheer.recording.adapter.EditFilesAdapter;
 import com.android.shaheer.recording.model.RecordItem;
-import com.android.shaheer.recording.storage.SessionManager;
+import com.android.shaheer.recording.utils.SessionManager;
 import com.android.shaheer.recording.utils.FilesUtil;
 
 import java.io.File;
@@ -87,7 +86,6 @@ public class EditFilesActivity extends AppCompatActivity implements EditFilesAda
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long arg3) {
                 showEditRecordDialog(position);
-
             }
         });
     }

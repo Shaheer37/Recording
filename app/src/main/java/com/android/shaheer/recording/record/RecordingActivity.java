@@ -1,12 +1,12 @@
-package com.android.shaheer.recording.activity;
+package com.android.shaheer.recording.record;
 
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Build;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,8 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.shaheer.recording.R;
-import com.android.shaheer.recording.service.RecordingService;
-import com.android.shaheer.recording.storage.SessionManager;
+import com.android.shaheer.recording.viewrecordings.ListFilesActivity;
+import com.android.shaheer.recording.utils.SessionManager;
 import com.android.shaheer.recording.utils.CommonMethods;
 import com.android.shaheer.recording.utils.Constants;
 import com.android.shaheer.recording.utils.DynamicSineWaveView;

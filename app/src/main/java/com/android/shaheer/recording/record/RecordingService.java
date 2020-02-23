@@ -1,4 +1,4 @@
-package com.android.shaheer.recording.service;
+package com.android.shaheer.recording.record;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -12,20 +12,15 @@ import android.graphics.BitmapFactory;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
+import androidx.core.app.NotificationCompat;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.android.shaheer.recording.R;
-import com.android.shaheer.recording.activity.RecordingActivity;
-import com.android.shaheer.recording.storage.SessionManager;
+import com.android.shaheer.recording.utils.SessionManager;
 import com.android.shaheer.recording.utils.FilesUtil;
 import com.android.shaheer.recording.utils.Recorder;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 
 public class RecordingService extends Service implements Recorder.RecorderTickListener{

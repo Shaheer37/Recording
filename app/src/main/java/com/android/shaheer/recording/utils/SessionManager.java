@@ -1,4 +1,4 @@
-package com.android.shaheer.recording.storage;
+package com.android.shaheer.recording.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;

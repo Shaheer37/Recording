@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/white"
     android:orientation="vertical"
-    tools:context=".activity.RecordingActivity"
+    tools:context=".record.RecordingActivity"
     android:animateLayoutChanges="true">
     <TextView
         android:id="@+id/tv_status"

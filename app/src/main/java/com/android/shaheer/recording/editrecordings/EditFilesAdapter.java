@@ -1,4 +1,4 @@
-package com.android.shaheer.recording.adapter;
+package com.android.shaheer.recording.editrecordings;
 
 
 import android.annotation.SuppressLint;
