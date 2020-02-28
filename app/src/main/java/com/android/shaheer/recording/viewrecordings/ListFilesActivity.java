@@ -47,7 +47,7 @@ public class ListFilesActivity extends AppCompatActivity implements
         setContentView(R.layout.recording_list);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mPlayer = new Player(this, this);
+        mPlayer = new Player(this);
         mSessionManager = new SessionManager(this);
 
         recordList = new ArrayList();

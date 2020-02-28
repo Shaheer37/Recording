@@ -113,7 +113,7 @@ public class RecordingActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
 
         mSessionManager = new SessionManager(this);
-        mPlayer = new Player(this, this);
+        mPlayer = new Player(this);
 
         float stroke = CommonMethods.dipToPixels(this, 2);
         sineWaveView = (DynamicSineWaveView) findViewById(R.id.view_sine_wave);
@@ -153,16 +153,6 @@ public class RecordingActivity extends AppCompatActivity implements
 
     @Override
     public void onRationaleDenied(int requestCode) { }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
 
     @Override
     protected void onPause() {
@@ -245,7 +235,6 @@ public class RecordingActivity extends AppCompatActivity implements
                 tvRecording.setText(R.string.playing);
             }
         }
-
     }
 
     @OnClick(R.id.btn_new_recording)

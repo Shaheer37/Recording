@@ -13,8 +13,6 @@ public class Player {
         notPlaying, playing, paused, ended
     }
 
-    private Context mContext;
-
     private PlayingStatus mPlayingStatus = PlayingStatus.notPlaying;
     public PlayingStatus getmRecordingStatus() {return mPlayingStatus;}
 
@@ -36,8 +34,7 @@ public class Player {
         return (mPlayingStatus == PlayingStatus.notPlaying);
     }
 
-    public Player(Context mContext, PlayerEventListener playerEventListener) {
-        this.mContext = mContext;
+    public Player(PlayerEventListener playerEventListener) {
         mEventListener = playerEventListener;
     }
 
