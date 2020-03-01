@@ -26,10 +26,13 @@ import com.omega_r.libs.OmegaCenterIconButton
 
 class RecordingFragment : Fragment() {
 
+    enum class RecordingStatus {
+        initial, recording, playing
+    }
+
     @BindView(R.id.view_sine_wave) lateinit var sineWaveView: DynamicSineWaveView
     @BindView(R.id.tv_status) lateinit var tvRecording: TextView
 
-    @BindView(R.id.group_initiate) lateinit var groupInitial: Group
     @BindView(R.id.group_recording) lateinit var groupRecording: Group
     @BindView(R.id.group_recorded) lateinit var groupRecorded: Group
 
@@ -47,6 +50,7 @@ class RecordingFragment : Fragment() {
     @BindView(R.id.btn_audio_archive) lateinit var btnAudioArchive: Button
 
     private lateinit var recordingViewModel: RecordingViewModel
+    private lateinit var mainViewModel:MainViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -65,6 +69,13 @@ class RecordingFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+
+        activity?.let {
+            mainViewModel = ViewModelProvider(
+                    it.viewModelStore,
+                    MainViewModelFactory()
+            ).get(MainViewModel::class.java)
+        }
 
         recordingViewModel = ViewModelProvider(
                 viewModelStore,
@@ -89,9 +100,9 @@ class RecordingFragment : Fragment() {
 
         recordingViewModel.state.observe(viewLifecycleOwner, Observer{
             when(it){
-                RecordingActivity.RecordingStatus.recording -> setRecordingLayout()
-                RecordingActivity.RecordingStatus.initial -> setInitialLayout()
-                RecordingActivity.RecordingStatus.playing -> setPlayingLayout()
+                RecordingStatus.recording -> setRecordingLayout()
+                RecordingStatus.initial -> setInitialLayout()
+                RecordingStatus.playing -> setPlayingLayout()
             }
         })
 
@@ -104,10 +115,30 @@ class RecordingFragment : Fragment() {
 
         recordingViewModel.duration.observe(viewLifecycleOwner, Observer { tvRecordDuration.text = it  })
 
+        mainViewModel.hasAllPermissions.observe(viewLifecycleOwner, EventObserver{
+            if(it){
+                val intent = Intent(context, RecordingService::class.java)
+                intent.action = RecordingService.ACTION_START
+                context?.startService(intent)
+
+                recordingViewModel.bindService()
+            }
+        })
+
+        mainViewModel.hasStoragePermission.observe(viewLifecycleOwner, EventObserver{
+            if(it){
+                val listFiles = Intent(context, ListFilesActivity::class.java)
+                startActivity(listFiles)
+            }
+        })
+
     }
 
     override fun onPause() {
         super.onPause()
+
+        recordingViewModel.setStateInitial()
+
         if (CommonMethods.isServiceRunning(RecordingService::class.java, context)) {
             recordingViewModel.unbindService()
         }
@@ -115,19 +146,15 @@ class RecordingFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        recordingViewModel.setStateInitial()
+
         if (CommonMethods.isServiceRunning(RecordingService::class.java, context)) {
             recordingViewModel.bindService()
         }
     }
 
     @OnClick(R.id.btn_start_recording)
-    fun onRecordAction() {
-        val intent = Intent(context, RecordingService::class.java)
-        intent.action = RecordingService.ACTION_START
-        context?.startService(intent)
-
-        recordingViewModel.bindService()
-    }
+    fun onRecordAction() = mainViewModel.checkPermissions()
 
     @OnClick(R.id.btn_recording_action)
     fun onRecordingAction() = recordingViewModel.onRecordingAction()
@@ -143,8 +170,7 @@ class RecordingFragment : Fragment() {
 
     @OnClick(R.id.btn_audio_archive)
     fun openAudioArchives() {
-        val listFiles = Intent(context, ListFilesActivity::class.java)
-        startActivity(listFiles)
+        mainViewModel.checkStoragePermission()
     }
 
     @OnClick(R.id.btn_play_last_recording)
@@ -184,7 +210,7 @@ class RecordingFragment : Fragment() {
     private fun setInitialLayout() {
         groupRecording.visibility = View.INVISIBLE
         groupRecorded.visibility = View.INVISIBLE
-        groupInitial.visibility = View.VISIBLE
+        btnStartRecording.visibility = View.VISIBLE
         btnAudioArchive.visibility = View.VISIBLE
 
         tvRecording.setText(R.string.start_recording)
@@ -196,7 +222,7 @@ class RecordingFragment : Fragment() {
     }
 
     private fun setRecordingLayout(){
-        groupInitial.visibility = View.INVISIBLE
+        btnStartRecording.visibility = View.INVISIBLE
         groupRecorded.visibility = View.INVISIBLE
         btnAudioArchive.visibility = View.INVISIBLE
         groupRecording.visibility = View.VISIBLE
@@ -209,7 +235,7 @@ class RecordingFragment : Fragment() {
 
     private fun setRecordedLayout(){
         groupRecording.visibility = View.INVISIBLE
-        groupInitial.visibility = View.INVISIBLE
+        btnStartRecording.visibility = View.INVISIBLE
         groupRecorded.visibility = View.VISIBLE
         btnAudioArchive.visibility = View.INVISIBLE
 

@@ -9,6 +9,7 @@
     <string name="playback_error">An error occured while playing the track. Please try again later.</string>
 
     <string name="permission_rationale">This app needs access to your mic to record audio, write access to save your recordings and phone state access to stop recording on incoming or outgoing calls.</string>
+    <string name="storage_permission_rationale">This app needs access to file system to read and write recordings.</string>
     <string name="on_permission_denied">Application cannot function without these permissions.</string>
 
     <string name="record">Record</string>

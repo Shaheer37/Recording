@@ -45,15 +45,11 @@ public class RecordingActivity extends AppCompatActivity implements
     public static final String TAG = RecordingActivity.class.getSimpleName();
     private static final int PERMISSION_INT = 123;
 
-    public enum RecordingStatus {
-        initial, recording, playing
-    }
-
     private SessionManager mSessionManager;
 
     private Player mPlayer;
 
-    private RecordingStatus mRecordingStatus = RecordingStatus.initial;
+    private RecordingFragment.RecordingStatus mRecordingStatus = RecordingFragment.RecordingStatus.initial;
 
     private boolean isBound = false;
     private RecordingService.ServiceInterface mServiceInterface;
@@ -175,7 +171,7 @@ public class RecordingActivity extends AppCompatActivity implements
         if (CommonMethods.isServiceRunning(RecordingService.class, this)) {
             bindService();
         }
-        if(mRecordingStatus == RecordingStatus.initial){
+        if(mRecordingStatus == RecordingFragment.RecordingStatus.initial){
             setLastRecordingControls();
         }
     }
@@ -315,7 +311,7 @@ public class RecordingActivity extends AppCompatActivity implements
         sineWaveView.setVisibility(View.VISIBLE);
         sineWaveView.startAnimation();
 
-        mRecordingStatus = RecordingStatus.recording;
+        mRecordingStatus = RecordingFragment.RecordingStatus.recording;
     }
 
     private void setInitial() {
@@ -331,7 +327,7 @@ public class RecordingActivity extends AppCompatActivity implements
 
         sineWaveView.setVisibility(View.INVISIBLE);
         sineWaveView.stopAnimation();
-        mRecordingStatus = RecordingStatus.initial;
+        mRecordingStatus = RecordingFragment.RecordingStatus.initial;
 
         setLastRecordingControls();
     }
@@ -350,7 +346,7 @@ public class RecordingActivity extends AppCompatActivity implements
         sineWaveView.setVisibility(View.VISIBLE);
         sineWaveView.stopAnimation();
 
-        mRecordingStatus = RecordingStatus.playing;
+        mRecordingStatus = RecordingFragment.RecordingStatus.playing;
     }
 
     @Override
@@ -375,7 +371,7 @@ public class RecordingActivity extends AppCompatActivity implements
 
     @Override
     public void onTrackCompleted() {
-        if(mRecordingStatus == RecordingStatus.playing) {
+        if(mRecordingStatus == RecordingFragment.RecordingStatus.playing) {
             sineWaveView.stopAnimation();
             tvRecording.setText(R.string.recording_completed);
         }

@@ -34,13 +34,6 @@
         android:layout_gravity="center"
         android:visibility="visible"/>
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/group_initiate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="visible"
-        app:constraint_referenced_ids="btn_start_recording,btn_play_last_recording"/>
-
     <com.omega_r.libs.OmegaCenterIconButton
         android:id="@+id/btn_start_recording"
         android:layout_width="match_parent"
