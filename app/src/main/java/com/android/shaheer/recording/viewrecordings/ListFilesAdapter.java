@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -26,7 +25,7 @@ public class ListFilesAdapter extends ArrayAdapter<RecordItem> {
 	ListInterface listInterface;
 
 	public ListFilesAdapter(Context context, ArrayList<RecordItem> recordList, ListInterface listInterface) {
-		super(context, R.layout.list_single_main, recordList);
+		super(context, R.layout.list_item, recordList);
 		this.context = context;
 		this.recordList = recordList;
 		this.listInterface = listInterface;
@@ -44,11 +43,11 @@ public class ListFilesAdapter extends ArrayAdapter<RecordItem> {
 	@Override
 	public View getView(final int position, View view, final ViewGroup parent) {
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View rowView = inflater.inflate(R.layout.list_single_main, parent, false);
+		View rowView = inflater.inflate(R.layout.list_item, parent, false);
 
 		LinearLayout llRecord = (LinearLayout) rowView.findViewById(R.id.ll_record);
-		TextView txtTitle = (TextView) rowView.findViewById(R.id.txt);
-		TextView durationFile = (TextView) rowView.findViewById(R.id.duration);
+		TextView txtTitle = (TextView) rowView.findViewById(R.id.tv_recording_title);
+		TextView durationFile = (TextView) rowView.findViewById(R.id.tv_recording_duration);
 		ImageButton btnPlayPause = (ImageButton) rowView.findViewById(R.id.btn_play_pause);
 
 		durationFile.setText(recordList.get(position).getRecordDuration());

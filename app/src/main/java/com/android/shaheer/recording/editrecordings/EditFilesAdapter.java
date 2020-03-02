@@ -46,9 +46,9 @@ public class EditFilesAdapter extends ArrayAdapter<RecordItem> {
 	public View getView(final int position, View view, final ViewGroup parent) {
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		final View rowView = inflater.inflate(R.layout.list_single_edit, parent, false);
-		TextView txtTitle = (TextView) rowView.findViewById(R.id.txt);
+		TextView txtTitle = (TextView) rowView.findViewById(R.id.tv_recording_title);
 		txtTitle.setText(recordList.get(position).getRecordAddress());
-		TextView durationFile = (TextView) rowView.findViewById(R.id.duration);
+		TextView durationFile = (TextView) rowView.findViewById(R.id.tv_recording_duration);
 		durationFile.setText(recordList.get(position).getRecordDuration());
 
 		final Button del = (Button) rowView.findViewById(R.id.del);

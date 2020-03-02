@@ -13,6 +13,7 @@ import android.widget.*
 import androidx.constraintlayout.widget.Group
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
@@ -128,8 +129,11 @@ class RecordingFragment : Fragment() {
 
         mainViewModel.hasStoragePermission.observe(viewLifecycleOwner, EventObserver{
             if(it){
-                val listFiles = Intent(context, ListFilesActivity::class.java)
-                startActivity(listFiles)
+//                val listFiles = Intent(context, ListFilesActivity::class.java)
+//                startActivity(listFiles)
+                findNavController().navigate(
+                        RecordingFragmentDirections.actionRecordingToViewRecords()
+                )
             }
         })
 

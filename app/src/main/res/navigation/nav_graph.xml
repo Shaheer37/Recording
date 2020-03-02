@@ -9,5 +9,14 @@
         android:id="@+id/recordingFragment"
         android:name="com.android.shaheer.recording.record.RecordingFragment"
         android:label="fragment_recording"
-        tools:layout="@layout/fragment_recording" />
+        tools:layout="@layout/fragment_recording" >
+        <action
+            android:id="@+id/action_recording_to_viewRecords"
+            app:destination="@id/viewRecordsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/viewRecordsFragment"
+        android:name="com.android.shaheer.recording.editrecordings.ViewRecordsFragment"
+        android:label="fragment_view_records"
+        tools:layout="@layout/fragment_view_records" />
 </navigation>
