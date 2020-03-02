@@ -1,4 +1,4 @@
-package com.android.shaheer.recording.record
+package com.android.shaheer.recording
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

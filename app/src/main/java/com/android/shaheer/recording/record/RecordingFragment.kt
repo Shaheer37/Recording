@@ -12,11 +12,12 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.constraintlayout.widget.Group
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
+import com.android.shaheer.recording.MainViewModel
+import com.android.shaheer.recording.MainViewModelFactory
 
 import com.android.shaheer.recording.R
 import com.android.shaheer.recording.utils.*
@@ -50,7 +51,7 @@ class RecordingFragment : Fragment() {
     @BindView(R.id.btn_audio_archive) lateinit var btnAudioArchive: Button
 
     private lateinit var recordingViewModel: RecordingViewModel
-    private lateinit var mainViewModel:MainViewModel
+    private lateinit var mainViewModel: MainViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

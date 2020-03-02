@@ -17,6 +17,7 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.android.shaheer.recording.MainActivity;
 import com.android.shaheer.recording.R;
 import com.android.shaheer.recording.utils.SessionManager;
 import com.android.shaheer.recording.utils.FilesUtil;
@@ -190,7 +191,7 @@ public class RecordingService extends Service implements Recorder.RecorderTickLi
     }
 
     private NotificationCompat.Builder getNotificationBuilder() {
-        Intent intent = new Intent(getApplicationContext(), RecordingActivity.class);
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
         NotificationCompat.Builder notificationBuilder;

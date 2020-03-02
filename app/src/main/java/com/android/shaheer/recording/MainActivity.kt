@@ -1,4 +1,4 @@
-package com.android.shaheer.recording.record
+package com.android.shaheer.recording
 
 import android.Manifest
 import androidx.appcompat.app.AppCompatActivity
@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
-import com.android.shaheer.recording.R
 import com.android.shaheer.recording.utils.Constants
 import com.android.shaheer.recording.utils.EventObserver
 import pub.devrel.easypermissions.AfterPermissionGranted
@@ -35,18 +34,15 @@ class MainActivity :
         ).get(MainViewModel::class.java)
 
         viewModel.checkAllPermissions.observe(this, EventObserver{
-            Log.d(TAG, "checkPermissionsObserver")
             checkPermissions()
         })
         viewModel.checkStoragePermission.observe(this, EventObserver{
-            Log.d(TAG, "checkStoragePermission()")
             checkStoragePermission()
         })
     }
 
     @AfterPermissionGranted(PERMISSION_INT)
     fun checkPermissions(){
-        Log.d(TAG, "checkPermissions()")
         if (EasyPermissions.hasPermissions(this, *Constants.PERMISSIONS)) {
             viewModel.allPermissionsGranted(true)
         } else {
