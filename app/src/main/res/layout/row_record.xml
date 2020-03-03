@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:layout_marginStart="10dp"
+    android:layout_marginEnd="10dp"
+    >
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageButton
+            android:id="@+id/btn_play_pause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/barrier_icon"
+            android:layout_marginTop="@dimen/record_icon_margins"
+            android:layout_marginBottom="@dimen/record_icon_margins"
+            android:layout_marginStart="@dimen/record_icon_margins"
+            android:scaleType="center"
+            android:src="@drawable/ic_play_circle_blue"
+            android:background="@android:color/transparent"/>
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="end"
+            app:constraint_referenced_ids="btn_play_pause"
+            />
+        <TextView
+            android:id="@+id/tv_recording_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/tv_recording_duration"
+            app:layout_constraintStart_toEndOf="@id/barrier_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintHorizontal_bias="0"
+            android:layout_marginStart="@dimen/record_icon_margins"
+            android:textSize="15sp" />
+        <TextView
+            android:id="@+id/tv_recording_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/tv_recording_title"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/barrier_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            android:layout_marginStart="@dimen/record_icon_margins" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

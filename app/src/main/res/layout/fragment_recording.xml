@@ -15,9 +15,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:gravity="center"
-        android:textColor="@color/darkBlue"
         android:textSize="@dimen/recording_status_font_size"
         android:text="@string/start_recording"/>
+<!--        android:textColor="@color/darkBlue"/>-->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_top"
         android:layout_width="wrap_content"

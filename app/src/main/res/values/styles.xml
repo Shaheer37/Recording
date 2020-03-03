@@ -1,27 +1,41 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">@color/recordingPrimary</item>
-        <item name="colorPrimaryDark">@color/recordingPrimaryDark</item>
-        <item name="colorAccent">@color/darkBlue</item>
-        <item name="android:windowLightNavigationBar">true</item>
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
         <item name="android:navigationBarColor" tools:targetApi="21">@android:color/white</item>
     </style>
 
-    <style name="Recording.NoActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme.NoActionBar" parent="AppTheme">
         <item name="colorPrimary">@android:color/white</item>
         <item name="colorPrimaryDark">@android:color/white</item>
         <item name="colorAccent">@color/lightBlue</item>
+
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+
+        <item name="android:background">@android:color/white</item>
+        <item name="android:textColor">@color/middleBlue</item>
+
         <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
-        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
         <item name="android:navigationBarColor" tools:targetApi="21">@color/grey</item>
     </style>
 
-    <style name="BlueTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="ActionBar" parent="ThemeOverlay.AppCompat.ActionBar">
+        <item name="android:background">@android:color/white</item>
+        <item name="theme">@style/ThemeOverlay.ActionBar</item>
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+    </style>
+
+    <style name="ThemeOverlay.ActionBar" parent="ThemeOverlay.AppCompat.ActionBar">
+        <item name="android:textColorPrimary">@color/middleBlue</item>
+    </style>
+
+
+
+    <style name="AppTheme.Blue" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/darkBlue</item>
         <item name="colorPrimaryDark">@color/middleBlue</item>

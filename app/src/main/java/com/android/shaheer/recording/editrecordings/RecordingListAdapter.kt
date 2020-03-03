@@ -16,7 +16,7 @@ class RecordingListAdapter(): ListAdapter<RecordItem,RecordingListAdapter.ViewHo
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val view = inflater.inflate(R.layout.list_item, parent, false)
+        val view = inflater.inflate(R.layout.row_record, parent, false)
         return ViewHolder(view)
     }
 
@@ -24,7 +24,7 @@ class RecordingListAdapter(): ListAdapter<RecordItem,RecordingListAdapter.ViewHo
         holder.bindView(getItem(position))
     }
 
-    inner class ViewHolder(private val view: View): RecyclerView.ViewHolder(view){
+    inner class ViewHolder(view: View): RecyclerView.ViewHolder(view){
         @BindView(R.id.tv_recording_title) lateinit var tvRecordingTitle: TextView
         @BindView(R.id.tv_recording_duration) lateinit var tvRecordingDuration: TextView
         init { ButterKnife.bind(this, view) }
