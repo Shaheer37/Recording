@@ -37,6 +37,8 @@
     <string name="audio_archive">Audio Archive</string>
     <string name="info">Info</string>
 
+    <string name="recordings">Recordings</string>
+
     <string name="hint_name">Enter name here.</string>
     <string name="hint_instructions">Enter instructions here.</string>
 

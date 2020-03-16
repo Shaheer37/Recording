@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -12,7 +13,10 @@ import butterknife.ButterKnife
 import com.android.shaheer.recording.R
 import com.android.shaheer.recording.model.RecordItem
 
-class RecordingListAdapter(): ListAdapter<RecordItem,RecordingListAdapter.ViewHolder>(ItemDiffCallback()) {
+class RecordingListAdapter(
+        val onItemSelected: (Int)-> Unit,
+        val onItemClicked: (Int) -> Unit
+): ListAdapter<RecordItem,RecordingListAdapter.ViewHolder>(ItemDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -21,18 +25,35 @@ class RecordingListAdapter(): ListAdapter<RecordItem,RecordingListAdapter.ViewHo
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bindView(getItem(position))
+        holder.bindView(position)
     }
 
     inner class ViewHolder(view: View): RecyclerView.ViewHolder(view){
         @BindView(R.id.tv_recording_title) lateinit var tvRecordingTitle: TextView
         @BindView(R.id.tv_recording_duration) lateinit var tvRecordingDuration: TextView
+        @BindView(R.id.cv_record) lateinit var cvRecord: CardView
+
         init { ButterKnife.bind(this, view) }
 
-        fun bindView(item: RecordItem){
+        fun bindView(position: Int){
+            val item = getItem(position)
             tvRecordingTitle.text = item.recordAddress
             tvRecordingDuration.text = item.recordDuration
+
+            if(item.isSelected){
+                cvRecord.cardElevation = cvRecord.resources.getDimensionPixelSize(R.dimen.record_cv_selected_elevation).toFloat()
+            }else{
+                cvRecord.cardElevation = cvRecord.resources.getDimensionPixelSize(R.dimen.record_cv_elevation).toFloat()
+            }
+
+            cvRecord.setOnLongClickListener {
+                onItemSelected(position)
+                true
+            }
+            cvRecord.setOnClickListener { onItemClicked(position) }
         }
+
+
     }
 }
 
@@ -43,6 +64,8 @@ class ItemDiffCallback : DiffUtil.ItemCallback<RecordItem>() {
     }
 
     override fun areContentsTheSame(oldItem: RecordItem, newItem: RecordItem): Boolean {
-        return oldItem.isPlaying == newItem.isPlaying
+        return oldItem.isPlaying == newItem.isPlaying &&
+                oldItem.isSelected == newItem.isSelected &&
+                oldItem.isPlaying == newItem.isPlaying
     }
 }

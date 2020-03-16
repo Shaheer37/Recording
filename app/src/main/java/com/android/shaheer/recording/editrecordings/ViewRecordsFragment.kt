@@ -4,10 +4,8 @@ package com.android.shaheer.recording.editrecordings
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -16,7 +14,9 @@ import butterknife.BindView
 import butterknife.ButterKnife
 
 import com.android.shaheer.recording.R
+import com.android.shaheer.recording.model.RecordItem
 import com.android.shaheer.recording.utils.SessionManager
+import java.util.*
 
 class ViewRecordsFragment : Fragment() {
 
@@ -26,7 +26,7 @@ class ViewRecordsFragment : Fragment() {
 
     private lateinit var viewModel: ViewRecordsViewModel
 
-    private val recordingAdapter = RecordingListAdapter()
+    private val recordingAdapter = RecordingListAdapter(::onRecordItemSelected, ::onRecordItemClicked)
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -46,21 +46,33 @@ class ViewRecordsFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-            toolbar.navigationIcon = context?.getDrawable(R.drawable.ic_arrow_back)
-        }else{
-            toolbar.navigationIcon = context?.resources?.getDrawable(R.drawable.ic_arrow_back)
-        }
-        toolbar.title = getString(R.string.recording)
+//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+//            toolbar.navigationIcon = context?.getDrawable(R.drawable.ic_arrow_back)
+//        }else{
+//            toolbar.navigationIcon = context?.resources?.getDrawable(R.drawable.ic_arrow_back)
+//        }
+//        toolbar.title = getString(R.string.recording)
+
+        toolbar.inflateMenu(R.menu.menu_audio_archive)
 
         rvRecordings.adapter = recordingAdapter
 
-        viewModel.recordings.observe(viewLifecycleOwner, Observer { recordingAdapter.submitList(it) })
+        viewModel.recordings.observe(viewLifecycleOwner, Observer {
+            recordingAdapter.submitList(it)//mutableListOf<RecordItem>().apply{ addAll(it)})
+        })
     }
 
     override fun onResume() {
         super.onResume()
         context?.let { viewModel.getRecordingsFromFiles(it) }
+    }
+
+    private fun onRecordItemSelected(position: Int){
+        viewModel.onRecordItemSelected(position)
+    }
+
+    fun onRecordItemClicked(position: Int){
+        viewModel.onRecordItemClicked(position)
     }
 
 }

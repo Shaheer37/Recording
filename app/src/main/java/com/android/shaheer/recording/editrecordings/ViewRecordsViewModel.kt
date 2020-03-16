@@ -18,6 +18,18 @@ class ViewRecordsViewModel(private val sessionManager: SessionManager): ViewMode
     private var _recordings = MutableLiveData<List<RecordItem>>()
     val recordings: LiveData<List<RecordItem>> = _recordings
 
+    fun onRecordItemSelected(position: Int) = _recordings.value?.let {
+        val recordingList = it.toMutableList()
+        val record = it[position].copy()
+        record.isSelected = !record.isSelected
+        recordingList[position] = record
+        _recordings.value = recordingList
+    }
+
+    fun onRecordItemClicked(position: Int) = _recordings.value?.let {
+        if(it[position].isSelected) onRecordItemSelected(position)
+    }
+
     fun getRecordingsFromFiles(context: Context){
         val recordingList = mutableListOf<RecordItem>()
         val directory = File(FilesUtil.getDir(context))
