@@ -1,6 +1,5 @@
 package com.android.shaheer.recording.editrecordings
 
-
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
@@ -35,6 +34,8 @@ class ViewRecordsFragment : Fragment() {
                 viewModelStore,
                 ViewRecordsViewModelFactory(SessionManager(context.applicationContext))
         ).get(ViewRecordsViewModel::class.java)
+
+        viewModel.getRecordingsFromFiles(context)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -58,13 +59,12 @@ class ViewRecordsFragment : Fragment() {
         rvRecordings.adapter = recordingAdapter
 
         viewModel.recordings.observe(viewLifecycleOwner, Observer {
-            recordingAdapter.submitList(it)//mutableListOf<RecordItem>().apply{ addAll(it)})
+            recordingAdapter.submitList(it)
         })
     }
 
     override fun onResume() {
         super.onResume()
-        context?.let { viewModel.getRecordingsFromFiles(it) }
     }
 
     private fun onRecordItemSelected(position: Int){

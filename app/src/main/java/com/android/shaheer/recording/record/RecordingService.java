@@ -58,8 +58,9 @@ public class RecordingService extends Service implements Recorder.RecorderTickLi
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
+        Log.d(TAG, "onDestroy()");
         mTelephonyManager.listen(phoneListener, PhoneStateListener.LISTEN_NONE);
+        super.onDestroy();
     }
 
     @Override
@@ -90,8 +91,11 @@ public class RecordingService extends Service implements Recorder.RecorderTickLi
             case ACTION_START:
                 if(mRecorder.startRecording(mRecorder.getOutputFile())) {
                     startForeground(NOTIFICATION_ID, setupNotification(Recorder.RecordingStatus.recording));
+                    mTelephonyManager.listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE);
+
+                    SessionManager sessionManager = new SessionManager(getApplicationContext());
+                    sessionManager.setLastRecording(mServiceInterface.getFilePath());
                 }
-                mTelephonyManager.listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE);
                 break;
             case ACTION_RESUME:
                 mRecorder.resumeRecording();
@@ -172,11 +176,7 @@ public class RecordingService extends Service implements Recorder.RecorderTickLi
     private void stopForegroundService() {
         Log.d(TAG, "Stop foreground service.");
 
-        if(mRecorder != null){
-            SessionManager sessionManager = new SessionManager(getApplicationContext());
-            sessionManager.setLastRecording(mServiceInterface.getFilePath());
-            mRecorder.stopRecording();
-        }
+        if(mRecorder != null) mRecorder.stopRecording();
 
         if(mRecordingInterface != null){
             mRecordingInterface.unbind();
@@ -231,7 +231,6 @@ public class RecordingService extends Service implements Recorder.RecorderTickLi
         NotificationManager notificationManager = (NotificationManager)
                 getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(NOTIFICATION_ID, setupNotification(recordingStatus));
-
     }
 
     private void setNotificationText(NotificationCompat.Builder notificationBuilder,
