@@ -25,7 +25,7 @@ class RecordingListAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bindView(position)
+        holder.bindView()
     }
 
     inner class ViewHolder(view: View): RecyclerView.ViewHolder(view){
@@ -35,8 +35,8 @@ class RecordingListAdapter(
 
         init { ButterKnife.bind(this, view) }
 
-        fun bindView(position: Int){
-            val item = getItem(position)
+        fun bindView(){
+            val item = getItem(adapterPosition)
             tvRecordingTitle.text = item.recordAddress
             tvRecordingDuration.text = item.recordDuration
 
@@ -47,10 +47,10 @@ class RecordingListAdapter(
             }
 
             cvRecord.setOnLongClickListener {
-                onItemSelected(position)
+                onItemSelected(adapterPosition)
                 true
             }
-            cvRecord.setOnClickListener { onItemClicked(position) }
+            cvRecord.setOnClickListener { onItemClicked(adapterPosition) }
         }
 
 

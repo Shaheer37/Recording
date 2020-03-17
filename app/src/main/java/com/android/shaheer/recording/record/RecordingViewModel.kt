@@ -4,7 +4,6 @@ import android.content.ComponentName
 import android.content.ServiceConnection
 import android.os.IBinder
 import android.util.Log
-import android.view.View
 import androidx.lifecycle.*
 import com.android.shaheer.recording.utils.Event
 import com.android.shaheer.recording.utils.Player
@@ -12,7 +11,7 @@ import com.android.shaheer.recording.utils.Recorder
 import com.android.shaheer.recording.utils.SessionManager
 
 public class RecordingViewModel(val sessionManager: SessionManager)
-    : ViewModel(), RecordingService.RecordingInterface, Player.PlayerEventListener {
+    : ViewModel(), RecordingService.RecordingInterface, Player.onTrackCompletedListener {
     companion object {
         private const val TAG = "RecordingViewModel"
     }

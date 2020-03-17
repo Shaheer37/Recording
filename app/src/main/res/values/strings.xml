@@ -22,6 +22,8 @@
     <string name="send">Send</string>
     <string name="transcribe">Transcribe</string>
     <string name="cancel">cancel</string>
+    <string name="delete">Delete</string>
+    <string name="rename">Rename</string>
 
     <string name="send_transcribtion">Send Transcribtion</string>
     <string name="last_transcribe">Send Last Transcribtion</string>
@@ -43,4 +45,7 @@
     <string name="hint_instructions">Enter instructions here.</string>
 
     <string name="no_recordings">You haven\'t made any recording yet.</string>
+    <string name="type_recording_name">Rename Recording</string>
+
+    <string name="name_already_exists">A recording with same name already exists.</string>
 </resources>

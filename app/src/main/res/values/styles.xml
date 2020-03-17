@@ -6,7 +6,8 @@
     </style>
 
     <style name="AppTheme.NoActionBar" parent="AppTheme">
-        <item name="colorPrimary">@android:color/white</item>
+<!--        <item name="colorPrimary">@android:color/white</item>-->
+        <item name="colorPrimary">@color/middleBlue</item>
         <item name="colorPrimaryDark">@android:color/white</item>
         <item name="colorAccent">@color/lightBlue</item>
 

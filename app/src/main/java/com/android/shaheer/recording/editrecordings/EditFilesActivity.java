@@ -121,7 +121,7 @@ public class EditFilesActivity extends AppCompatActivity implements EditFilesAda
 
         // Set an EditText view to get user input
         TextView Msg = new TextView(EditFilesActivity.this);
-        Msg.setText("Please type the new name of file ");
+        Msg.setText(getString(R.string.type_recording_name));
         Msg.setPadding(10, 20, 0, 20);
         fileDialog.setView(Msg);
 

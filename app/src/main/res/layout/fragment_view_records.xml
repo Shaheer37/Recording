@@ -16,6 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:layout_scrollFlags="scroll|enterAlways"
+            app:menu="@menu/menu_edit_records"
             style="@style/ActionBar"
             app:title="@string/recordings"
             app:navigationIcon="@drawable/ic_arrow_back"/>

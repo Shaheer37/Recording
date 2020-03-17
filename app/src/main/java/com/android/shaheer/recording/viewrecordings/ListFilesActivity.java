@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ListFilesActivity extends AppCompatActivity implements
         ListFilesAdapter.ListInterface,
-        Player.PlayerEventListener
+        Player.onTrackCompletedListener
 {
     public static final String TAG = ListFilesActivity.class.getSimpleName();
     private static final int EDIT_SCREEN_IDENTIFIER = 101;

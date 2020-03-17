@@ -29,6 +29,6 @@
     <dimen name="options_btn_text_size">18sp</dimen>
     <dimen name="record_icon_margins">20dp</dimen>
 
-    <dimen name="record_cv_selected_elevation">8dp</dimen>
+    <dimen name="record_cv_selected_elevation">20dp</dimen>
     <dimen name="record_cv_elevation">2dp</dimen>
 </resources>

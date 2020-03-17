@@ -1,6 +1,5 @@
 package com.android.shaheer.recording.utils;
 
-import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
 
@@ -17,7 +16,7 @@ public class Player {
     public PlayingStatus getmRecordingStatus() {return mPlayingStatus;}
 
     private MediaPlayer mMediaPlayer;
-    private PlayerEventListener mEventListener;
+    private onTrackCompletedListener mEventListener;
 
     private int trackPlayedLength = 0;
 
@@ -34,8 +33,8 @@ public class Player {
         return (mPlayingStatus == PlayingStatus.notPlaying);
     }
 
-    public Player(PlayerEventListener playerEventListener) {
-        mEventListener = playerEventListener;
+    public Player(onTrackCompletedListener onTrackCompletedListener) {
+        mEventListener = onTrackCompletedListener;
     }
 
     public boolean play(String track){
@@ -98,7 +97,7 @@ public class Player {
     }
 
 
-    public interface PlayerEventListener{
+    public interface onTrackCompletedListener {
         void onTrackCompleted();
     }
 }
