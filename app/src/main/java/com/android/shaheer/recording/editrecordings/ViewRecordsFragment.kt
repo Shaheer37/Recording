@@ -2,6 +2,7 @@ package com.android.shaheer.recording.editrecordings
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Layout
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.appcompat.widget.Toolbar
@@ -17,6 +18,8 @@ import com.android.shaheer.recording.R
 import com.android.shaheer.recording.utils.EventObserver
 import com.android.shaheer.recording.utils.SessionManager
 import com.android.shaheer.recording.utils.showToast
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.snackbar.Snackbar
 
 class ViewRecordsFragment : Fragment() {
 
@@ -97,6 +100,17 @@ class ViewRecordsFragment : Fragment() {
             viewModel.renameSelectedItem()
             true
         }
+
+        deleteMenuAction.setOnMenuItemClickListener {
+            val snackbar = Snackbar.make(view!!, getString(R.string.delete_contfirmation_msg), Snackbar.LENGTH_SHORT)
+            snackbar.setAction(R.string.yes, View.OnClickListener {
+                viewModel.deleteSelectedItems(context)
+            })
+
+            snackbar.isGestureInsetBottomIgnored = true
+            snackbar.show()
+            true
+        }
     }
 
     private fun onRecordItemSelected(position: Int){
@@ -111,14 +125,17 @@ class ViewRecordsFragment : Fragment() {
         selectedCount == 1 -> {
             renameMenuAction.isVisible = true
             deleteMenuAction.isVisible = true
+            (toolbar.layoutParams as AppBarLayout.LayoutParams).scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_NO_SCROLL
         }
         selectedCount > 1 -> {
             renameMenuAction.isVisible = false
             deleteMenuAction.isVisible = true
+            (toolbar.layoutParams as AppBarLayout.LayoutParams).scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_NO_SCROLL
         }
         else -> {
             renameMenuAction.isVisible = false
             deleteMenuAction.isVisible = false
+            (toolbar.layoutParams as AppBarLayout.LayoutParams).scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
         }
     }
 

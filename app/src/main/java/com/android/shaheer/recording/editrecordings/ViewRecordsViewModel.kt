@@ -15,6 +15,7 @@ import com.android.shaheer.recording.utils.Event
 import com.android.shaheer.recording.utils.FilesUtil
 import com.android.shaheer.recording.utils.Player
 import com.android.shaheer.recording.utils.SessionManager
+import com.google.android.material.snackbar.Snackbar
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -63,6 +64,24 @@ class ViewRecordsViewModel(private val sessionManager: SessionManager): ViewMode
     fun renameSelectedItem(){
         _recordings.value?.find { it.isSelected }?.let {
             _renameItem.value = Event(it.recordAddress)
+        }
+    }
+
+    fun deleteSelectedItems(context: Context?){
+        _recordings.value?.filter { it.isSelected }?.let {items ->
+            items.forEach {item ->
+                val directory = File(FilesUtil.getDir(context))
+                val fileName = "${directory.absolutePath}/${item.recordAddress}.m4a"
+
+                if (sessionManager.lastRecording != null
+                        && fileName.equals(sessionManager.getLastRecording(), ignoreCase = true)
+                ) {
+                    sessionManager.setLastRecording(null)
+                }
+                File(fileName).delete()
+            }
+            _selectedRecordings.value = 0
+            _getRecordings.value = Event(true)
         }
     }
 
@@ -125,10 +144,9 @@ class ViewRecordsViewModel(private val sessionManager: SessionManager): ViewMode
                 return@let
             }
             pair.sameItem?.let {item->
-                val fileName = "$newName.m4a"
                 val directory = File(FilesUtil.getDir(context))
-                val audioFile = File(directory.absolutePath + "/" + item.recordAddress + ".m4a")
-                audioFile.renameTo(File(directory.absolutePath + "/" + fileName))
+                val audioFile = File("${directory.absolutePath}/${item.recordAddress}.m4a")
+                audioFile.renameTo(File("${directory.absolutePath}/$newName.m4a"))
                 _selectedRecordings.value?.let { count-> _selectedRecordings.value = count - 1}
                 _getRecordings.value = Event(true)
             }
