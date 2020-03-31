@@ -2,24 +2,20 @@ package com.android.shaheer.recording.editrecordings
 
 import android.content.Context
 import android.media.MediaMetadataRetriever
-import android.os.Environment
-import android.os.Parcelable
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.android.shaheer.recording.R
 import com.android.shaheer.recording.model.RecordItem
 import com.android.shaheer.recording.utils.Event
 import com.android.shaheer.recording.utils.FilesUtil
 import com.android.shaheer.recording.utils.Player
 import com.android.shaheer.recording.utils.SessionManager
-import com.google.android.material.snackbar.Snackbar
 import java.io.File
 import java.util.concurrent.TimeUnit
 
-class ViewRecordsViewModel(private val sessionManager: SessionManager): ViewModel(){
+class ViewRecordsViewModel(private val sessionManager: SessionManager): ViewModel(),Player.onTrackCompletedListener{
 
     private var _recordings = MutableLiveData<List<RecordItem>>()
     val recordings: LiveData<List<RecordItem>> = _recordings
@@ -36,16 +32,58 @@ class ViewRecordsViewModel(private val sessionManager: SessionManager): ViewMode
     private var _showNameAlreadyExistsToast = MutableLiveData<Event<Boolean>>()
     val showNameAlreadyExistsToast: LiveData<Event<Boolean>> = _showNameAlreadyExistsToast
 
-    private val player = Player(Player.onTrackCompletedListener {
+    private val player = Player(this)
 
-    })
+    override fun onTrackCompleted() {
+        _recordings.value?.toMutableList()?.let{ recordingList->
+            val playingItemIndex = recordingList.indexOfFirst {
+                it.playingStatus != Player.PlayingStatus.notPlaying
+            }
 
-    private var playingTrackIndex: Int? = null
+            if(playingItemIndex>=0){
+                val playingItem = recordingList[playingItemIndex].copy()
+                playingItem.playingStatus = Player.PlayingStatus.notPlaying
 
+                recordingList[playingItemIndex] = playingItem
+                _recordings.value = recordingList
+            }
+        }
+    }
 
-    fun onRecordItemSelected(position: Int) = _recordings.value?.let {
-        val recordingList = it.toMutableList()
-        val record = it[position].copy()
+    fun onItemPlayClicked(context:Context, position: Int) = _recordings.value?.toMutableList()?.let { recordingList->
+        val clickedItem:RecordItem
+        val currentPlayingItemIndex = getCurrentlyPlayingItem()
+        if(currentPlayingItemIndex != null){
+            val currentPlayingItem  = recordingList[currentPlayingItemIndex].copy()
+            currentPlayingItem.playingStatus = Player.PlayingStatus.notPlaying
+
+            clickedItem = if(currentPlayingItemIndex == position) currentPlayingItem
+            else {
+                player.stop()
+                recordingList[currentPlayingItemIndex] = currentPlayingItem
+                recordingList[position].copy()
+            }
+        }else clickedItem = recordingList[position].copy()
+
+        when(player.playingStatus){
+            Player.PlayingStatus.playing -> {
+                player.pause()
+                clickedItem.playingStatus = player.playingStatus
+            }
+            Player.PlayingStatus.paused -> {
+                player.resume()
+                clickedItem.playingStatus = player.playingStatus
+            }
+            Player.PlayingStatus.notPlaying ->
+                if(player.play("${FilesUtil.getDir(context)}/${clickedItem.recordAddress}.m4a")){
+                    clickedItem.playingStatus = Player.PlayingStatus.playing
+                }
+        }
+        _recordings.value = recordingList.also { it[position] = clickedItem }
+    }
+
+    fun onRecordItemSelected(position: Int) = _recordings.value?.toMutableList()?.let { recordingList->
+        val record = recordingList[position].copy()
         record.isSelected = !record.isSelected
 
         _selectedRecordings.value?.let { count->
@@ -53,13 +91,31 @@ class ViewRecordsViewModel(private val sessionManager: SessionManager): ViewMode
             else _selectedRecordings.value = count - 1
         }
 
-        recordingList[position] = record
-        _recordings.value = recordingList
+        _recordings.value = recordingList.also { it[position] = record }
     }
 
     fun onRecordItemClicked(position: Int) = _recordings.value?.let {
         if(it[position].isSelected) onRecordItemSelected(position)
     }
+
+    fun stopPlayingItem() = getCurrentlyPlayingItem()?.let { currentPlayingIndex->
+        player.stop()
+        _recordings.value?.toMutableList()?.let { recordingList->
+            val currentPlayingItem = recordingList[currentPlayingIndex].copy().also {
+                it.playingStatus = Player.PlayingStatus.notPlaying
+            }
+            _recordings.value = recordingList.also {
+                it[currentPlayingIndex] = currentPlayingItem
+            }
+
+        }
+    }
+
+    private fun getCurrentlyPlayingItem(): Int?
+        = _recordings.value
+        ?.indexOfFirst { it.playingStatus != Player.PlayingStatus.notPlaying }
+        ?.let { if(it >= 0) it else null }
+
 
     fun renameSelectedItem(){
         _recordings.value?.find { it.isSelected }?.let {
@@ -114,14 +170,14 @@ class ViewRecordsViewModel(private val sessionManager: SessionManager): ViewMode
             _recordings.value?.let { recordings ->
 
                 val filtered = recordings.fold(hashMapOf<String, RecordItem>()){ map, item ->
-                    if(item.isPlaying || item.isSelected) map[item.recordAddress] = item
+                    if(item.playingStatus != Player.PlayingStatus.notPlaying || item.isSelected) map[item.recordAddress] = item
                     map
                 }
 
                 if(filtered.isNotEmpty()){
                     recordingList.map {item ->
                         filtered[item.recordAddress]?.let {
-                            item.isPlaying = it.isPlaying
+                            item.playingStatus = it.playingStatus
                             item.isSelected = it.isSelected
                         }
                         item

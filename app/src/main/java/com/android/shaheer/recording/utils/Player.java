@@ -3,17 +3,19 @@ package com.android.shaheer.recording.utils;
 import android.media.MediaPlayer;
 import android.net.Uri;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.IOException;
 
 public class Player {
     public static final String TAG = Player.class.getSimpleName();
-    enum PlayingStatus {
-        notPlaying, playing, paused, ended
+    public enum PlayingStatus {
+        notPlaying, playing, paused
     }
 
     private PlayingStatus mPlayingStatus = PlayingStatus.notPlaying;
-    public PlayingStatus getmRecordingStatus() {return mPlayingStatus;}
+    public PlayingStatus getPlayingStatus() {return mPlayingStatus;}
 
     private MediaPlayer mMediaPlayer;
     private onTrackCompletedListener mEventListener;
@@ -85,7 +87,7 @@ public class Player {
 
     public void stop(){
         if(mMediaPlayer != null){
-            mPlayingStatus = PlayingStatus.ended;
+            mPlayingStatus = PlayingStatus.notPlaying;
             try {
                 mMediaPlayer.stop();
                 mMediaPlayer.release();

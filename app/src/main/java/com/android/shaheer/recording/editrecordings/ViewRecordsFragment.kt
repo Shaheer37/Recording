@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import butterknife.BindView
 import butterknife.ButterKnife
@@ -21,7 +22,7 @@ import com.android.shaheer.recording.utils.showToast
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 
-class ViewRecordsFragment : Fragment() {
+class ViewRecordsFragment : Fragment(), RecordingListAdapter.ItemInteractionListener {
 
     @BindView(R.id.rv_recordings) lateinit var rvRecordings: RecyclerView
     @BindView(R.id.toolbar) lateinit var toolbar: Toolbar
@@ -33,7 +34,7 @@ class ViewRecordsFragment : Fragment() {
 
     private lateinit var materialDialog: MaterialDialog
 
-    private val recordingAdapter = RecordingListAdapter(::onRecordItemSelected, ::onRecordItemClicked)
+    private val recordingAdapter = RecordingListAdapter(this)
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -90,9 +91,13 @@ class ViewRecordsFragment : Fragment() {
         if(::materialDialog.isInitialized && materialDialog.isShowing) {
             materialDialog.cancel()
         }
+        viewModel.stopPlayingItem()
     }
 
     private fun setupMenuActionButtons(){
+
+        toolbar.setNavigationOnClickListener { findNavController().navigateUp() }
+
         deleteMenuAction = toolbar.menu.findItem(R.id.action_delete)
         renameMenuAction = toolbar.menu.findItem(R.id.action_rename)
 
@@ -113,12 +118,16 @@ class ViewRecordsFragment : Fragment() {
         }
     }
 
-    private fun onRecordItemSelected(position: Int){
+    override fun onItemSelected(position: Int) {
         viewModel.onRecordItemSelected(position)
     }
 
-    private fun onRecordItemClicked(position: Int){
+    override fun onItemClicked(position: Int) {
         viewModel.onRecordItemClicked(position)
+    }
+
+    override fun onItemPlayClicked(position: Int) {
+        context?.let { viewModel.onItemPlayClicked(it, position) }
     }
 
     private fun onRecordingsSelected(selectedCount: Int) = when{
