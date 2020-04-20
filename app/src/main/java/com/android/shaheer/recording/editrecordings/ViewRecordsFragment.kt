@@ -4,8 +4,10 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Layout
 import android.view.*
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -18,6 +20,7 @@ import com.afollestad.materialdialogs.input.input
 import com.android.shaheer.recording.R
 import com.android.shaheer.recording.utils.EventObserver
 import com.android.shaheer.recording.utils.SessionManager
+import com.android.shaheer.recording.utils.makeSnackBar
 import com.android.shaheer.recording.utils.showToast
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
@@ -54,12 +57,6 @@ class ViewRecordsFragment : Fragment(), RecordingListAdapter.ItemInteractionList
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-//            toolbar.navigationIcon = context?.getDrawable(R.drawable.ic_arrow_back)
-//        }else{
-//            toolbar.navigationIcon = context?.resources?.getDrawable(R.drawable.ic_arrow_back)
-//        }
-//        toolbar.title = getString(R.string.recording)
 
         setupMenuActionButtons()
 
@@ -107,13 +104,16 @@ class ViewRecordsFragment : Fragment(), RecordingListAdapter.ItemInteractionList
         }
 
         deleteMenuAction.setOnMenuItemClickListener {
-            val snackbar = Snackbar.make(view!!, getString(R.string.delete_contfirmation_msg), Snackbar.LENGTH_SHORT)
-            snackbar.setAction(R.string.yes, View.OnClickListener {
-                viewModel.deleteSelectedItems(context)
-            })
 
-            snackbar.isGestureInsetBottomIgnored = true
-            snackbar.show()
+            view?.makeSnackBar(
+                getString(R.string.delete_contfirmation_msg),
+                Snackbar.LENGTH_SHORT
+            )?.run{
+                this.setAction(R.string.yes) {
+                    viewModel.deleteSelectedItems(context)
+                }
+                this.show()
+            }
             true
         }
     }

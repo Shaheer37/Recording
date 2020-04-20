@@ -4,4 +4,5 @@
     <declare-styleable name="CenterDrawableButton">
         <attr name="drawableCenter"/>
     </declare-styleable>
+    <attr name="toolbarBackgroundColor" format="reference"/>
 </resources>
