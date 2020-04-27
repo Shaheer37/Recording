@@ -8,6 +8,7 @@ A simple android voice recording application I created a while back. It has foll
 3. Save recording to local storage in a folder named Recording.
 4. View all recordings.
 5. Rename or delete a recording.
+6. Dark mode is in progress. The backgrounds change but a few views and colors don't look visually appealing.
 
 ## Screenshot
 
