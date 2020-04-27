@@ -3,7 +3,7 @@
     <style name="AppTheme" parent="Theme.AppCompat.DayNight">
 <!--        <item name="colorPrimary">@color/middleBlue</item>-->
         <item name="colorPrimaryDark">@color/background</item>
-<!--        <item name="colorAccent">@color/lightBlue</item>-->
+        <item name="colorAccent">@color/lightBlue</item>
 
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
@@ -15,6 +15,8 @@
         <item name="android:windowLightStatusBar" tools:targetApi="23">@bool/isBarLight</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="27">@bool/isBarLight</item>
         <item name="android:navigationBarColor" tools:targetApi="21">@color/grey</item>
+
+        <item name="md_color_button_text">@color/primaryDark</item>
     </style>
 
     <style name="ActionBar" parent="ThemeOverlay.AppCompat.DayNight.ActionBar">
