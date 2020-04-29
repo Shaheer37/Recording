@@ -58,7 +58,7 @@ public class FilesUtil {
         if(recordPieces.size()>1){
             Log.e(TAG, "more files");
             File mergedFile = getFile(context, MERGED_FILE);
-            if(mergeMediaFiles(true, recordPieces.toArray(new File[recordPieces.size()]), mergedFile.getAbsolutePath())){
+            if(mergeMediaFiles(recordPieces.toArray(new File[recordPieces.size()]), mergedFile.getAbsolutePath())){
                 for(File record: recordPieces){
                     record.delete();
                 }
