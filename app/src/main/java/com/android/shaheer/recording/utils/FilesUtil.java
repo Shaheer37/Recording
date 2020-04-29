@@ -5,12 +5,13 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.android.shaheer.recording.R;
-import com.coremedia.iso.boxes.Container;
-import com.googlecode.mp4parser.authoring.Movie;
-import com.googlecode.mp4parser.authoring.Track;
-import com.googlecode.mp4parser.authoring.builder.DefaultMp4Builder;
-import com.googlecode.mp4parser.authoring.container.mp4.MovieCreator;
-import com.googlecode.mp4parser.authoring.tracks.AppendTrack;
+
+import org.mp4parser.Container;
+import org.mp4parser.muxer.Movie;
+import org.mp4parser.muxer.Track;
+import org.mp4parser.muxer.builder.DefaultMp4Builder;
+import org.mp4parser.muxer.container.mp4.MovieCreator;
+import org.mp4parser.muxer.tracks.AppendTrack;
 
 import java.io.File;
 import java.io.IOException;
@@ -74,9 +75,8 @@ public class FilesUtil {
         }
     }
 
-    private boolean mergeMediaFiles(boolean isAudio, File sourceFiles[], String targetFile) {
+    private boolean mergeMediaFiles(File sourceFiles[], String targetFile) {
         try {
-            String mediaKey = isAudio ? "soun" : "vide";
             List<Movie> listMovies = new ArrayList<>();
             for (File filename : sourceFiles) {
                 listMovies.add(MovieCreator.build(filename.getAbsolutePath()));
@@ -84,9 +84,7 @@ public class FilesUtil {
             List<Track> listTracks = new LinkedList<>();
             for (Movie movie : listMovies) {
                 for (Track track : movie.getTracks()) {
-                    if (track.getHandler().equals(mediaKey)) {
-                        listTracks.add(track);
-                    }
+                    listTracks.add(track);
                 }
             }
             Movie outputMovie = new Movie();
