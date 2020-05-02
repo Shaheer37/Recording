@@ -3,4 +3,6 @@
     <color name="primaryDark">#fafafa</color>
     <color name="background">#2e2e2e</color>
     <color name="textcolor">#fafafa</color>
+    <color name="bottomNavBarColor">#535455</color>
+    <color name="playRecordingButton">#427696</color>
 </resources>

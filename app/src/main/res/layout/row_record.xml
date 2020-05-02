@@ -25,7 +25,7 @@
             android:layout_marginBottom="@dimen/record_icon_margins"
             android:layout_marginStart="@dimen/record_icon_margins"
             android:scaleType="center"
-            android:src="@drawable/ic_play_circle_blue"
+            android:src="@drawable/ic_play_circle"
             android:background="@android:color/transparent"/>
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/barrier_icon"

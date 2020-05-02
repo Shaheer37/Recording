@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.constraintlayout.widget.Group
+import androidx.core.content.res.ResourcesCompat.getColor
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -61,8 +62,7 @@ class RecordingFragment : Fragment() {
 
         val stroke = CommonMethods.dipToPixels(context, 2f)
         sineWaveView.addWave(0.5f, 0.5f, 0f, 0, 0f) // Fist wave is for the shape of other waves.
-        sineWaveView.addWave(0.5f, 6f, 1f, resources.getColor(R.color.lightBlue), stroke)
-//        sineWaveView.baseWaveAmplitudeScale = 0f
+        sineWaveView.addWave(0.5f, 6f, 1f, getColor(resources, R.color.lightBlue, requireActivity().theme), stroke)
 
         return view
     }
@@ -182,31 +182,19 @@ class RecordingFragment : Fragment() {
 
     private fun setRecordingState(recordingStatus: Recorder.RecordingStatus) = when(recordingStatus){
             Recorder.RecordingStatus.recording -> {
-                if (Build.VERSION.SDK_INT >= 21) {
-                    btnRecordAction.setImageDrawable(context?.getDrawable(R.drawable.bg_recording_action_pause))
-                } else {
-                    btnRecordAction.setImageDrawable(resources.getDrawable(R.drawable.bg_recording_action_pause))
-                }
+                btnRecordAction.setImageDrawable(context?.getDrawable(R.drawable.bg_recording_action_pause))
                 tvRecordAction.setText(R.string.pause)
                 tvRecording.setText(R.string.recording)
                 sineWaveView.startAnimation()
             }
             Recorder.RecordingStatus.paused -> {
-                if (Build.VERSION.SDK_INT >= 21) {
-                    btnRecordAction.setImageDrawable(context?.getDrawable(R.drawable.bg_recording_action_record))
-                } else {
-                    btnRecordAction.setImageDrawable(resources.getDrawable(R.drawable.bg_recording_action_record))
-                }
+                btnRecordAction.setImageDrawable(context?.getDrawable(R.drawable.bg_recording_action_record))
                 tvRecordAction.setText(R.string.resume)
                 tvRecording.setText(R.string.paused)
                 sineWaveView.stopAnimation()
             }
             Recorder.RecordingStatus.ended -> {
-                if (Build.VERSION.SDK_INT >= 21) {
-                    btnRecordAction.setImageDrawable(context?.getDrawable(R.drawable.bg_recording_action_record))
-                } else {
-                    btnRecordAction.setImageDrawable(resources.getDrawable(R.drawable.bg_recording_action_record))
-                }
+                btnRecordAction.setImageDrawable(context?.getDrawable(R.drawable.bg_recording_action_record))
                 setRecordedLayout()
             }
             else -> {}

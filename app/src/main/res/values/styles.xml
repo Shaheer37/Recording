@@ -14,7 +14,7 @@
 
         <item name="android:windowLightStatusBar" tools:targetApi="23">@bool/isBarLight</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="27">@bool/isBarLight</item>
-        <item name="android:navigationBarColor" tools:targetApi="21">@color/grey</item>
+        <item name="android:navigationBarColor" tools:targetApi="21">@color/bottomNavBarColor</item>
 
         <item name="md_color_button_text">@color/primaryDark</item>
     </style>

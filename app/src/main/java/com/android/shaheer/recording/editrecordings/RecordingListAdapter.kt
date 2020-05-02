@@ -60,10 +60,10 @@ class RecordingListAdapter(
                     btnPlayPause.setImageDrawable(btnPlayPause.context.getDrawable(R.drawable.ic_pause_circle_green))
                 }
                 Player.PlayingStatus.paused -> {
-                    btnPlayPause.setImageDrawable(btnPlayPause.context.getDrawable(R.drawable.ic_play_circle_blue))
+                    btnPlayPause.setImageDrawable(btnPlayPause.context.getDrawable(R.drawable.ic_play_circle))
                 }
                 Player.PlayingStatus.notPlaying -> {
-                    btnPlayPause.setImageDrawable(btnPlayPause.context.getDrawable(R.drawable.ic_play_circle_blue))
+                    btnPlayPause.setImageDrawable(btnPlayPause.context.getDrawable(R.drawable.ic_play_circle))
                 }
             }
 

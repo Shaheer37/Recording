@@ -199,6 +199,5 @@
         android:padding="@dimen/bottom_option_btn_padding"
         android:background="@drawable/bg_bottom_options"
         android:text="@string/audio_archive"
-        android:textColor="@android:color/darker_gray"
         android:textAllCaps="false"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
