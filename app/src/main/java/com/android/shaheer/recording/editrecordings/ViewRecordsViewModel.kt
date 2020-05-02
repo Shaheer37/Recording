@@ -167,6 +167,7 @@ class ViewRecordsViewModel(private val sessionManager: SessionManager): ViewMode
                 metaRetriever.release()
             }
         }
+        recordingList.sortByDescending { it.recordAddress }
 
         if(forced) _recordings.value = recordingList
         else{
@@ -192,21 +193,16 @@ class ViewRecordsViewModel(private val sessionManager: SessionManager): ViewMode
     }
 
     fun renameRecordingFile(context: Context?, newName: String, lastName: String){
-        _recordings.value?.fold(RenameCheckPair(null, false)) { pair, item ->
-            if(item.recordAddress == lastName) pair.sameItem = item
-            if(item.recordAddress == newName) pair.sameNameExists = true
-            pair
-        }?.let { pair ->
-            if(pair.sameNameExists){
-                _showNameAlreadyExistsToast.value = Event(true)
-                return@let
-            }
-            pair.sameItem?.let {item->
+        if(newName.compareTo(lastName, ignoreCase = true) != 0){
+            val itemWithSameName = _recordings.value?.find { it.recordAddress.compareTo(newName, ignoreCase = true) == 0}
+            if(itemWithSameName == null){
                 val directory = File(FilesUtil.getDir(context))
-                val audioFile = File("${directory.absolutePath}/${item.recordAddress}.m4a")
+                val audioFile = File("${directory.absolutePath}/${lastName}.m4a")
                 audioFile.renameTo(File("${directory.absolutePath}/$newName.m4a"))
                 _selectedRecordings.value?.let { count-> _selectedRecordings.value = count - 1}
                 _getRecordings.value = Event(true)
+            }else{
+                _showNameAlreadyExistsToast.value = Event(true)
             }
         }
     }
