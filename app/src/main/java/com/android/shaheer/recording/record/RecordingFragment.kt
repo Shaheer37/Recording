@@ -61,9 +61,8 @@ class RecordingFragment : Fragment() {
 
         val stroke = CommonMethods.dipToPixels(context, 2f)
         sineWaveView.addWave(0.5f, 0.5f, 0f, 0, 0f) // Fist wave is for the shape of other waves.
-        sineWaveView.addWave(0.5f, 2f, 0.5f, resources.getColor(android.R.color.white), stroke)
-        sineWaveView.addWave(0.1f, 2f, 0.7f, resources.getColor(R.color.lightBlue), stroke)
-        sineWaveView.baseWaveAmplitudeScale = 3f
+        sineWaveView.addWave(0.5f, 6f, 1f, resources.getColor(R.color.lightBlue), stroke)
+//        sineWaveView.baseWaveAmplitudeScale = 0f
 
         return view
     }
@@ -115,6 +114,7 @@ class RecordingFragment : Fragment() {
         })
 
         recordingViewModel.duration.observe(viewLifecycleOwner, Observer { tvRecordDuration.text = it  })
+        recordingViewModel.amplitude.observe(viewLifecycleOwner, Observer { sineWaveView.baseWaveAmplitudeScale = it  })
 
         mainViewModel.hasAllPermissions.observe(viewLifecycleOwner, EventObserver{
             if(it){
@@ -189,6 +189,7 @@ class RecordingFragment : Fragment() {
                 }
                 tvRecordAction.setText(R.string.pause)
                 tvRecording.setText(R.string.recording)
+                sineWaveView.startAnimation()
             }
             Recorder.RecordingStatus.paused -> {
                 if (Build.VERSION.SDK_INT >= 21) {
@@ -198,6 +199,7 @@ class RecordingFragment : Fragment() {
                 }
                 tvRecordAction.setText(R.string.resume)
                 tvRecording.setText(R.string.paused)
+                sineWaveView.stopAnimation()
             }
             Recorder.RecordingStatus.ended -> {
                 if (Build.VERSION.SDK_INT >= 21) {
@@ -205,7 +207,6 @@ class RecordingFragment : Fragment() {
                 } else {
                     btnRecordAction.setImageDrawable(resources.getDrawable(R.drawable.bg_recording_action_record))
                 }
-                tvRecordAction.setText(R.string.pause)
                 setRecordedLayout()
             }
             else -> {}
@@ -219,7 +220,8 @@ class RecordingFragment : Fragment() {
 
         tvRecording.setText(R.string.start_recording)
 
-        sineWaveView.visibility = View.INVISIBLE
+        sineWaveView.visibility = View.VISIBLE
+        sineWaveView.baseWaveAmplitudeScale = 0f
         sineWaveView.stopAnimation()
 
         recordingViewModel.setLastRecordingControls()
@@ -246,12 +248,13 @@ class RecordingFragment : Fragment() {
         tvRecording.setText(R.string.recording_completed)
 
         sineWaveView.visibility = View.VISIBLE
+        sineWaveView.baseWaveAmplitudeScale = 0f
         sineWaveView.stopAnimation()
     }
 
     private fun setPlayingLayout(){
         sineWaveView.visibility = View.VISIBLE
-        sineWaveView.startAnimation()
+        sineWaveView.baseWaveAmplitudeScale = 0f
         tvRecording.setText(R.string.playing)
     }
 }

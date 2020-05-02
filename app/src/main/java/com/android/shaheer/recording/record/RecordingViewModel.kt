@@ -34,6 +34,10 @@ public class RecordingViewModel(val sessionManager: SessionManager)
     private val _duration = MutableLiveData<String>()
     public val duration: LiveData<String> = _duration
 
+
+    private val _amplitude = MutableLiveData<Float>()
+    public val amplitude: LiveData<Float> = _amplitude
+
     private val _showLastRecordingButton = MutableLiveData<Event<Boolean>>()
     public val showLastRecordingButton: LiveData<Event<Boolean>> = _showLastRecordingButton
 
@@ -150,8 +154,9 @@ public class RecordingViewModel(val sessionManager: SessionManager)
         }
     }
 
-    override fun onDurationChange(duration: String?) {
+    override fun onDurationChange(duration: String?, amp: Float) {
         _duration.value = duration
+        _amplitude.value = amp
     }
 }
 

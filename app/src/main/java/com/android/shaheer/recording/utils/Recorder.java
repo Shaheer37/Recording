@@ -8,6 +8,7 @@ import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 
 //code contributed by https://gist.github.com/chathudan/95d9acdd741b2a577483
 
@@ -35,8 +36,7 @@ public class Recorder {
 
     private FilesUtil filesUtil;
 
-    private int[] amplitudes = new int[100];
-    private int i = 0;
+    private static DecimalFormat df = new DecimalFormat("0.00");
 
     private Handler mHandler = new Handler();
     private Runnable mTickExecutor = new Runnable() {
@@ -144,21 +144,18 @@ public class Recorder {
         int seconds = (int) (mStartTime  / 1000) % 60;
         String duration = minutes+":"+(seconds < 10 ? "0"+seconds : seconds);
 //        Log.e(TAG, duration);
-        if (mRecorder != null) {
-            amplitudes[i] = mRecorder.getMaxAmplitude();
-//            Log.d("Voice Recorder","amplitude: "+(amplitudes[i] * 100 / 32767));
-            if (i >= amplitudes.length -1) {
-                i = 0;
-            } else {
-                ++i;
-            }
-        }
-        if(mTickListener != null){
-            mTickListener.onTick(duration);
+
+        if (mRecorder != null && mTickListener != null) {
+            float maxAmp = (float)mRecorder.getMaxAmplitude();
+            float maxAmpPercent = maxAmp/32767;
+            Log.d(TAG, "Max Amp: "+maxAmp);
+            Log.d(TAG, "Max Amp %: "+maxAmpPercent);
+
+            mTickListener.onTick(duration, maxAmpPercent);
         }
     }
 
     public interface RecorderTickListener{
-        void onTick(String duration);
+        void onTick(String duration, float amp);
     }
 }

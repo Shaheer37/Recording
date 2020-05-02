@@ -140,9 +140,9 @@ public class RecordingService extends Service implements Recorder.RecorderTickLi
     }
 
     @Override
-    public void onTick(String duration) {
+    public void onTick(String duration, float amp) {
         if(mRecordingInterface != null){
-            mRecordingInterface.onDurationChange(duration);
+            mRecordingInterface.onDurationChange(duration, amp);
         }
     }
 
@@ -273,6 +273,6 @@ public class RecordingService extends Service implements Recorder.RecorderTickLi
         void onRecordingResume();
         void onRecordingStop();
         void unbind();
-        void onDurationChange(String duration);
+        void onDurationChange(String duration, float amp);
     }
 }

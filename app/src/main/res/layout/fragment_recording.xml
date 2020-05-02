@@ -26,13 +26,12 @@
         app:layout_constraintGuide_percent="0.12" />
     <com.android.shaheer.recording.utils.DynamicSineWaveView
         android:id="@+id/view_sine_wave"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="@dimen/waves_view_size"
         app:layout_constraintTop_toBottomOf="@+id/guideline_top"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_gravity="center"
-        android:visibility="visible"/>
+        android:layout_gravity="center"/>
 
     <com.omega_r.libs.OmegaCenterIconButton
         android:id="@+id/btn_start_recording"

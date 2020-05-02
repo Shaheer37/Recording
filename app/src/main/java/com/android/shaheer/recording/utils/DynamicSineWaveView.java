@@ -134,6 +134,7 @@ public class DynamicSineWaveView extends View {
             paint.setAntiAlias(true);
             wavePaints.add(paint);
         }
+        tick();
 
         return wavePaints.size();
     }
