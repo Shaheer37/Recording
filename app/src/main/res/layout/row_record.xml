@@ -11,8 +11,10 @@
     app:cardElevation="2dp"
     >
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_record"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_row_record">
         <ImageButton
             android:id="@+id/btn_play_pause"
             android:layout_width="wrap_content"

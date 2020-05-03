@@ -1,6 +1,7 @@
 package com.android.shaheer.recording.editrecordings
 
 import android.content.res.Resources
+import android.graphics.drawable.TransitionDrawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -35,11 +37,12 @@ class RecordingListAdapter(
         holder.bindView()
     }
 
-    inner class ViewHolder(view: View): RecyclerView.ViewHolder(view){
+    inner class ViewHolder(private val view: View): RecyclerView.ViewHolder(view){
         @BindView(R.id.tv_recording_title) lateinit var tvRecordingTitle: TextView
         @BindView(R.id.tv_recording_duration) lateinit var tvRecordingDuration: TextView
-        @BindView(R.id.cv_record) lateinit var cvRecord: CardView
         @BindView(R.id.btn_play_pause) lateinit var btnPlayPause: ImageButton
+        @BindView(R.id.cv_record) lateinit var cvRecord: CardView
+        @BindView(R.id.cl_record) lateinit var clRecord: ConstraintLayout
 
         init { ButterKnife.bind(this, view) }
 
@@ -50,13 +53,14 @@ class RecordingListAdapter(
 
             if(item.isSelected){
                 cvRecord.cardElevation = cvRecord.resources.getDimensionPixelSize(R.dimen.record_cv_selected_elevation).toFloat()
+                clRecord.background = clRecord.resources.getDrawable(R.drawable.bg_row_record_selected, null)
             }else{
                 cvRecord.cardElevation = cvRecord.resources.getDimensionPixelSize(R.dimen.record_cv_elevation).toFloat()
+                clRecord.background = clRecord.resources.getDrawable(R.drawable.bg_row_record, null)
             }
 
             when(item.playingStatus){
                 Player.PlayingStatus.playing -> {
-                    Log.d(TAG,"Player.PlayingStatus.playing")
                     btnPlayPause.setImageDrawable(btnPlayPause.context.getDrawable(R.drawable.ic_pause_circle_green))
                 }
                 Player.PlayingStatus.paused -> {
