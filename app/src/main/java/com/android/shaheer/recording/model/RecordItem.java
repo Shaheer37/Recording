@@ -20,12 +20,6 @@ public class RecordItem {
         this.recordDuration = recordDuration;
     }
 
-    private Player.PlayingStatus playingStatus = Player.PlayingStatus.notPlaying;
-    public Player.PlayingStatus getPlayingStatus() { return playingStatus; }
-    public void setPlayingStatus(Player.PlayingStatus playingStatus) {
-        this.playingStatus = playingStatus;
-    }
-
     private boolean isSelected = false;
     public boolean isSelected() { return isSelected; }
     public void setSelected(boolean selected) { isSelected = selected; }
@@ -38,7 +32,6 @@ public class RecordItem {
 
     public RecordItem copy(){
         RecordItem record = new RecordItem(this.recordAddress, this.recordDuration);
-        record.playingStatus = this.playingStatus;
         record.isSelected = this.isSelected;
         return record;
     }

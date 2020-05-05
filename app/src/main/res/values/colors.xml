@@ -5,6 +5,8 @@
     <color name="bottomNavBarColor">#d9e2e9</color>
     <color name="playRecordingButton">#044e7d</color>
 
+    <color name="playerDialogButtonColor">#044e7d</color>
+
     <color name="recordItemStroke">#044e7d</color>
     <color name="recordItemBackground">#d9e2e9</color>
 

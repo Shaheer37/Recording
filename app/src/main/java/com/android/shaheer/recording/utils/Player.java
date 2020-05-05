@@ -2,12 +2,16 @@ package com.android.shaheer.recording.utils;
 
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Handler;
 
 import java.io.File;
 import java.io.IOException;
 
 public class Player {
     public static final String TAG = Player.class.getSimpleName();
+
+    private static final short DELAY_MILLI = 100;
+
     public enum PlayingStatus {
         notPlaying, playing, paused
     }
@@ -16,10 +20,22 @@ public class Player {
     public PlayingStatus getPlayingStatus() {return mPlayingStatus;}
 
     private MediaPlayer mMediaPlayer;
-    private onTrackCompletedListener mEventListener;
+    private PlayerEventListener mEventListener;
 
     private int trackPlayedLength = 0;
 
+    private Handler mHandler = new Handler();
+    private Runnable mTickExecutor = new Runnable() {
+        @Override
+        public void run() {
+            if(mPlayingStatus == PlayingStatus.playing && mMediaPlayer.isPlaying()){
+                double position = mMediaPlayer.getCurrentPosition();
+                double duration = mMediaPlayer.getDuration();
+                mEventListener.onDurationUpdate(position, duration);
+            }
+            mHandler.postDelayed(mTickExecutor,DELAY_MILLI);
+        }
+    };
 
     public boolean isPlaying(){
         return (mPlayingStatus == PlayingStatus.playing);
@@ -33,8 +49,8 @@ public class Player {
         return (mPlayingStatus == PlayingStatus.notPlaying);
     }
 
-    public Player(onTrackCompletedListener onTrackCompletedListener) {
-        mEventListener = onTrackCompletedListener;
+    public Player(PlayerEventListener playerEventListener) {
+        mEventListener = playerEventListener;
     }
 
     public boolean play(String track){
@@ -55,8 +71,7 @@ public class Player {
             mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer arg0) {
-                    mMediaPlayer.start();
-                    mPlayingStatus = PlayingStatus.playing;
+                    start();
                 }
             });
         }catch (IOException exception){
@@ -66,21 +81,27 @@ public class Player {
         return true;
     }
 
+    public void start(){
+        mMediaPlayer.start();
+        mPlayingStatus = PlayingStatus.playing;
+        mHandler.postDelayed(mTickExecutor, DELAY_MILLI);
+        if(mEventListener != null) mEventListener.onTrackStarted(mMediaPlayer.getDuration());
+    }
+
     public void pause(){
         if(mPlayingStatus == PlayingStatus.playing && mMediaPlayer.isPlaying()){
             mPlayingStatus = PlayingStatus.paused;
             mMediaPlayer.pause();
             trackPlayedLength = mMediaPlayer.getCurrentPosition();
+            mHandler.removeCallbacks(mTickExecutor);
         }
     }
 
     public void resume(){
         if(mPlayingStatus == PlayingStatus.paused && !mMediaPlayer.isPlaying()){
-            mPlayingStatus = PlayingStatus.playing;
             mMediaPlayer.seekTo(trackPlayedLength);
-            mMediaPlayer.start();
+            start();
         }
-
     }
 
     public void stop(){
@@ -94,10 +115,24 @@ public class Player {
                 e.printStackTrace();
             }
         }
+        mHandler.removeCallbacks(mTickExecutor);
+    }
+
+    public void seek(double position){
+        if(mMediaPlayer != null && mMediaPlayer.isPlaying()){
+            int seekPosition = (int)((position/100)*mMediaPlayer.getDuration());
+            mMediaPlayer.seekTo(seekPosition);
+        }
+        else if(mMediaPlayer!= null && isPaused()){
+            trackPlayedLength = (int)((position/100)*mMediaPlayer.getDuration());
+            resume();
+        }
     }
 
 
-    public interface onTrackCompletedListener {
+    public interface PlayerEventListener {
         void onTrackCompleted();
+        void onTrackStarted(long duration);
+        void onDurationUpdate(Double position, Double duration);
     }
 }

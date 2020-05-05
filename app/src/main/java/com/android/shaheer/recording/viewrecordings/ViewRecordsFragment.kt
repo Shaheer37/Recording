@@ -1,13 +1,10 @@
-package com.android.shaheer.recording.editrecordings
+package com.android.shaheer.recording.viewrecordings
 
 import android.content.Context
 import android.os.Bundle
-import android.text.Layout
 import android.view.*
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -16,6 +13,7 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.input.input
+import com.android.shaheer.recording.PlayerDialog
 
 import com.android.shaheer.recording.R
 import com.android.shaheer.recording.utils.EventObserver
@@ -38,6 +36,8 @@ class ViewRecordsFragment : Fragment(), RecordingListAdapter.ItemInteractionList
     private lateinit var materialDialog: MaterialDialog
 
     private val recordingAdapter = RecordingListAdapter(this)
+
+    private lateinit var playerDialog: PlayerDialog
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -75,6 +75,10 @@ class ViewRecordsFragment : Fragment(), RecordingListAdapter.ItemInteractionList
         viewModel.renameItem.observe(viewLifecycleOwner, EventObserver{onRenameClicked(it)})
 
         viewModel.showNameAlreadyExistsToast.observe(viewLifecycleOwner, EventObserver{context?.showToast(R.string.name_already_exists)})
+        viewModel.playRecord.observe(viewLifecycleOwner, EventObserver{
+            playerDialog = PlayerDialog(requireContext(), it.first, it.second)
+            playerDialog.show()
+        })
 
     }
 
@@ -88,7 +92,10 @@ class ViewRecordsFragment : Fragment(), RecordingListAdapter.ItemInteractionList
         if(::materialDialog.isInitialized && materialDialog.isShowing) {
             materialDialog.cancel()
         }
-        viewModel.stopPlayingItem()
+
+        if(::playerDialog.isInitialized && playerDialog.isShowing) {
+            playerDialog.dismiss()
+        }
     }
 
     private fun setupMenuActionButtons(){

@@ -51,4 +51,5 @@
     <string name="name_already_exists">A recording with same name already exists.</string>
 
     <string name="delete_contfirmation_msg">Are you sure?</string>
+    <string name="zero_time">00:00</string>
 </resources>

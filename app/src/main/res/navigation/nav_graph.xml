@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/viewRecordsFragment"
-        android:name="com.android.shaheer.recording.editrecordings.ViewRecordsFragment"
+        android:name="com.android.shaheer.recording.viewrecordings.ViewRecordsFragment"
         android:label="fragment_view_records"
         tools:layout="@layout/fragment_view_records" />
 </navigation>

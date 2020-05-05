@@ -11,7 +11,7 @@ import com.android.shaheer.recording.utils.Recorder
 import com.android.shaheer.recording.utils.SessionManager
 
 public class RecordingViewModel(val sessionManager: SessionManager)
-    : ViewModel(), RecordingService.RecordingInterface, Player.onTrackCompletedListener {
+    : ViewModel(), RecordingService.RecordingInterface, Player.PlayerEventListener {
     companion object {
         private const val TAG = "RecordingViewModel"
     }
@@ -133,6 +133,8 @@ public class RecordingViewModel(val sessionManager: SessionManager)
         setStateInitial()
     }
 
+    override fun onDurationUpdate(position: Double, duration: Double) {}
+
     override fun onRecordingPause() {
         _recordingState.value = Event(Recorder.RecordingStatus.paused)
     }
@@ -157,6 +159,10 @@ public class RecordingViewModel(val sessionManager: SessionManager)
     override fun onDurationChange(duration: String?, amp: Float) {
         _duration.value = duration
         _amplitude.value = amp
+    }
+
+    override fun onTrackStarted(duration: Long) {
+        TODO("Not yet implemented")
     }
 }
 

@@ -1,8 +1,5 @@
-package com.android.shaheer.recording.editrecordings
+package com.android.shaheer.recording.viewrecordings
 
-import android.content.res.Resources
-import android.graphics.drawable.TransitionDrawable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +14,6 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import com.android.shaheer.recording.R
 import com.android.shaheer.recording.model.RecordItem
-import com.android.shaheer.recording.utils.Player
 
 class RecordingListAdapter(
     private val itemInteractionListener: ItemInteractionListener
@@ -59,18 +55,6 @@ class RecordingListAdapter(
                 clRecord.background = clRecord.resources.getDrawable(R.drawable.bg_row_record, null)
             }
 
-            when(item.playingStatus){
-                Player.PlayingStatus.playing -> {
-                    btnPlayPause.setImageDrawable(btnPlayPause.context.getDrawable(R.drawable.ic_pause_circle_green))
-                }
-                Player.PlayingStatus.paused -> {
-                    btnPlayPause.setImageDrawable(btnPlayPause.context.getDrawable(R.drawable.ic_play_circle))
-                }
-                Player.PlayingStatus.notPlaying -> {
-                    btnPlayPause.setImageDrawable(btnPlayPause.context.getDrawable(R.drawable.ic_play_circle))
-                }
-            }
-
             cvRecord.setOnLongClickListener {
                 itemInteractionListener.onItemSelected(adapterPosition)
                 true
@@ -96,8 +80,6 @@ class ItemDiffCallback : DiffUtil.ItemCallback<RecordItem>() {
     }
 
     override fun areContentsTheSame(oldItem: RecordItem, newItem: RecordItem): Boolean {
-        return oldItem.playingStatus == newItem.playingStatus &&
-                oldItem.isSelected == newItem.isSelected &&
-                oldItem.playingStatus == newItem.playingStatus
+        return oldItem.isSelected == newItem.isSelected
     }
 }
