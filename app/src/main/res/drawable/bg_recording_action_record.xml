@@ -8,7 +8,7 @@
         </shape>
     </item>
     <item
-        android:drawable="@drawable/ic_fiber_manual_record"
+        android:drawable="@drawable/ic_record"
         android:gravity="center"
         android:left="15dp"
         android:right="15dp"
