@@ -3,7 +3,6 @@ package com.android.shaheer.recording.record
 
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -29,14 +28,13 @@ import com.omega_r.libs.OmegaCenterIconButton
 class RecordingFragment : Fragment() {
 
     enum class RecordingStatus {
-        initial, recording, playing
+        notRecording, recording
     }
 
     @BindView(R.id.view_sine_wave) lateinit var sineWaveView: DynamicSineWaveView
     @BindView(R.id.tv_status) lateinit var tvRecording: TextView
 
     @BindView(R.id.group_recording) lateinit var groupRecording: Group
-    @BindView(R.id.group_recorded) lateinit var groupRecorded: Group
 
     @BindView(R.id.btn_start_recording) lateinit  var btnStartRecording: OmegaCenterIconButton
     @BindView(R.id.btn_play_last_recording) lateinit var btnPlayLastRecording: OmegaCenterIconButton
@@ -45,9 +43,6 @@ class RecordingFragment : Fragment() {
     @BindView(R.id.btn_recording_action) lateinit var btnRecordAction: ImageButton
     @BindView(R.id.btn_recording_stop) lateinit var btnRecordStop: ImageButton
     @BindView(R.id.tv_recording_action) lateinit var tvRecordAction: TextView
-
-    @BindView(R.id.btn_play_recording) lateinit var btnPlayRecording: Button
-    @BindView(R.id.btn_new_recording) lateinit var btnNewRecording: Button
 
     @BindView(R.id.btn_audio_archive) lateinit var btnAudioArchive: Button
 
@@ -101,8 +96,7 @@ class RecordingFragment : Fragment() {
         recordingViewModel.state.observe(viewLifecycleOwner, Observer{
             when(it){
                 RecordingStatus.recording -> setRecordingLayout()
-                RecordingStatus.initial -> setInitialLayout()
-                RecordingStatus.playing -> setPlayingLayout()
+                RecordingStatus.notRecording -> setInitialLayout()
             }
         })
 
@@ -166,12 +160,6 @@ class RecordingFragment : Fragment() {
     @OnClick(R.id.btn_recording_stop)
     fun stopRecording() = recordingViewModel.stopRecording()
 
-    @OnClick(R.id.btn_play_recording)
-    fun playRecording() = recordingViewModel.playRecording()
-
-    @OnClick(R.id.btn_new_recording)
-    fun startNewRecording() = recordingViewModel.setStateInitial()
-
     @OnClick(R.id.btn_audio_archive)
     fun openAudioArchives() {
         mainViewModel.checkStoragePermission()
@@ -195,14 +183,13 @@ class RecordingFragment : Fragment() {
             }
             Recorder.RecordingStatus.ended -> {
                 btnRecordAction.setImageDrawable(context?.getDrawable(R.drawable.bg_recording_action_record))
-                setRecordedLayout()
+                recordingViewModel.setStateInitial()
             }
             else -> {}
         }
 
     private fun setInitialLayout() {
         groupRecording.visibility = View.INVISIBLE
-        groupRecorded.visibility = View.INVISIBLE
         btnStartRecording.visibility = View.VISIBLE
         btnAudioArchive.visibility = View.VISIBLE
 
@@ -217,7 +204,6 @@ class RecordingFragment : Fragment() {
 
     private fun setRecordingLayout(){
         btnStartRecording.visibility = View.INVISIBLE
-        groupRecorded.visibility = View.INVISIBLE
         btnAudioArchive.visibility = View.INVISIBLE
         groupRecording.visibility = View.VISIBLE
 
@@ -225,24 +211,5 @@ class RecordingFragment : Fragment() {
 
         sineWaveView.visibility = View.VISIBLE
         sineWaveView.startAnimation()
-    }
-
-    private fun setRecordedLayout(){
-        groupRecording.visibility = View.INVISIBLE
-        btnStartRecording.visibility = View.INVISIBLE
-        groupRecorded.visibility = View.VISIBLE
-        btnAudioArchive.visibility = View.INVISIBLE
-
-        tvRecording.setText(R.string.recording_completed)
-
-        sineWaveView.visibility = View.VISIBLE
-        sineWaveView.baseWaveAmplitudeScale = 0f
-        sineWaveView.stopAnimation()
-    }
-
-    private fun setPlayingLayout(){
-        sineWaveView.visibility = View.VISIBLE
-        sineWaveView.baseWaveAmplitudeScale = 0f
-        tvRecording.setText(R.string.playing)
     }
 }

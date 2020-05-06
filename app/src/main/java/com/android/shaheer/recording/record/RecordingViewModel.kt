@@ -5,13 +5,13 @@ import android.content.ServiceConnection
 import android.os.IBinder
 import android.util.Log
 import androidx.lifecycle.*
+import com.android.shaheer.recording.model.RecordItem
 import com.android.shaheer.recording.utils.Event
-import com.android.shaheer.recording.utils.Player
 import com.android.shaheer.recording.utils.Recorder
 import com.android.shaheer.recording.utils.SessionManager
 
 public class RecordingViewModel(val sessionManager: SessionManager)
-    : ViewModel(), RecordingService.RecordingInterface, Player.PlayerEventListener {
+    : ViewModel(), RecordingService.RecordingInterface {
     companion object {
         private const val TAG = "RecordingViewModel"
     }
@@ -34,17 +34,18 @@ public class RecordingViewModel(val sessionManager: SessionManager)
     private val _duration = MutableLiveData<String>()
     public val duration: LiveData<String> = _duration
 
-
     private val _amplitude = MutableLiveData<Float>()
     public val amplitude: LiveData<Float> = _amplitude
 
     private val _showLastRecordingButton = MutableLiveData<Event<Boolean>>()
     public val showLastRecordingButton: LiveData<Event<Boolean>> = _showLastRecordingButton
 
+    private var _playRecord = MutableLiveData<Event<Pair<Int, List<RecordItem>>>>()
+    val playRecord: LiveData<Event<Pair<Int, List<RecordItem>>>> = _playRecord
+
     private var serviceInterface: RecordingService.ServiceInterface? = null
 
     private var recordingFile: String? = null
-    private val player = Player(this)
 
     private var recordingServiceConnection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(componentName: ComponentName, iBinder: IBinder) {
@@ -60,7 +61,7 @@ public class RecordingViewModel(val sessionManager: SessionManager)
         override fun onServiceDisconnected(componentName: ComponentName) {
             Log.e(TAG, "onServiceDisconnected")
             if (RecordingService::class.java.name == componentName.className) {
-                _isServiceBound.value = Event(true)
+                _isServiceBound.value = Event(false)
                 serviceInterface?.setRecordingInterface(null)
                 serviceInterface = null
             }
@@ -69,17 +70,12 @@ public class RecordingViewModel(val sessionManager: SessionManager)
 
 
     fun setStateInitial(){
-        if(_state.value == RecordingFragment.RecordingStatus.playing) player.stop()
-        _state.value = RecordingFragment.RecordingStatus.initial
+        _state.value = RecordingFragment.RecordingStatus.notRecording
     }
     fun setStateRecording(){
-        if(_state.value == RecordingFragment.RecordingStatus.playing) player.stop()
         _state.value = RecordingFragment.RecordingStatus.recording
         _recordingState.value = Event(Recorder.RecordingStatus.recording)
         _showLastRecordingButton.value = Event(false)
-    }
-    fun setStatePlaying(){
-        _state.value = RecordingFragment.RecordingStatus.playing
     }
 
     fun bindService(){
@@ -104,23 +100,15 @@ public class RecordingViewModel(val sessionManager: SessionManager)
 
     fun stopRecording() { serviceInterface?.stopRecording()}
 
-    fun playRecording() {
-        when{
-            player.isPlaying -> player.pause()
-            player.isPaused -> player.resume()
-            else -> recordingFile?.let{recordingFile
-                if (player.play(it)) setStatePlaying()
-            }?: run{
-                sessionManager.lastRecording?.let {
-                    if (player.play(it)) setStatePlaying()
-                }
-            }
+    fun playRecording(){
+        sessionManager.lastRecording?.let {
+            Log.d(TAG, it)
         }
     }
 
     fun setLastRecordingControls() {
-        val state = _state.value?:RecordingFragment.RecordingStatus.initial
-        if(state == RecordingFragment.RecordingStatus.initial){
+        val state = _state.value?:RecordingFragment.RecordingStatus.notRecording
+        if(state == RecordingFragment.RecordingStatus.notRecording){
             sessionManager.lastRecording?.let {
                 _showLastRecordingButton.value = Event(true)
             }?: run {
@@ -128,12 +116,6 @@ public class RecordingViewModel(val sessionManager: SessionManager)
             }
         }
     }
-
-    override fun onTrackCompleted() {
-        setStateInitial()
-    }
-
-    override fun onDurationUpdate(position: Double, duration: Double) {}
 
     override fun onRecordingPause() {
         _recordingState.value = Event(Recorder.RecordingStatus.paused)
@@ -159,10 +141,6 @@ public class RecordingViewModel(val sessionManager: SessionManager)
     override fun onDurationChange(duration: String?, amp: Float) {
         _duration.value = duration
         _amplitude.value = amp
-    }
-
-    override fun onTrackStarted(duration: Long) {
-        TODO("Not yet implemented")
     }
 }
 

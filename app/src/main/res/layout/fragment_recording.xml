@@ -143,51 +143,6 @@
         android:text="@string/stop"
         />
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/group_recorded"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"
-        app:constraint_referenced_ids="btn_new_recording,btn_play_recording"/>
-
-
-    <com.omega_r.libs.OmegaCenterIconButton
-        android:id="@+id/btn_new_recording"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/view_sine_wave"
-        app:layout_constraintBottom_toTopOf="@+id/btn_play_recording"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_chainStyle="packed"
-        android:layout_gravity="center"
-        android:layout_marginLeft="@dimen/recording_btn_horizontal_margin"
-        android:layout_marginRight="@dimen/recording_btn_horizontal_margin"
-        android:layout_marginBottom="@dimen/recording_btn_vertical_margin"
-        android:background="@drawable/bg_recording_btn"
-        android:drawableStart="@drawable/ic_mic"
-        android:text="@string/create_new_records"
-        android:textSize="@dimen/recording_btn_text_size"
-        android:textColor="@android:color/white"
-        />
-    <com.omega_r.libs.OmegaCenterIconButton
-        android:id="@+id/btn_play_recording"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/btn_new_recording"
-        app:layout_constraintBottom_toTopOf="@+id/btn_audio_archive"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_gravity="center"
-        android:layout_marginLeft="@dimen/recording_btn_horizontal_margin"
-        android:layout_marginRight="@dimen/recording_btn_horizontal_margin"
-        android:background="@drawable/bg_play_recording"
-        android:drawableStart="@drawable/ic_play_circle_red"
-        android:text="@string/play_recording"
-        android:textSize="@dimen/recording_btn_text_size"
-        android:textColor="@color/red"
-        />
-
     <Button
         android:id="@+id/btn_audio_archive"
         android:layout_width="match_parent"
