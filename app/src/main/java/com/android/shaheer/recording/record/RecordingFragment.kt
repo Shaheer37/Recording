@@ -19,6 +19,7 @@ import butterknife.ButterKnife
 import butterknife.OnClick
 import com.android.shaheer.recording.MainViewModel
 import com.android.shaheer.recording.MainViewModelFactory
+import com.android.shaheer.recording.PlayerDialog
 
 import com.android.shaheer.recording.R
 import com.android.shaheer.recording.utils.*
@@ -48,6 +49,8 @@ class RecordingFragment : Fragment() {
 
     private lateinit var recordingViewModel: RecordingViewModel
     private lateinit var mainViewModel: MainViewModel
+
+    private lateinit var playerDialog: PlayerDialog
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -110,6 +113,13 @@ class RecordingFragment : Fragment() {
         recordingViewModel.duration.observe(viewLifecycleOwner, Observer { tvRecordDuration.text = it  })
         recordingViewModel.amplitude.observe(viewLifecycleOwner, Observer { sineWaveView.baseWaveAmplitudeScale = it  })
 
+        recordingViewModel.playRecord.observe(viewLifecycleOwner, EventObserver {
+            playerDialog = PlayerDialog(requireContext(), it.first, it.second)
+            playerDialog.show()
+        })
+
+        recordingViewModel.showErrorToast
+
         mainViewModel.hasAllPermissions.observe(viewLifecycleOwner, EventObserver{
             if(it){
                 val intent = Intent(context, RecordingService::class.java)
@@ -139,6 +149,10 @@ class RecordingFragment : Fragment() {
 
         if (CommonMethods.isServiceRunning(RecordingService::class.java, context)) {
             recordingViewModel.unbindService()
+        }
+
+        if(::playerDialog.isInitialized && playerDialog.isShowing) {
+            playerDialog.dismiss()
         }
     }
 

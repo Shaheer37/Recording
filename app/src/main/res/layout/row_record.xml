@@ -5,11 +5,12 @@
     android:id="@+id/cv_record"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="10dp"
-    android:layout_marginStart="10dp"
-    android:layout_marginEnd="10dp"
-    app:cardElevation="@dimen/record_cv_elevation"
-    >
+    android:layout_marginStart="@dimen/record_row_horizontal_spacing"
+    android:layout_marginEnd="@dimen/record_row_horizontal_spacing"
+    app:cardElevation="@dimen/record_cv_elevation">
+<!--    android:layout_marginTop="@dimen/record_row_vertical_spacing"-->
+<!--    android:layout_marginBottom="@dimen/record_row_vertical_spacing"-->
+<!--    >-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_record"
         android:layout_width="match_parent"

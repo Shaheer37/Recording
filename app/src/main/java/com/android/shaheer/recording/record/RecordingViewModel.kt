@@ -2,13 +2,17 @@ package com.android.shaheer.recording.record
 
 import android.content.ComponentName
 import android.content.ServiceConnection
+import android.media.MediaMetadataRetriever
 import android.os.IBinder
 import android.util.Log
 import androidx.lifecycle.*
 import com.android.shaheer.recording.model.RecordItem
 import com.android.shaheer.recording.utils.Event
+import com.android.shaheer.recording.utils.FilesUtil
 import com.android.shaheer.recording.utils.Recorder
 import com.android.shaheer.recording.utils.SessionManager
+import java.io.File
+import java.lang.Exception
 
 public class RecordingViewModel(val sessionManager: SessionManager)
     : ViewModel(), RecordingService.RecordingInterface {
@@ -36,6 +40,9 @@ public class RecordingViewModel(val sessionManager: SessionManager)
 
     private val _amplitude = MutableLiveData<Float>()
     public val amplitude: LiveData<Float> = _amplitude
+
+    private val _showErrorToast = MutableLiveData<Event<Int>>()
+    public val showErrorToast: LiveData<Event<Int>> = _showErrorToast
 
     private val _showLastRecordingButton = MutableLiveData<Event<Boolean>>()
     public val showLastRecordingButton: LiveData<Event<Boolean>> = _showLastRecordingButton
@@ -102,7 +109,18 @@ public class RecordingViewModel(val sessionManager: SessionManager)
 
     fun playRecording(){
         sessionManager.lastRecording?.let {
-            Log.d(TAG, it)
+            val metaRetriever = MediaMetadataRetriever()
+            try{
+                val recordItem = FilesUtil.createRecordItem(File(it), metaRetriever)
+                if(recordItem != null){
+                    _playRecord.value = Event(Pair(0, listOf(recordItem)))
+                }
+            }catch (e:Exception){
+                e.printStackTrace()
+            }finally {
+                metaRetriever.release()
+            }
+
         }
     }
 

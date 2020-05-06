@@ -16,10 +16,7 @@ import com.afollestad.materialdialogs.input.input
 import com.android.shaheer.recording.PlayerDialog
 
 import com.android.shaheer.recording.R
-import com.android.shaheer.recording.utils.EventObserver
-import com.android.shaheer.recording.utils.SessionManager
-import com.android.shaheer.recording.utils.makeSnackBar
-import com.android.shaheer.recording.utils.showToast
+import com.android.shaheer.recording.utils.*
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 
@@ -60,7 +57,14 @@ class ViewRecordsFragment : Fragment(), RecordingListAdapter.ItemInteractionList
 
         setupMenuActionButtons()
 
-        rvRecordings.adapter = recordingAdapter
+        rvRecordings.apply {
+            adapter = recordingAdapter
+            addItemDecoration(
+                    SpacingItemDecoration(
+                            resources.getDimension(R.dimen.record_row_vertical_spacing).toInt()
+                    )
+            )
+        }
 
         viewModel.getRecordings.observe(viewLifecycleOwner,
             EventObserver{ forced ->

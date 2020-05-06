@@ -1,10 +1,12 @@
 package com.android.shaheer.recording.utils;
 
 import android.content.Context;
+import android.media.MediaMetadataRetriever;
 import android.os.Environment;
 import android.util.Log;
 
 import com.android.shaheer.recording.R;
+import com.android.shaheer.recording.model.RecordItem;
 
 import org.mp4parser.Container;
 import org.mp4parser.muxer.Movie;
@@ -23,6 +25,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class FilesUtil {
     private static final String TAG = "FilesUtil";
@@ -101,5 +104,23 @@ public class FilesUtil {
             Log.e(TAG, "Error merging media files. exception: "+e.getMessage());
             return false;
         }
+    }
+
+    public static RecordItem createRecordItem(File recording, MediaMetadataRetriever metaRetriever){
+        String fileName = recording.getName();
+        if (fileName.contains("m4a")) {
+            String audioFilename = fileName.split("\\.")[0];
+            metaRetriever.setDataSource(recording.getAbsolutePath());
+
+            // convert duration to minute:seconds
+            String duration = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+            long dur = java.lang.Long.parseLong(duration);
+            String totalTime = String.format("%02d:%02d:%02d",
+                    TimeUnit.MILLISECONDS.toHours(dur),
+                    TimeUnit.MILLISECONDS.toMinutes(dur),
+                    TimeUnit.MILLISECONDS.toSeconds(dur) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(dur))
+            );
+            return new RecordItem(audioFilename, totalTime);
+        }else return null;
     }
 }

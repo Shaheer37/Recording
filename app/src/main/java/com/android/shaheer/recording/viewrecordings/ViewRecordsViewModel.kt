@@ -83,25 +83,16 @@ class ViewRecordsViewModel(private val sessionManager: SessionManager): ViewMode
         val recordingList = mutableListOf<RecordItem>()
         val directory = File(FilesUtil.getDir(context))
         val list = directory.listFiles()
-        for (i in list.indices) {
-            val name = list[i].getName()
-            if (name.contains("m4a")) {
-                val audioFilename = name.split(".m4a").first()
-                val metaRetriever = MediaMetadataRetriever()
-                metaRetriever.setDataSource(directory.absolutePath + "/" + name)
 
-                // convert duration to minute:seconds
-                val duration = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-                val dur = java.lang.Long.parseLong(duration)
-                val totalTime = String.format("%02d:%02d:%02d",
-                        TimeUnit.MILLISECONDS.toHours(dur),
-                        TimeUnit.MILLISECONDS.toMinutes(dur),
-                        TimeUnit.MILLISECONDS.toSeconds(dur) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(dur))
-                )
-                recordingList.add(RecordItem(audioFilename, totalTime))
-                metaRetriever.release()
+        val metaRetriever = MediaMetadataRetriever()
+        for (i in list.indices) {
+            val recordItem = FilesUtil.createRecordItem(list[i], metaRetriever)
+            if(recordItem != null){
+                recordingList.add(recordItem)
             }
         }
+        metaRetriever.release()
+
         recordingList.sortByDescending { it.recordAddress }
 
         if(forced) _recordings.value = recordingList
