@@ -58,7 +58,7 @@ public class Recorder {
         filesUtil = new FilesUtil();
 
         mContext = context;
-        mOutputFile = filesUtil.getFile(context, null, Constants.AudioFormat.FILE_EXT_M4A);
+        mOutputFile = filesUtil.getFile(context, null, Constants.Audio.FILE_EXT_M4A);
         mTickListener = tickListener;
     }
 
@@ -71,8 +71,8 @@ public class Recorder {
         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
         mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-        mRecorder.setAudioEncodingBitRate(64000);
-        mRecorder.setAudioSamplingRate(16000);
+        mRecorder.setAudioEncodingBitRate(Constants.Audio.BIT_RATE_96K);
+        mRecorder.setAudioSamplingRate(Constants.Audio.SAMPLE_RATE_441);
         outputFile.getParentFile().mkdirs();
         mRecorder.setOutputFile(outputFile.getAbsolutePath());
 
@@ -114,7 +114,7 @@ public class Recorder {
                 mHandler.postDelayed(mTickExecutor, DELAY_MILLI);
                 mRecorder.resume();
             } else {
-                File file = filesUtil.getFile(mContext, null,Constants.AudioFormat.FILE_EXT_M4A);
+                File file = filesUtil.getFile(mContext, null, Constants.Audio.FILE_EXT_M4A);
                 filesUtil.addRecordingPiece(file);
                 Log.e(TAG, "is Recording started: "+startRecording(file));
             }
@@ -127,7 +127,7 @@ public class Recorder {
             mRecorder.release();
             mRecorder = null;
             mHandler.removeCallbacks(mTickExecutor);
-            if (Build.VERSION.SDK_INT < 24) filesUtil.mergeFiles(mContext, mOutputFile, Constants.AudioFormat.FILE_EXT_M4A);
+            if (Build.VERSION.SDK_INT < 24) filesUtil.mergeFiles(mContext, mOutputFile, Constants.Audio.FILE_EXT_M4A);
         }
         else{
             Log.e(TAG, "recorder is null");
