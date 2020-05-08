@@ -8,16 +8,13 @@ public class RecordItem {
     public String getRecordAddress() {
         return recordAddress;
     }
-    public void setRecordAddress(String recordAddress) {
-        this.recordAddress = recordAddress;
-    }
+
+    private String recordExtension;
+    public String getRecordExtension() { return recordExtension; }
 
     private String recordDuration;
     public String getRecordDuration() {
         return recordDuration;
-    }
-    public void setRecordDuration(String recordDuration) {
-        this.recordDuration = recordDuration;
     }
 
     private boolean isSelected = false;
@@ -25,13 +22,14 @@ public class RecordItem {
     public void setSelected(boolean selected) { isSelected = selected; }
 
 
-    public RecordItem(String recordAddress, String recordDuration) {
+    public RecordItem(String recordAddress, String recordExtension, String recordDuration) {
         this.recordAddress = recordAddress;
+        this.recordExtension = recordExtension;
         this.recordDuration = recordDuration;
     }
 
     public RecordItem copy(){
-        RecordItem record = new RecordItem(this.recordAddress, this.recordDuration);
+        RecordItem record = new RecordItem(this.recordAddress, this.recordExtension, this.recordDuration);
         record.isSelected = this.isSelected;
         return record;
     }

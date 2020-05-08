@@ -86,7 +86,7 @@ class PlayerDialog(
 
     fun playTrackAtIndex(position: Int){
         tvTitle.text = tracks[position].recordAddress
-        player.play("${FilesUtil.getDir(context)}/${tracks[position].recordAddress}.m4a")
+        player.play("${FilesUtil.getDir(context)}/${tracks[position].recordAddress}.${tracks[position].recordExtension}")
     }
 
     override fun onTrackStarted(duration: Long) {

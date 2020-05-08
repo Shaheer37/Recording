@@ -16,6 +16,7 @@ import com.afollestad.materialdialogs.input.input
 import com.android.shaheer.recording.PlayerDialog
 
 import com.android.shaheer.recording.R
+import com.android.shaheer.recording.model.RecordItem
 import com.android.shaheer.recording.utils.*
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
@@ -159,13 +160,13 @@ class ViewRecordsFragment : Fragment(), RecordingListAdapter.ItemInteractionList
         }
     }
 
-    private fun onRenameClicked(recordItemName: String){
+    private fun onRenameClicked(recordItem: RecordItem){
 
         context?.let {
             materialDialog = MaterialDialog(it).show {
                 title(R.string.type_recording_name)
-                input(hint = recordItemName){ dialog, text ->
-                    viewModel.renameRecordingFile(context, text.toString(), recordItemName)
+                input(hint = recordItem.recordAddress){ dialog, text ->
+                    viewModel.renameRecordingFile(context, text.toString(), recordItem)
                 }
                 positiveButton(R.string.rename)
             }

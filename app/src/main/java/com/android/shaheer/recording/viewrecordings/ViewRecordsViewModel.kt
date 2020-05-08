@@ -22,8 +22,8 @@ class ViewRecordsViewModel(private val sessionManager: SessionManager): ViewMode
     private var _selectedRecordings = MutableLiveData(0)
     val selectedRecordings: LiveData<Int> = _selectedRecordings
 
-    private var _renameItem = MutableLiveData<Event<String>>()
-    val renameItem: LiveData<Event<String>> = _renameItem
+    private var _renameItem = MutableLiveData<Event<RecordItem>>()
+    val renameItem: LiveData<Event<RecordItem>> = _renameItem
 
     private var _getRecordings = MutableLiveData<Event<Boolean>>()
     val getRecordings: LiveData<Event<Boolean>> = _getRecordings
@@ -57,7 +57,7 @@ class ViewRecordsViewModel(private val sessionManager: SessionManager): ViewMode
 
     fun renameSelectedItem(){
         _recordings.value?.find { it.isSelected }?.let {
-            _renameItem.value = Event(it.recordAddress)
+            _renameItem.value = Event(it)
         }
     }
 
@@ -65,7 +65,7 @@ class ViewRecordsViewModel(private val sessionManager: SessionManager): ViewMode
         _recordings.value?.forEach {item ->
             if(item.isSelected){
                 val directory = File(FilesUtil.getDir(context))
-                val fileName = "${directory.absolutePath}/${item.recordAddress}.m4a"
+                val fileName = "${directory.absolutePath}/${item.recordAddress}.${item.recordExtension}"
 
                 if (sessionManager.lastRecording != null
                         && fileName.equals(sessionManager.getLastRecording(), ignoreCase = true)
@@ -117,13 +117,13 @@ class ViewRecordsViewModel(private val sessionManager: SessionManager): ViewMode
         }
     }
 
-    fun renameRecordingFile(context: Context?, newName: String, lastName: String){
-        if(newName.compareTo(lastName, ignoreCase = true) != 0){
+    fun renameRecordingFile(context: Context?, newName: String, recordItem: RecordItem){
+        if(newName.compareTo(recordItem.recordAddress, ignoreCase = true) != 0){
             val itemWithSameName = _recordings.value?.find { it.recordAddress.compareTo(newName, ignoreCase = true) == 0}
             if(itemWithSameName == null){
                 val directory = File(FilesUtil.getDir(context))
-                val audioFile = File("${directory.absolutePath}/${lastName}.m4a")
-                audioFile.renameTo(File("${directory.absolutePath}/$newName.m4a"))
+                val audioFile = File("${directory.absolutePath}/${recordItem.recordAddress}.${recordItem.recordExtension}")
+                audioFile.renameTo(File("${directory.absolutePath}/$newName.${recordItem.recordExtension}"))
                 _selectedRecordings.value?.let { count-> _selectedRecordings.value = count - 1}
                 _getRecordings.value = Event(true)
             }else{

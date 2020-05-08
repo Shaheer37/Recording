@@ -132,8 +132,6 @@ class RecordingFragment : Fragment() {
 
         mainViewModel.hasStoragePermission.observe(viewLifecycleOwner, EventObserver{
             if(it){
-//                val listFiles = Intent(context, ListFilesActivity::class.java)
-//                startActivity(listFiles)
                 findNavController().navigate(
                         RecordingFragmentDirections.actionRecordingToViewRecords()
                 )

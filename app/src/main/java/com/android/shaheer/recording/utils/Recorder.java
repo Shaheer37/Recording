@@ -10,11 +10,14 @@ import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 
-//code contributed by https://gist.github.com/chathudan/95d9acdd741b2a577483
-
 public class Recorder {
     private static final String TAG = Recorder.class.getSimpleName();
 
+    private static final int HOUR_IN_MILLISECONDS = 60000;
+    private static final int SECOND_IN_MILLISECONDS = 1000;
+    private static final int HOUR_IN_MINUTES = 60;
+
+    private static final int MAX_SUPPORTED_AMPLITUDE = 32767;
 
     private static final short DELAY_MILLI = 100;
 
@@ -55,7 +58,7 @@ public class Recorder {
         filesUtil = new FilesUtil();
 
         mContext = context;
-        mOutputFile = filesUtil.getFile(context, null);
+        mOutputFile = filesUtil.getFile(context, null, Constants.AudioFormat.FILE_EXT_M4A);
         mTickListener = tickListener;
     }
 
@@ -67,13 +70,8 @@ public class Recorder {
         mRecorder = new MediaRecorder();
         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.HE_AAC);
-            mRecorder.setAudioEncodingBitRate(48000);
-        } else {*/
-            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-            mRecorder.setAudioEncodingBitRate(64000);
-        //}
+        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+        mRecorder.setAudioEncodingBitRate(64000);
         mRecorder.setAudioSamplingRate(16000);
         outputFile.getParentFile().mkdirs();
         mRecorder.setOutputFile(outputFile.getAbsolutePath());
@@ -92,7 +90,6 @@ public class Recorder {
             Log.e(TAG, "prepare() failed "+e.getMessage());
             return false;
         }
-
         return true;
     }
 
@@ -117,7 +114,7 @@ public class Recorder {
                 mHandler.postDelayed(mTickExecutor, DELAY_MILLI);
                 mRecorder.resume();
             } else {
-                File file = filesUtil.getFile(mContext, null);
+                File file = filesUtil.getFile(mContext, null,Constants.AudioFormat.FILE_EXT_M4A);
                 filesUtil.addRecordingPiece(file);
                 Log.e(TAG, "is Recording started: "+startRecording(file));
             }
@@ -130,7 +127,7 @@ public class Recorder {
             mRecorder.release();
             mRecorder = null;
             mHandler.removeCallbacks(mTickExecutor);
-            if (Build.VERSION.SDK_INT < 24) filesUtil.mergeFiles(mContext, mOutputFile);
+            if (Build.VERSION.SDK_INT < 24) filesUtil.mergeFiles(mContext, mOutputFile, Constants.AudioFormat.FILE_EXT_M4A);
         }
         else{
             Log.e(TAG, "recorder is null");
@@ -140,14 +137,14 @@ public class Recorder {
     private void tick() {
         mStartTime = mStartTime + 100;
 //        Log.e(TAG, "StartTime: "+mStartTime+" | "+"minutes: "+((mStartTime  / 60000))+ " | Seconds: "+((mStartTime  / 1000) % 60));
-        int minutes = (int) (mStartTime  / 60000);
-        int seconds = (int) (mStartTime  / 1000) % 60;
+        int minutes = (int) (mStartTime  / HOUR_IN_MILLISECONDS);
+        int seconds = (int) (mStartTime  / SECOND_IN_MILLISECONDS) % HOUR_IN_MINUTES;
         String duration = minutes+":"+(seconds < 10 ? "0"+seconds : seconds);
 //        Log.e(TAG, duration);
 
         if (mRecorder != null && mTickListener != null) {
             float maxAmp = (float)mRecorder.getMaxAmplitude();
-            float maxAmpPercent = maxAmp/32767;
+            float maxAmpPercent = maxAmp/MAX_SUPPORTED_AMPLITUDE;
             Log.d(TAG, "Max Amp: "+maxAmp);
             Log.d(TAG, "Max Amp %: "+maxAmpPercent);
 

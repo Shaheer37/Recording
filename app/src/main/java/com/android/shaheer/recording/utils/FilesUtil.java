@@ -30,8 +30,10 @@ import java.util.concurrent.TimeUnit;
 public class FilesUtil {
     private static final String TAG = "FilesUtil";
 
+    public static final String RECORDING_FILE_REGEX = "^[\\w,:-]+\\.(m4a|wav)$";
+
     public static final String DATE_FORMAT = "dd-MM-yyyy,HH:mm:ss";
-    private static final String MERGED_FILE = "merged.m4a";
+    private static final String MERGED_FILE = "merged";
 
     public static String getDir(Context context){
         return Environment.getExternalStorageDirectory().getAbsolutePath()
@@ -45,22 +47,22 @@ public class FilesUtil {
         recordPieces = new ArrayList<>();
     }
 
-    private String getRecordName(){
+    private String getRecordName(String fileExtension){
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.getDefault());
-        return "RECORDING_"+ dateFormat.format(new Date()) + ".m4a";
+        return "RECORDING_"+ dateFormat.format(new Date()) + "." + fileExtension;
     }
 
-    public File getFile(Context context, String fileName) {
-        if(fileName == null) fileName = getRecordName();
+    public File getFile(Context context, String fileName, String fileExtension) {
+        if(fileName == null) fileName = getRecordName(fileExtension);
         File file = new File(getDir(context)+"/"+fileName);
         Log.e(TAG, file.getAbsolutePath());
         return file;
     }
 
-    public boolean mergeFiles(Context context, File destination){
+    public boolean mergeFiles(Context context, File destination, String fileExtension){
         if(recordPieces.size()>1){
             Log.e(TAG, "more files");
-            File mergedFile = getFile(context, MERGED_FILE);
+            File mergedFile = getFile(context, MERGED_FILE, fileExtension);
             if(mergeMediaFiles(recordPieces.toArray(new File[recordPieces.size()]), mergedFile.getAbsolutePath())){
                 for(File record: recordPieces){
                     record.delete();
@@ -108,8 +110,10 @@ public class FilesUtil {
 
     public static RecordItem createRecordItem(File recording, MediaMetadataRetriever metaRetriever){
         String fileName = recording.getName();
-        if (fileName.contains("m4a")) {
-            String audioFilename = fileName.split("\\.")[0];
+        if (fileName.matches(RECORDING_FILE_REGEX)) {
+            String[] split = fileName.split("\\.");
+            String audioFileName = split[0];
+            String audioFileExt = split[1];
             metaRetriever.setDataSource(recording.getAbsolutePath());
 
             // convert duration to minute:seconds
@@ -120,7 +124,7 @@ public class FilesUtil {
                     TimeUnit.MILLISECONDS.toMinutes(dur),
                     TimeUnit.MILLISECONDS.toSeconds(dur) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(dur))
             );
-            return new RecordItem(audioFilename, totalTime);
+            return new RecordItem(audioFileName, audioFileExt, totalTime);
         }else return null;
     }
 }
