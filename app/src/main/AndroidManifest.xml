@@ -17,18 +17,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <service
-            android:name=".record.RecordingService"
+            android:name=".services.PlayerService"
+            android:enabled="true"
+            android:exported="true"/>
+        <service
+            android:name=".services.RecordingService"
             android:enabled="true"
             android:exported="false" />
     </application>

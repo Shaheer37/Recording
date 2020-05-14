@@ -1,11 +1,15 @@
 package com.android.shaheer.recording
 
 import android.Manifest
+import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.android.shaheer.recording.services.PlayerService
 import com.android.shaheer.recording.utils.Constants
 import com.android.shaheer.recording.utils.EventObserver
 import pub.devrel.easypermissions.AfterPermissionGranted
@@ -24,6 +28,8 @@ class MainActivity :
 
     private lateinit var viewModel: MainViewModel
 
+    private var playerDialog: PlayerDialog? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -39,7 +45,70 @@ class MainActivity :
         viewModel.checkStoragePermission.observe(this, EventObserver{
             checkStoragePermission()
         })
+
+        viewModel.playRecord.observe(this, EventObserver{
+
+            val intent = Intent(this, PlayerService::class.java)
+            intent.action = PlayerService.ACTION_START
+            intent.putExtra(PlayerService.POSITION, it.first)
+            intent.putParcelableArrayListExtra(PlayerService.TRACKS, it.second)
+            startService(intent)
+
+            viewModel.bindService()
+        })
+
+        viewModel.isPlayingServiceBound.observe(this, EventObserver{
+            Log.d(TAG, "service bound: $it")
+            if(it){
+                playerDialog = PlayerDialog(this)
+                playerDialog?.show()
+
+                viewModel.getPlayerstatus()
+            }else{
+                if(playerDialog?.isShowing == true) playerDialog?.dismiss()
+                unbindService(viewModel.playerServiceConnection)
+            }
+        })
+
+        viewModel.bindService.observe(this, EventObserver{
+            val intent = Intent(this, PlayerService::class.java)
+            bindService(intent, it, Context.BIND_AUTO_CREATE)
+        })
+
+        viewModel.playerDurationUpdate.observe(this, Observer{
+            if(playerDialog?.isShowing == true) playerDialog?.durationUpdate(it.first,it.second)
+        })
+
+        viewModel.playerState.observe(this, EventObserver{
+            if(playerDialog?.isShowing == true){
+                when(it){
+                    PlayerDialog.PlayerState.Paused -> playerDialog?.pause()
+                    PlayerDialog.PlayerState.Playing -> playerDialog?.play()
+                }
+            }
+        })
+
+        viewModel.currentPlayingTrack.observe(this, EventObserver {
+            if(playerDialog?.isShowing == true){
+                playerDialog?.setCurrentPlayingTrack(it)
+            }
+        })
+
+        viewModel.currentPlayingTrackPosition.observe(this, EventObserver {
+            if(playerDialog?.isShowing == true){
+                playerDialog?.setCurrentPlayingTrackPosition(it)
+            }
+        })
     }
+
+    override fun onPause() {
+        super.onPause()
+        if(playerDialog?.isShowing == true) {
+            playerDialog?.dismiss()
+            playerDialog = null
+        }
+    }
+
 
     @AfterPermissionGranted(PERMISSION_INT)
     fun checkPermissions(){
@@ -77,4 +146,6 @@ class MainActivity :
     override fun onRationaleAccepted(requestCode: Int) {}
 
     override fun onRationaleDenied(requestCode: Int) {}
+
+
 }

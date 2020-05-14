@@ -1,20 +1,27 @@
 package com.android.shaheer.recording.viewrecordings
 
+import android.content.ComponentName
 import android.content.Context
+import android.content.ServiceConnection
 import android.media.MediaMetadataRetriever
+import android.os.IBinder
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.android.shaheer.recording.model.RecordItem
+import com.android.shaheer.recording.services.PlayerService
 import com.android.shaheer.recording.utils.Event
 import com.android.shaheer.recording.utils.FilesUtil
-import com.android.shaheer.recording.utils.Player
 import com.android.shaheer.recording.utils.SessionManager
 import java.io.File
-import java.util.concurrent.TimeUnit
 
 class ViewRecordsViewModel(private val sessionManager: SessionManager): ViewModel(){
+
+    companion object{
+        private const val TAG = "ViewRecordsViewModel"
+    }
 
     private var _recordings = MutableLiveData<List<RecordItem>>()
     val recordings: LiveData<List<RecordItem>> = _recordings
@@ -31,11 +38,11 @@ class ViewRecordsViewModel(private val sessionManager: SessionManager): ViewMode
     private var _showNameAlreadyExistsToast = MutableLiveData<Event<Boolean>>()
     val showNameAlreadyExistsToast: LiveData<Event<Boolean>> = _showNameAlreadyExistsToast
 
-    private var _playRecord = MutableLiveData<Event<Pair<Int, List<RecordItem>>>>()
-    val playRecord: LiveData<Event<Pair<Int, List<RecordItem>>>> = _playRecord
+    private var _playRecord = MutableLiveData<Event<Pair<Int, ArrayList<RecordItem>>>>()
+    val playRecord: LiveData<Event<Pair<Int, ArrayList<RecordItem>>>> = _playRecord
 
     fun onItemPlayClicked(context:Context, position: Int) = _recordings.value?.let { recordingList->
-        _playRecord.value = Event(Pair(position, recordingList))
+        _playRecord.value = Event(Pair(position, recordingList.toCollection(ArrayList())))
     }
 
     fun onRecordItemSelected(position: Int) = _recordings.value?.toMutableList()?.let { recordingList->

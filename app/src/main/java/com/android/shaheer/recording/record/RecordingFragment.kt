@@ -22,6 +22,7 @@ import com.android.shaheer.recording.MainViewModelFactory
 import com.android.shaheer.recording.PlayerDialog
 
 import com.android.shaheer.recording.R
+import com.android.shaheer.recording.services.RecordingService
 import com.android.shaheer.recording.utils.*
 import com.omega_r.libs.OmegaCenterIconButton
 
@@ -114,11 +115,13 @@ class RecordingFragment : Fragment() {
         recordingViewModel.amplitude.observe(viewLifecycleOwner, Observer { sineWaveView.baseWaveAmplitudeScale = it  })
 
         recordingViewModel.playRecord.observe(viewLifecycleOwner, EventObserver {
-            playerDialog = PlayerDialog(requireContext(), it.first, it.second)
-            playerDialog.show()
+//            playerDialog = PlayerDialog(requireContext(), it.first, it.second)
+//            playerDialog.show()
         })
 
-        recordingViewModel.showErrorToast
+        recordingViewModel.showErrorToast.observe(viewLifecycleOwner, EventObserver{
+            context?.showToast(it, Toast.LENGTH_SHORT)
+        })
 
         mainViewModel.hasAllPermissions.observe(viewLifecycleOwner, EventObserver{
             if(it){

@@ -117,14 +117,18 @@ public class FilesUtil {
             metaRetriever.setDataSource(recording.getAbsolutePath());
 
             // convert duration to minute:seconds
-            String duration = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-            long dur = java.lang.Long.parseLong(duration);
-            String totalTime = String.format("%02d:%02d:%02d",
-                    TimeUnit.MILLISECONDS.toHours(dur),
-                    TimeUnit.MILLISECONDS.toMinutes(dur),
-                    TimeUnit.MILLISECONDS.toSeconds(dur) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(dur))
-            );
-            return new RecordItem(audioFileName, audioFileExt, totalTime);
+            String durationString = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+            long duration = Long.parseLong(durationString);
+            String totalTime = formatDuration(duration);
+            return new RecordItem(audioFileName, audioFileExt, totalTime, false);
         }else return null;
+    }
+
+    public static String formatDuration(Long duration){
+        long hours = TimeUnit.MILLISECONDS.toHours(duration);
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(duration);
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(duration);
+        if(hours>0) return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+        else return String.format("%02d:%02d", minutes, seconds);
     }
 }

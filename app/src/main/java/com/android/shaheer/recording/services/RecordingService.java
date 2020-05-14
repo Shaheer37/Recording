@@ -1,4 +1,4 @@
-package com.android.shaheer.recording.record;
+package com.android.shaheer.recording.services;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -196,13 +196,14 @@ public class RecordingService extends Service implements Recorder.RecorderTickLi
 
         NotificationCompat.Builder notificationBuilder;
         if (Build.VERSION.SDK_INT >= 26) {
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
-                    CHANNEL_DESCRIPTION,
+            String channelId = getString(R.string.channel_id);
+            NotificationChannel channel = new NotificationChannel(channelId,
+                    getString(R.string.channel_description),
                     NotificationManager.IMPORTANCE_LOW);
 
             ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(channel);
 
-            notificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID);
+            notificationBuilder = new NotificationCompat.Builder(this, channelId);
         } else {
             notificationBuilder = new NotificationCompat.Builder(this);
         }

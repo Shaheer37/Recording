@@ -7,6 +7,7 @@ import android.os.IBinder
 import android.util.Log
 import androidx.lifecycle.*
 import com.android.shaheer.recording.model.RecordItem
+import com.android.shaheer.recording.services.RecordingService
 import com.android.shaheer.recording.utils.Event
 import com.android.shaheer.recording.utils.FilesUtil
 import com.android.shaheer.recording.utils.Recorder
@@ -149,8 +150,7 @@ public class RecordingViewModel(val sessionManager: SessionManager)
 
     override fun unbind() {
         _isServiceBound.value?.let {
-            if(it.peekContent())
-            _isServiceBound.value = Event(false)
+            if(it.peekContent()) _isServiceBound.value = Event(false)
             serviceInterface = null
             _unbindService.value = Event(recordingServiceConnection)
         }

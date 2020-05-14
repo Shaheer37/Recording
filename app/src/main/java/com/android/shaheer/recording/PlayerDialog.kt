@@ -17,12 +17,12 @@ import com.android.shaheer.recording.utils.Player
 import java.util.concurrent.TimeUnit
 
 class PlayerDialog(
-        context: Context,
-        var position: Int,
-        val tracks: List<RecordItem>
-): Dialog(context), Player.PlayerEventListener {
+        context: Context
+): Dialog(context) {
 
-    val player = Player(this)
+    public enum class PlayerState{
+        Playing, Paused
+    }
 
     @BindView(R.id.tv_title) lateinit var tvTitle: TextView
 
@@ -47,36 +47,22 @@ class PlayerDialog(
         setCanceledOnTouchOutside(false)
         window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
         window?.decorView?.background?.alpha = 0
-        playTrackAtIndex(position)
     }
 
     override fun dismiss() {
-        player.stop()
         super.dismiss()
     }
 
     fun setBtnEvents(){
         btnStop.setOnClickListener { dismiss() }
         btnPlay.setOnClickListener {
-            when(player.playingStatus){
-                Player.PlayingStatus.notPlaying -> playTrackAtIndex(position)
-                Player.PlayingStatus.paused -> {
-                    player.resume()
-                    btnPlay.setImageDrawable(context.getDrawable(R.drawable.ic_pause_24dp))
-                }
-                Player.PlayingStatus.playing ->{
-                    player.pause()
-                    btnPlay.setImageDrawable(context.getDrawable(R.drawable.ic_play_24dp))
-                }
-                else -> {playTrackAtIndex(position)}
-            }
+
         }
 
         sbProgress.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener{
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if(fromUser){
                     Log.d("PlayerDialog", progress.toString())
-                    player.seek(progress.toDouble())
                 }
             }
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
@@ -84,29 +70,24 @@ class PlayerDialog(
         })
     }
 
-    fun playTrackAtIndex(position: Int){
-        tvTitle.text = tracks[position].recordAddress
-        player.play("${FilesUtil.getDir(context)}/${tracks[position].recordAddress}.${tracks[position].recordExtension}")
+    fun setCurrentPlayingTrack(recordItem: RecordItem){
+        tvTitle.text = recordItem.recordAddress
+        tvDuration.text = recordItem.recordDuration
     }
 
-    override fun onTrackStarted(duration: Long) {
+    fun setCurrentPlayingTrackPosition(position: Int){
+        sbProgress.progress = position
+    }
+
+    fun pause(){
+        btnPlay.setImageDrawable(context.getDrawable(R.drawable.ic_play_24dp))
+    }
+
+    fun play(){
         btnPlay.setImageDrawable(context.getDrawable(R.drawable.ic_pause_24dp))
-        tvDuration.text = formatDuration(duration)
     }
 
-    override fun onTrackCompleted() {
-        dismiss()
-    }
-
-    override fun onDurationUpdate(position: Double, duration: Double) {
+    fun durationUpdate(position: Double, duration: Double) {
         sbProgress.progress = ((position/duration)*100).toInt()
-    }
-
-    fun formatDuration(duration: Long): String{
-        val hours = TimeUnit.MILLISECONDS.toHours(duration)
-        val minutes = TimeUnit.MILLISECONDS.toMinutes(duration)
-        val seconds = TimeUnit.MILLISECONDS.toSeconds(duration)
-        return if(hours>0) String.format("%02d:%02d:%02d", hours, minutes, seconds)
-            else String.format("%02d:%02d", minutes, seconds)
     }
 }

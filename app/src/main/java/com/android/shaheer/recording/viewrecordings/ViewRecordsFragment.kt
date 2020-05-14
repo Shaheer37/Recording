@@ -1,7 +1,9 @@
 package com.android.shaheer.recording.viewrecordings
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.appcompat.widget.Toolbar
@@ -13,15 +15,24 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.input.input
+import com.android.shaheer.recording.MainViewModel
+import com.android.shaheer.recording.MainViewModelFactory
 import com.android.shaheer.recording.PlayerDialog
 
 import com.android.shaheer.recording.R
 import com.android.shaheer.recording.model.RecordItem
+import com.android.shaheer.recording.services.PlayerService
 import com.android.shaheer.recording.utils.*
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 
-class ViewRecordsFragment : Fragment(), RecordingListAdapter.ItemInteractionListener {
+class ViewRecordsFragment : Fragment(),
+        RecordingListAdapter.ItemInteractionListener
+{
+
+    companion object{
+        private const val TAG = "ViewRecordsFragment"
+    }
 
     @BindView(R.id.rv_recordings) lateinit var rvRecordings: RecyclerView
     @BindView(R.id.toolbar) lateinit var toolbar: Toolbar
@@ -30,15 +41,19 @@ class ViewRecordsFragment : Fragment(), RecordingListAdapter.ItemInteractionList
     lateinit var deleteMenuAction: MenuItem
 
     private lateinit var viewModel: ViewRecordsViewModel
+    private lateinit var mainViewModel: MainViewModel
 
     private lateinit var materialDialog: MaterialDialog
 
     private val recordingAdapter = RecordingListAdapter(this)
 
-    private lateinit var playerDialog: PlayerDialog
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
+
+        mainViewModel = ViewModelProvider(
+                requireActivity().viewModelStore,
+                MainViewModelFactory()
+        ).get(MainViewModel::class.java)
 
         viewModel = ViewModelProvider(
                 viewModelStore,
@@ -81,8 +96,7 @@ class ViewRecordsFragment : Fragment(), RecordingListAdapter.ItemInteractionList
 
         viewModel.showNameAlreadyExistsToast.observe(viewLifecycleOwner, EventObserver{context?.showToast(R.string.name_already_exists)})
         viewModel.playRecord.observe(viewLifecycleOwner, EventObserver{
-            playerDialog = PlayerDialog(requireContext(), it.first, it.second)
-            playerDialog.show()
+            mainViewModel.playRecord(it)
         })
 
     }
@@ -96,10 +110,6 @@ class ViewRecordsFragment : Fragment(), RecordingListAdapter.ItemInteractionList
         super.onPause()
         if(::materialDialog.isInitialized && materialDialog.isShowing) {
             materialDialog.cancel()
-        }
-
-        if(::playerDialog.isInitialized && playerDialog.isShowing) {
-            playerDialog.dismiss()
         }
     }
 
