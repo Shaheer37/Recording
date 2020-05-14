@@ -17,7 +17,8 @@ import com.android.shaheer.recording.utils.Player
 import java.util.concurrent.TimeUnit
 
 class PlayerDialog(
-        context: Context
+        context: Context,
+        private val playerDialogListener: PlayerDialogListener
 ): Dialog(context) {
 
     public enum class PlayerState{
@@ -49,20 +50,24 @@ class PlayerDialog(
         window?.decorView?.background?.alpha = 0
     }
 
+    override fun onBackPressed() {
+        playerDialogListener.stopPlayer()
+        super.onBackPressed()
+    }
+
     override fun dismiss() {
         super.dismiss()
     }
 
     fun setBtnEvents(){
-        btnStop.setOnClickListener { dismiss() }
-        btnPlay.setOnClickListener {
-
-        }
+        btnStop.setOnClickListener { playerDialogListener.stopPlayer() }
+        btnPlay.setOnClickListener { playerDialogListener.onPlayToggle() }
 
         sbProgress.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener{
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if(fromUser){
                     Log.d("PlayerDialog", progress.toString())
+                    playerDialogListener.seekPlayer(progress)
                 }
             }
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
@@ -89,5 +94,11 @@ class PlayerDialog(
 
     fun durationUpdate(position: Double, duration: Double) {
         sbProgress.progress = ((position/duration)*100).toInt()
+    }
+
+    interface PlayerDialogListener{
+        fun onPlayToggle()
+        fun seekPlayer(position: Int)
+        fun stopPlayer()
     }
 }

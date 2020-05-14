@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.android.shaheer.recording.services.PlayerService
+import com.android.shaheer.recording.utils.CommonMethods
 import com.android.shaheer.recording.utils.Constants
 import com.android.shaheer.recording.utils.EventObserver
 import pub.devrel.easypermissions.AfterPermissionGranted
@@ -18,7 +19,8 @@ import pub.devrel.easypermissions.EasyPermissions
 class MainActivity :
     AppCompatActivity(),
     EasyPermissions.PermissionCallbacks,
-    EasyPermissions.RationaleCallbacks
+    EasyPermissions.RationaleCallbacks,
+    PlayerDialog.PlayerDialogListener
 {
     companion object{
         private const val TAG = "MainActivity"
@@ -60,12 +62,15 @@ class MainActivity :
         viewModel.isPlayingServiceBound.observe(this, EventObserver{
             Log.d(TAG, "service bound: $it")
             if(it){
-                playerDialog = PlayerDialog(this)
+                playerDialog = PlayerDialog(this, this)
                 playerDialog?.show()
 
                 viewModel.getPlayerstatus()
             }else{
-                if(playerDialog?.isShowing == true) playerDialog?.dismiss()
+                if(playerDialog?.isShowing == true){
+                    playerDialog?.dismiss()
+                    playerDialog = null
+                }
                 unbindService(viewModel.playerServiceConnection)
             }
         })
@@ -103,12 +108,24 @@ class MainActivity :
 
     override fun onPause() {
         super.onPause()
-        if(playerDialog?.isShowing == true) {
-            playerDialog?.dismiss()
-            playerDialog = null
+
+        if (CommonMethods.isServiceRunning(PlayerService::class.java, this)) {
+            viewModel.unbind()
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (CommonMethods.isServiceRunning(PlayerService::class.java, this)) {
+            viewModel.bindService()
+        }
+    }
+
+    override fun onPlayToggle() = viewModel.onPlayToggle()
+
+    override fun seekPlayer(position: Int) = viewModel.seekPlayer(position)
+
+    override fun stopPlayer() = viewModel.stopPlayer()
 
     @AfterPermissionGranted(PERMISSION_INT)
     fun checkPermissions(){

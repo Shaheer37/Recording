@@ -58,6 +58,12 @@ class PlayerService : Service(), Player.PlayerEventListener {
         fun getPlayerPosition() = player.currentTrackPosition
         fun isPlaying() = player.isPlaying
         fun isPaused() = player.isPaused
+        fun togglePlay(){
+            if(!isPlaying() && player.resume()) playerListener?.resume()
+            else if(player.pause()) playerListener?.pause()
+        }
+        fun seek(position: Int) = player.seek(position.toDouble())
+        fun stopPlayer() = stopService()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {

@@ -95,6 +95,7 @@ class ViewRecordsFragment : Fragment(),
         viewModel.renameItem.observe(viewLifecycleOwner, EventObserver{onRenameClicked(it)})
 
         viewModel.showNameAlreadyExistsToast.observe(viewLifecycleOwner, EventObserver{context?.showToast(R.string.name_already_exists)})
+
         viewModel.playRecord.observe(viewLifecycleOwner, EventObserver{
             mainViewModel.playRecord(it)
         })

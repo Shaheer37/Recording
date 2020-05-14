@@ -105,6 +105,18 @@ class MainViewModel: ViewModel(), PlayerService.PlayerListener {
         _bindService.value = Event(playerServiceConnection)
     }
 
+    fun onPlayToggle() {
+        serviceInterface?.togglePlay()
+    }
+
+    fun seekPlayer(position: Int) {
+        serviceInterface?.seek(position)
+    }
+
+    fun stopPlayer() {
+        serviceInterface?.stopPlayer()
+    }
+
     inner class PlayerServiceConnection: ServiceConnection {
         override fun onServiceConnected(componentName: ComponentName, iBinder: IBinder) {
             Log.e(TAG, "onServiceConnected")

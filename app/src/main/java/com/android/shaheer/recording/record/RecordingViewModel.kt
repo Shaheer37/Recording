@@ -48,8 +48,8 @@ public class RecordingViewModel(val sessionManager: SessionManager)
     private val _showLastRecordingButton = MutableLiveData<Event<Boolean>>()
     public val showLastRecordingButton: LiveData<Event<Boolean>> = _showLastRecordingButton
 
-    private var _playRecord = MutableLiveData<Event<Pair<Int, List<RecordItem>>>>()
-    val playRecord: LiveData<Event<Pair<Int, List<RecordItem>>>> = _playRecord
+    private var _playRecord = MutableLiveData<Event<Pair<Int, ArrayList<RecordItem>>>>()
+    val playRecord: LiveData<Event<Pair<Int, ArrayList<RecordItem>>>> = _playRecord
 
     private var serviceInterface: RecordingService.ServiceInterface? = null
 
@@ -114,7 +114,7 @@ public class RecordingViewModel(val sessionManager: SessionManager)
             try{
                 val recordItem = FilesUtil.createRecordItem(File(it), metaRetriever)
                 if(recordItem != null){
-                    _playRecord.value = Event(Pair(0, listOf(recordItem)))
+                    _playRecord.value = Event(Pair(0, arrayListOf(recordItem)))
                 }
             }catch (e:Exception){
                 e.printStackTrace()
