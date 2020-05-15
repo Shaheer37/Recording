@@ -9,13 +9,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
+
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.widget.RemoteViews;
 
 import com.android.shaheer.recording.MainActivity;
 import com.android.shaheer.recording.R;
@@ -123,6 +127,7 @@ public class RecordingService extends Service implements Recorder.RecorderTickLi
     public class ServiceInterface extends Binder {
         public boolean isRecording() {return (mRecorder.getmRecordingStatus() == Recorder.RecordingStatus.recording);}
         public boolean isPaused() {return (mRecorder.getmRecordingStatus() == Recorder.RecordingStatus.paused);}
+        public Recorder.RecordingStatus getRecorderStatus(){return mRecorder.getmRecordingStatus();}
         public String getFilePath(){return FilesUtil.getDir(getApplicationContext()) +"/"+ mFileName;}
         public void pauseRecording(){
             performAction(ACTION_PAUSE);
@@ -190,83 +195,75 @@ public class RecordingService extends Service implements Recorder.RecorderTickLi
         stopSelf();
     }
 
-    private NotificationCompat.Builder getNotificationBuilder() {
+    private NotificationCompat.Builder getNotificationBuilder(Recorder.RecordingStatus status) {
+        createChannel(
+                getString(R.string.channel_id),
+                getString(R.string.channel_name),
+                getString(R.string.channel_description)
+        );
+
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, getString(R.string.channel_id));
+
+        RemoteViews notificationLayout = new RemoteViews(getApplicationContext().getPackageName(), R.layout.player_notif);
+
+        if(status == Recorder.RecordingStatus.paused){
+            notificationLayout.setOnClickPendingIntent(R.id.btn_play_toggle, getActionIntent(ACTION_RESUME, NOTIFICATION_ID, RecordingService.class));
+            notificationLayout.setImageViewResource(R.id.btn_play_toggle, R.drawable.ic_record_notif);
+        }else{
+            notificationLayout.setOnClickPendingIntent(R.id.btn_play_toggle, getActionIntent(ACTION_PAUSE, NOTIFICATION_ID, RecordingService.class));
+            notificationLayout.setImageViewResource(R.id.btn_play_toggle, R.drawable.ic_pause_notif);
+        }
+        notificationLayout.setOnClickPendingIntent(R.id.btn_stop, getActionIntent(ACTION_STOP, NOTIFICATION_ID, RecordingService.class));
+        notificationLayout.setTextViewText(R.id.notification_title, mRecorder.getFileName());
+        notificationLayout.setTextViewText(R.id.notification_text, status.toString());
+
+        notificationBuilder.setWhen(System.currentTimeMillis())
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setSmallIcon(R.drawable.ic_notif)
+                .setOnlyAlertOnce(true)
+                .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+                .setCustomContentView(notificationLayout);
+
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-
-        NotificationCompat.Builder notificationBuilder;
-        if (Build.VERSION.SDK_INT >= 26) {
-            String channelId = getString(R.string.channel_id);
-            NotificationChannel channel = new NotificationChannel(channelId,
-                    getString(R.string.channel_description),
-                    NotificationManager.IMPORTANCE_LOW);
-
-            ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(channel);
-
-            notificationBuilder = new NotificationCompat.Builder(this, channelId);
-        } else {
-            notificationBuilder = new NotificationCompat.Builder(this);
-        }
-
-        notificationBuilder.setWhen(System.currentTimeMillis());
-        notificationBuilder.setSmallIcon(R.drawable.ic_notif);
-        Bitmap largeIconBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
-        notificationBuilder.setLargeIcon(largeIconBitmap);
-        notificationBuilder.setPriority(Notification.PRIORITY_DEFAULT);
         notificationBuilder.setContentIntent(pendingIntent);
 
         return notificationBuilder;
     }
 
-    private Notification setupNotification(Recorder.RecordingStatus recordingStatus){
-
-        NotificationCompat.Builder notificationBuilder = getNotificationBuilder();
-
-        setNotificationText(notificationBuilder, mRecorder.getFileName(), recordingStatus);
-        setNotificationActions(notificationBuilder, recordingStatus);
-
-        return notificationBuilder.build();
+    private Notification setupNotification(Recorder.RecordingStatus status){
+        return getNotificationBuilder(status).build();
     }
 
     private void notifyUpdate(Recorder.RecordingStatus recordingStatus){
-        NotificationManager notificationManager = (NotificationManager)
-                getSystemService(NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(NOTIFICATION_ID, setupNotification(recordingStatus));
     }
 
-    private void setNotificationText(NotificationCompat.Builder notificationBuilder,
-                                     String fileName,
-                                     Recorder.RecordingStatus recordingStatus
-    ){
-        notificationBuilder.setContentTitle("Recording "+fileName);
-        notificationBuilder.setContentText(recordingStatus.toString());
+    private PendingIntent getActionIntent(String action, int requestId, Class<? extends Service> service) {
+        Intent stopIntent = new Intent(this, service);
+        stopIntent.setAction(action);
+        return PendingIntent.getService(this, requestId, stopIntent, 0);
     }
 
-    private void setNotificationActions(NotificationCompat.Builder notificationBuilder,
-                                        Recorder.RecordingStatus recordingStatus
-    ){
-        if(recordingStatus == Recorder.RecordingStatus.paused){
-            // Add Resume button intent in notification.
-            Intent playIntent = new Intent(this, RecordingService.class);
-            playIntent.setAction(ACTION_RESUME);
-            PendingIntent pendingPlayIntent = PendingIntent.getService(this, 0, playIntent, 0);
-            NotificationCompat.Action playAction = new NotificationCompat.Action(android.R.drawable.ic_media_play, "Resume", pendingPlayIntent);
-            notificationBuilder.addAction(playAction);
+    private void createChannel(String channelId, String channelName, String channelDescription) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationManager notifManager = (NotificationManager) ContextCompat.getSystemService(getApplicationContext(), NotificationManager.class);
+
+            NotificationChannel notificationChannel = new NotificationChannel(
+                    channelId,
+                    channelName,
+                    NotificationManager.IMPORTANCE_HIGH
+            );
+
+            notificationChannel.setShowBadge(false);
+            notificationChannel.enableLights(true);
+            notificationChannel.setLightColor(Color.BLUE);
+            notificationChannel.enableVibration(true);
+            notificationChannel.setDescription(channelDescription);
+
+            notifManager.createNotificationChannel(notificationChannel);
         }
-        else{
-            // Add Pause button intent in notification.
-            Intent pauseIntent = new Intent(this, RecordingService.class);
-            pauseIntent.setAction(ACTION_PAUSE);
-            PendingIntent pendingPauseIntent = PendingIntent.getService(this, 0, pauseIntent, 0);
-            NotificationCompat.Action pauseAction = new NotificationCompat.Action(R.drawable.ic_pause, "Pause", pendingPauseIntent);
-            notificationBuilder.addAction(pauseAction);
-        }
-        // Add Pause button intent in notification.
-        Intent stopIntent = new Intent(this, RecordingService.class);
-        stopIntent.setAction(ACTION_STOP);
-        PendingIntent pendingStopIntent = PendingIntent.getService(this, 0, stopIntent, 0);
-        NotificationCompat.Action stopAction = new NotificationCompat.Action(R.drawable.ic_stop, "Stop", pendingStopIntent);
-        notificationBuilder.addAction(stopAction);
     }
 
     public interface RecordingInterface{

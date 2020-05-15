@@ -35,7 +35,7 @@
         app:layout_constraintBottom_toTopOf="@+id/barrier_btns"/>
 
     <TextView
-        android:id="@+id/tv_initial_time"
+        android:id="@+id/tv_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@+id/sb_progress"

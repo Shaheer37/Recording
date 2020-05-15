@@ -8,13 +8,16 @@ import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
+import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import com.android.shaheer.recording.MainActivity
 import com.android.shaheer.recording.R
 import com.android.shaheer.recording.model.RecordItem
 import com.android.shaheer.recording.utils.FilesUtil
 import com.android.shaheer.recording.utils.Player
 import com.android.shaheer.recording.utils.Recorder
+import com.android.shaheer.recording.utils.createChannel
 import java.util.concurrent.TimeUnit
 
 class PlayerService : Service(), Player.PlayerEventListener {
@@ -55,12 +58,14 @@ class PlayerService : Service(), Player.PlayerEventListener {
             this@PlayerService.playerListener = playerListener
         }
         fun getPlayingTrack(): RecordItem = tracks[playingTrackPosition]
-        fun getPlayerPosition() = player.currentTrackPosition
+        fun getTrackPosition() = player.trackPlayedLength
+        fun getTrackDuration() = player.trackDuration
         fun isPlaying() = player.isPlaying
         fun isPaused() = player.isPaused
         fun togglePlay(){
             if(!isPlaying() && player.resume()) playerListener?.resume()
             else if(player.pause()) playerListener?.pause()
+            notifyUpdate(player.playingStatus)
         }
         fun seek(position: Int) = player.seek(position.toDouble())
         fun stopPlayer() = stopService()
@@ -143,23 +148,36 @@ class PlayerService : Service(), Player.PlayerEventListener {
         else String.format("%02d:%02d", minutes, seconds)
     }
 
-    private fun getNotificationBuilder(): NotificationCompat.Builder {
-        val notificationBuilder: NotificationCompat.Builder
-        notificationBuilder = if (Build.VERSION.SDK_INT >= 26) {
-            val channel = NotificationChannel(getString(R.string.channel_id),
-                    getString(R.string.channel_description),
-                    NotificationManager.IMPORTANCE_LOW)
-            (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(channel)
-            NotificationCompat.Builder(this, getString(R.string.channel_id))
-        } else {
-            NotificationCompat.Builder(this)
-        }
-        notificationBuilder.priority = Notification.PRIORITY_DEFAULT
-        notificationBuilder.setWhen(System.currentTimeMillis())
+    private fun getNotificationBuilder(status: Player.PlayingStatus): NotificationCompat.Builder {
 
-        notificationBuilder.setSmallIcon(R.drawable.ic_notif)
-        val largeIconBitmap = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
-        notificationBuilder.setLargeIcon(largeIconBitmap)
+        val notifManager = ContextCompat.getSystemService(applicationContext, NotificationManager::class.java) as NotificationManager
+        notifManager.createChannel(
+                getString(R.string.channel_id),
+                getString(R.string.channel_name),
+                getString(R.string.channel_description)
+        )
+
+        val notificationBuilder = NotificationCompat.Builder(this, getString(R.string.channel_id))
+
+        val notificationLayout = RemoteViews(applicationContext.packageName, R.layout.player_notif)
+
+        if(status != Player.PlayingStatus.playing){
+            notificationLayout.setOnClickPendingIntent(R.id.btn_play_toggle, getActionIntent(ACTION_RESUME, NOTIFICATION_ID, PlayerService::class.java))
+            notificationLayout.setImageViewResource(R.id.btn_play_toggle, R.drawable.ic_play_notif)
+        }else{
+            notificationLayout.setOnClickPendingIntent(R.id.btn_play_toggle, getActionIntent(ACTION_PAUSE, NOTIFICATION_ID, PlayerService::class.java))
+            notificationLayout.setImageViewResource(R.id.btn_play_toggle, R.drawable.ic_pause_notif)
+        }
+        notificationLayout.setOnClickPendingIntent(R.id.btn_stop, getActionIntent(ACTION_STOP, NOTIFICATION_ID, PlayerService::class.java))
+        notificationLayout.setTextViewText(R.id.notification_title, tracks[playingTrackPosition].recordAddress)
+        notificationLayout.setTextViewText(R.id.notification_text, status.toString())
+
+        notificationBuilder.setWhen(System.currentTimeMillis())
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setSmallIcon(R.drawable.ic_notif)
+                .setOnlyAlertOnce(true)
+                .setStyle(NotificationCompat.DecoratedCustomViewStyle())
+                .setCustomContentView(notificationLayout)
 
         val intent = Intent(applicationContext, MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
@@ -169,10 +187,7 @@ class PlayerService : Service(), Player.PlayerEventListener {
     }
 
     private fun setupNotification(status: Player.PlayingStatus): Notification? {
-        val notificationBuilder = getNotificationBuilder()
-        setNotificationText(notificationBuilder, tracks[playingTrackPosition].recordAddress, status)
-        setNotificationActions(notificationBuilder, status)
-        return notificationBuilder.build()
+        return getNotificationBuilder(status).build()
     }
 
     private fun notifyUpdate(status: Player.PlayingStatus) {
@@ -180,38 +195,10 @@ class PlayerService : Service(), Player.PlayerEventListener {
         notificationManager.notify(NOTIFICATION_ID, setupNotification(status))
     }
 
-    private fun setNotificationText(notificationBuilder: NotificationCompat.Builder,
-                                    fileName: String,
-                                    status: Player.PlayingStatus
-    ) {
-        notificationBuilder.setContentTitle("Playing $fileName")
-        notificationBuilder.setContentText(status.toString())
-    }
-
-    private fun setNotificationActions(notificationBuilder: NotificationCompat.Builder,
-                                       status: Player.PlayingStatus
-    ) {
-        if (status == Player.PlayingStatus.paused) {
-            // Add Resume button intent in notification.
-            val playIntent = Intent(this, PlayerService::class.java)
-            playIntent.action = ACTION_RESUME
-            val pendingPlayIntent = PendingIntent.getService(this, NOTIFICATION_ID, playIntent, 0)
-            val playAction = NotificationCompat.Action(android.R.drawable.ic_media_play, "Resume", pendingPlayIntent)
-            notificationBuilder.addAction(playAction)
-        } else {
-            // Add Pause button intent in notification.
-            val pauseIntent = Intent(this, PlayerService::class.java)
-            pauseIntent.action = ACTION_PAUSE
-            val pendingPauseIntent = PendingIntent.getService(this, NOTIFICATION_ID, pauseIntent, 0)
-            val pauseAction = NotificationCompat.Action(R.drawable.ic_pause, "Pause", pendingPauseIntent)
-            notificationBuilder.addAction(pauseAction)
-        }
-        // Add Pause button intent in notification.
-        val stopIntent = Intent(this, PlayerService::class.java)
-        stopIntent.action = ACTION_STOP
-        val pendingStopIntent = PendingIntent.getService(this, NOTIFICATION_ID, stopIntent, 0)
-        val stopAction = NotificationCompat.Action(R.drawable.ic_stop, "Stop", pendingStopIntent)
-        notificationBuilder.addAction(stopAction)
+    private fun getActionIntent(action: String, requestId: Int, service: Class<out Service>): PendingIntent{
+        val stopIntent = Intent(this, service)
+        stopIntent.action = action
+        return PendingIntent.getService(this, requestId, stopIntent, 0)
     }
 
     interface PlayerListener {

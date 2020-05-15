@@ -23,7 +23,10 @@ public class Player {
     private PlayerEventListener mEventListener;
 
     private int trackPlayedLength = 0;
+    public int getTrackPlayedLength() { return trackPlayedLength; }
+
     private int trackDuration = 0;
+    public int getTrackDuration() { return trackDuration; }
 
     private boolean isPrepared = false;
 
@@ -54,11 +57,6 @@ public class Player {
 
     public Player(PlayerEventListener playerEventListener) {
         mEventListener = playerEventListener;
-    }
-
-    public int getCurrentTrackPosition(){
-        if(trackDuration>0) return trackPlayedLength/trackDuration;
-        else return 0;
     }
 
     public boolean play(String track){

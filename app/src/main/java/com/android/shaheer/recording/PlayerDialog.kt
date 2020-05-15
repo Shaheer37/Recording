@@ -29,6 +29,7 @@ class PlayerDialog(
 
     @BindView(R.id.sb_progress) lateinit var sbProgress: SeekBar
 
+    @BindView(R.id.tv_progress) lateinit var tvProgress: TextView
     @BindView(R.id.tv_duration) lateinit var tvDuration: TextView
 
     @BindView(R.id.btn_play) lateinit var btnPlay: ImageButton
@@ -80,10 +81,6 @@ class PlayerDialog(
         tvDuration.text = recordItem.recordDuration
     }
 
-    fun setCurrentPlayingTrackPosition(position: Int){
-        sbProgress.progress = position
-    }
-
     fun pause(){
         btnPlay.setImageDrawable(context.getDrawable(R.drawable.ic_play_24dp))
     }
@@ -94,6 +91,7 @@ class PlayerDialog(
 
     fun durationUpdate(position: Double, duration: Double) {
         sbProgress.progress = ((position/duration)*100).toInt()
+        tvProgress.text = FilesUtil.formatDuration(position.toLong())
     }
 
     interface PlayerDialogListener{

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <ImageView
+        android:id="@+id/notification_icon"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginEnd="5dp"
+        android:src="@drawable/notification_icon"
+        android:layout_centerVertical="true"
+        android:scaleType="centerInside"
+        android:background="?android:selectableItemBackgroundBorderless"
+        />
+
+    <LinearLayout
+        android:id="@+id/ll_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_vertical"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/notification_icon"
+        android:layout_toStartOf="@+id/btn_play_toggle">
+        <TextView
+            android:id="@+id/notification_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textColor="@color/textcolor"
+            android:lines="1"
+            android:ellipsize="end"
+            />
+        <TextView
+            android:id="@+id/notification_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/textcolor"
+            />
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/btn_play_toggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toStartOf="@+id/btn_stop"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:background="?android:selectableItemBackgroundBorderless"
+        />
+
+    <ImageButton
+        android:id="@+id/btn_stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:src="@drawable/ic_stop_notif"
+        android:background="?android:selectableItemBackgroundBorderless"
+        />
+
+</RelativeLayout>

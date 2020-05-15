@@ -98,12 +98,6 @@ class MainActivity :
                 playerDialog?.setCurrentPlayingTrack(it)
             }
         })
-
-        viewModel.currentPlayingTrackPosition.observe(this, EventObserver {
-            if(playerDialog?.isShowing == true){
-                playerDialog?.setCurrentPlayingTrackPosition(it)
-            }
-        })
     }
 
     override fun onPause() {

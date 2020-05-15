@@ -82,7 +82,7 @@ public class RecordingViewModel(val sessionManager: SessionManager)
     }
     fun setStateRecording(){
         _state.value = RecordingFragment.RecordingStatus.recording
-        _recordingState.value = Event(Recorder.RecordingStatus.recording)
+        _recordingState.value = Event(serviceInterface?.recorderStatus?:Recorder.RecordingStatus.recording)
         _showLastRecordingButton.value = Event(false)
     }
 

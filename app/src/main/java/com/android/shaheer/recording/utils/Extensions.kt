@@ -1,6 +1,10 @@
 package com.android.shaheer.recording.utils
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
+import android.graphics.Color
+import android.os.Build
 import android.util.TypedValue
 import android.view.View
 import android.widget.Toast
@@ -22,4 +26,25 @@ fun View.makeSnackBar(msg: String, length: Int): Snackbar? {
     snackbar.isGestureInsetBottomIgnored = true
 
     return snackbar
+}
+
+fun NotificationManager.createChannel(channelId: String, channelName: String, channelDescription: String) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val notificationChannel = NotificationChannel(
+            channelId,
+            channelName,
+            NotificationManager.IMPORTANCE_HIGH
+        )
+        .apply {
+            setShowBadge(false)
+        }
+
+        notificationChannel.enableLights(true)
+        notificationChannel.lightColor = Color.BLUE
+        notificationChannel.enableVibration(true)
+        notificationChannel.description = channelDescription
+
+        createNotificationChannel(notificationChannel)
+
+    }
 }

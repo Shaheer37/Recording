@@ -64,9 +64,6 @@ class MainViewModel: ViewModel(), PlayerService.PlayerListener {
     private val _currentPlayingTrack = MutableLiveData<Event<RecordItem>>()
     public val currentPlayingTrack: LiveData<Event<RecordItem>> = _currentPlayingTrack
 
-    private val _currentPlayingTrackPosition = MutableLiveData<Event<Int>>()
-    public val currentPlayingTrackPosition: LiveData<Event<Int>> = _currentPlayingTrackPosition
-
     private var serviceInterface: PlayerService.PlayerInterface? = null
 
     val playerServiceConnection: PlayerServiceConnection = PlayerServiceConnection()
@@ -92,7 +89,11 @@ class MainViewModel: ViewModel(), PlayerService.PlayerListener {
 
     fun getPlayerstatus() = serviceInterface?.run{
         _currentPlayingTrack.value = Event(getPlayingTrack())
-        _currentPlayingTrackPosition.value = Event(getPlayerPosition())
+        val duration = getTrackDuration()
+        val position = getTrackPosition()
+        if(duration>0 && position>0){
+            _playerDurationUpdate.value = Pair(position.toDouble(), duration.toDouble())
+        }
         if(isPlaying()) _playerState.value = Event(PlayerDialog.PlayerState.Playing)
         if(isPaused()) _playerState.value = Event(PlayerDialog.PlayerState.Paused)
     }

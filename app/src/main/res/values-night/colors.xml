@@ -11,4 +11,6 @@
 
     <color name="recordItemStroke">#427696</color>
     <color name="recordItemBackground">#535455</color>
+
+    <color name="icLauncherForeground">#022358</color>
 </resources>

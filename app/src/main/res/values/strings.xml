@@ -55,4 +55,5 @@
 
     <string name="channel_id">service_notifications</string>
     <string name="channel_description">Notifications for running recording or playback</string>
+    <string name="channel_name">Recording Services</string>
 </resources>
