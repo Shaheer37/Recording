@@ -145,14 +145,27 @@
 
     <Button
         android:id="@+id/btn_audio_archive"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="@dimen/bottom_option_bar_height"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btn_configs"
         app:layout_constraintEnd_toEndOf="parent"
         android:drawableTop="@drawable/ic_speaker"
         android:padding="@dimen/bottom_option_btn_padding"
         android:background="@drawable/bg_bottom_options"
         android:text="@string/audio_archive"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/btn_configs"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/bottom_option_bar_height"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_audio_archive"
+        android:drawableTop="@drawable/ic_configs"
+        android:padding="@dimen/bottom_option_btn_padding"
+        android:background="@drawable/bg_bottom_options"
+        android:text="@string/configs"
         android:textAllCaps="false"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

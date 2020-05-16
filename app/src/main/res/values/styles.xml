@@ -19,6 +19,12 @@
         <item name="md_color_button_text">@color/primaryDark</item>
     </style>
 
+    <style name="AppTheme.ConfigsDialog" parent="AppTheme">
+        <item name="colorAccent">@android:color/white</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+
     <style name="ActionBar" parent="ThemeOverlay.AppCompat.DayNight.ActionBar">
         <item name="android:background">@color/background</item>
         <item name="theme">@style/ThemeOverlay.ActionBar</item>

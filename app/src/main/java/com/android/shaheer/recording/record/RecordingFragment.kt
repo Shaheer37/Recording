@@ -26,12 +26,13 @@ import com.android.shaheer.recording.MainActivity
 import com.android.shaheer.recording.MainViewModel
 import com.android.shaheer.recording.MainViewModelFactory
 import com.android.shaheer.recording.R
+import com.android.shaheer.recording.dialogs.ConfigsDialog
 import com.android.shaheer.recording.services.RecordingService
 import com.android.shaheer.recording.utils.*
 import com.omega_r.libs.OmegaCenterIconButton
 
 
-class RecordingFragment : Fragment() {
+class RecordingFragment : Fragment(), ConfigsDialog.OnCloseConfigsDialogListener {
 
     enum class RecordingStatus {
         notRecording, recording
@@ -51,9 +52,12 @@ class RecordingFragment : Fragment() {
     @BindView(R.id.tv_recording_action) lateinit var tvRecordAction: TextView
 
     @BindView(R.id.btn_audio_archive) lateinit var btnAudioArchive: Button
+    @BindView(R.id.btn_configs) lateinit var btnConfigs: Button
 
     private lateinit var recordingViewModel: RecordingViewModel
     private lateinit var mainViewModel: MainViewModel
+
+    private var configsDialog: ConfigsDialog? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -152,6 +156,10 @@ class RecordingFragment : Fragment() {
         if (CommonMethods.isServiceRunning(RecordingService::class.java, context)) {
             recordingViewModel.unbindService()
         }
+
+        if(configsDialog != null && configsDialog?.isShowing == true){
+            configsDialog?.dismiss()
+        }
     }
 
     override fun onResume() {
@@ -161,6 +169,10 @@ class RecordingFragment : Fragment() {
         if (CommonMethods.isServiceRunning(RecordingService::class.java, context)) {
             recordingViewModel.bindService()
         }
+    }
+
+    override fun onCloseConfigsDialog() {
+        configsDialog = null
     }
 
     @OnClick(R.id.btn_start_recording)
@@ -175,6 +187,12 @@ class RecordingFragment : Fragment() {
     @OnClick(R.id.btn_audio_archive)
     fun openAudioArchives() {
         mainViewModel.checkStoragePermission()
+    }
+
+    @OnClick(R.id.btn_configs)
+    fun openConfigs() {
+        configsDialog = ConfigsDialog(requireContext(), this)
+        configsDialog?.show()
     }
 
     @OnClick(R.id.btn_play_last_recording)
@@ -204,6 +222,7 @@ class RecordingFragment : Fragment() {
         groupRecording.visibility = View.INVISIBLE
         btnStartRecording.visibility = View.VISIBLE
         btnAudioArchive.visibility = View.VISIBLE
+        btnConfigs.visibility = View.VISIBLE
 
         tvRecording.setText(R.string.start_recording)
 
@@ -217,6 +236,7 @@ class RecordingFragment : Fragment() {
     private fun setRecordingLayout(){
         btnStartRecording.visibility = View.INVISIBLE
         btnAudioArchive.visibility = View.INVISIBLE
+        btnConfigs.visibility = View.INVISIBLE
         groupRecording.visibility = View.VISIBLE
 
         tvRecording.setText(R.string.recording)

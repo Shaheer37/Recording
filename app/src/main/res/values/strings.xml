@@ -38,6 +38,7 @@
     <string name="playing">Playing</string>
     <string name="recording_completed">Recording Completed</string>
     <string name="audio_archive">Audio Archive</string>
+    <string name="configs">Configurations</string>
     <string name="info">Info</string>
 
     <string name="recordings">Recordings</string>
@@ -56,4 +57,7 @@
     <string name="channel_id">service_notifications</string>
     <string name="channel_description">Notifications for running recording or playback</string>
     <string name="channel_name">Recording Services</string>
+    <string name="channel_mono">Mono</string>
+    <string name="channel_stereo">Stereo</string>
+    <string name="bitrate">Bitrate</string>
 </resources>

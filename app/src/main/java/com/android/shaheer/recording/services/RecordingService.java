@@ -36,9 +36,6 @@ public class RecordingService extends Service implements Recorder.RecorderTickLi
     public static final String ACTION_STOP = "action.stop";
     public static final String ACTION_START= "action.start";
 
-    private final String CHANNEL_ID = "foreground_service";
-    private final String CHANNEL_DESCRIPTION = "This is a channel for a recording service notification.";
-
     private final int NOTIFICATION_ID = 101;
 
     private Recorder mRecorder;
@@ -48,16 +45,24 @@ public class RecordingService extends Service implements Recorder.RecorderTickLi
 
     private String mFileName;
 
-    public RecordingService() {
-    }
+    SessionManager sessionManager;
+
+    public RecordingService() {}
 
     @Override
     public void onCreate() {
         super.onCreate();
-        mServiceInterface = new ServiceInterface();
-        mRecorder = new Recorder(getApplicationContext(),this);
-        mFileName = mRecorder.getFileName();
         mTelephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        mServiceInterface = new ServiceInterface();
+
+        sessionManager = new SessionManager(getApplicationContext());
+        mRecorder = new Recorder(
+                getApplicationContext(),
+                sessionManager.getBitrate(),
+                sessionManager.getChannels(),
+                this
+        );
+        mFileName = mRecorder.getFileName();
     }
 
     @Override
@@ -97,7 +102,6 @@ public class RecordingService extends Service implements Recorder.RecorderTickLi
                     startForeground(NOTIFICATION_ID, setupNotification(Recorder.RecordingStatus.recording));
                     mTelephonyManager.listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE);
 
-                    SessionManager sessionManager = new SessionManager(getApplicationContext());
                     sessionManager.setLastRecording(mServiceInterface.getFilePath());
                 }
                 break;

@@ -24,7 +24,7 @@
     <dimen name="recording_action_btn_size">60dp</dimen>
     <dimen name="recording_action_btn_bottom_margin">10dp</dimen>
 
-    <dimen name="bottom_option_bar_height">56dp</dimen>
+    <dimen name="bottom_option_bar_height">60dp</dimen>
     <dimen name="bottom_option_btn_padding">8dp</dimen>
 
     <dimen name="options_btn_text_size">18sp</dimen>

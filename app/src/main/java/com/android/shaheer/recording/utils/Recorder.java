@@ -37,6 +37,9 @@ public class Recorder {
     private File mOutputFile;
     public File getOutputFile() {return mOutputFile;}
 
+    private int channels = Constants.Audio.CHANNELS_DEFAULT;
+    private int bitrate = Constants.Audio.BIT_RATE_DEFAULT;
+
     private FilesUtil filesUtil;
 
     private static DecimalFormat df = new DecimalFormat("0.00");
@@ -53,13 +56,19 @@ public class Recorder {
     private RecorderTickListener mTickListener;
 
 
-    public Recorder(Context context, RecorderTickListener tickListener) {
+    public Recorder(
+        Context context,
+        int bitrate,
+        int channels,
+        RecorderTickListener tickListener
+    ) {
+        mContext = context;
+        this.bitrate = bitrate;
+        this.channels = channels;
+        mTickListener = tickListener;
 
         filesUtil = new FilesUtil();
-
-        mContext = context;
         mOutputFile = filesUtil.getFile(context, null, Constants.Audio.FILE_EXT_M4A);
-        mTickListener = tickListener;
     }
 
     public String getFileName() {
@@ -71,7 +80,8 @@ public class Recorder {
         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
         mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-        mRecorder.setAudioEncodingBitRate(Constants.Audio.BIT_RATE_96K);
+        mRecorder.setAudioEncodingBitRate(bitrate);
+        mRecorder.setAudioChannels(channels);
         mRecorder.setAudioSamplingRate(Constants.Audio.SAMPLE_RATE_441);
         outputFile.getParentFile().mkdirs();
         mRecorder.setOutputFile(outputFile.getAbsolutePath());

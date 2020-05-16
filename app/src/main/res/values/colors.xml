@@ -10,6 +10,8 @@
     <color name="recordItemStroke">#044e7d</color>
     <color name="recordItemBackground">#d9e2e9</color>
 
+    <color name="bgConfigBackground">#022358</color>
+
     <color name="icLauncherForeground">#FFFFFF</color>
 
     <color name="grey">#d9e2e9</color>

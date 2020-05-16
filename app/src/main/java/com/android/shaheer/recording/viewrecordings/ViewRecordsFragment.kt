@@ -1,9 +1,7 @@
 package com.android.shaheer.recording.viewrecordings
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.appcompat.widget.Toolbar
@@ -17,11 +15,9 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.input.input
 import com.android.shaheer.recording.MainViewModel
 import com.android.shaheer.recording.MainViewModelFactory
-import com.android.shaheer.recording.PlayerDialog
 
 import com.android.shaheer.recording.R
 import com.android.shaheer.recording.model.RecordItem
-import com.android.shaheer.recording.services.PlayerService
 import com.android.shaheer.recording.utils.*
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar

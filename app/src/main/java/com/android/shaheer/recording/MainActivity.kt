@@ -9,6 +9,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.android.shaheer.recording.dialogs.PlayerDialog
 import com.android.shaheer.recording.services.PlayerService
 import com.android.shaheer.recording.utils.CommonMethods
 import com.android.shaheer.recording.utils.Constants

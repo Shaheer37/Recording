@@ -1,4 +1,4 @@
-package com.android.shaheer.recording
+package com.android.shaheer.recording.dialogs
 
 import android.app.Dialog
 import android.content.Context
@@ -11,10 +11,9 @@ import android.widget.SeekBar
 import android.widget.TextView
 import butterknife.BindView
 import butterknife.ButterKnife
+import com.android.shaheer.recording.R
 import com.android.shaheer.recording.model.RecordItem
 import com.android.shaheer.recording.utils.FilesUtil
-import com.android.shaheer.recording.utils.Player
-import java.util.concurrent.TimeUnit
 
 class PlayerDialog(
         context: Context,
@@ -54,10 +53,6 @@ class PlayerDialog(
     override fun onBackPressed() {
         playerDialogListener.stopPlayer()
         super.onBackPressed()
-    }
-
-    override fun dismiss() {
-        super.dismiss()
     }
 
     fun setBtnEvents(){

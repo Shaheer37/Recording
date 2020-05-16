@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.android.shaheer.recording.dialogs.PlayerDialog
 import com.android.shaheer.recording.model.RecordItem
 import com.android.shaheer.recording.services.PlayerService
 import com.android.shaheer.recording.utils.Event
