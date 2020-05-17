@@ -1,19 +1,14 @@
 package com.android.shaheer.recording.record
 
 
-import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.constraintlayout.widget.Group
-import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -22,11 +17,10 @@ import androidx.navigation.fragment.findNavController
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
-import com.android.shaheer.recording.MainActivity
 import com.android.shaheer.recording.MainViewModel
 import com.android.shaheer.recording.MainViewModelFactory
 import com.android.shaheer.recording.R
-import com.android.shaheer.recording.dialogs.ConfigsDialog
+import com.android.shaheer.recording.dialogs.configs.ConfigsDialog
 import com.android.shaheer.recording.services.RecordingService
 import com.android.shaheer.recording.utils.*
 import com.omega_r.libs.OmegaCenterIconButton

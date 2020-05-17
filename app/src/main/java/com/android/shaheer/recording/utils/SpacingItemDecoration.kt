@@ -1,4 +1,4 @@
-package com.android.shaheer.recording.viewrecordings
+package com.android.shaheer.recording.utils
 
 import android.graphics.Rect
 import android.view.View

@@ -1,4 +1,4 @@
-package com.android.shaheer.recording.dialogs
+package com.android.shaheer.recording.dialogs.configs
 
 data class BitrateItem(
     val bitrate: Int,

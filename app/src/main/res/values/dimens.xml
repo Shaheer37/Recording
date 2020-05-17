@@ -30,6 +30,9 @@
     <dimen name="options_btn_text_size">18sp</dimen>
     <dimen name="record_icon_margins">15dp</dimen>
 
+    <dimen name="bitrate_cv_selected_elevation">6dp</dimen>
+    <dimen name="bitrate_cv_elevation">0dp</dimen>
+
     <dimen name="record_cv_selected_elevation">20dp</dimen>
     <dimen name="record_cv_elevation">4dp</dimen>
     <dimen name="record_row_vertical_spacing">5dp</dimen>

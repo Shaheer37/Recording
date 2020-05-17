@@ -20,22 +20,20 @@
         android:layout_marginEnd="@dimen/horizontal_margin"
         android:layout_marginTop="@dimen/vertical_margin"
         android:text="@string/bitrate"
-        android:textSize="40sp"
+        android:textSize="30sp"
         android:textStyle="bold"
-        style="@style/AppTheme.ConfigsDialog"
         />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_bitrates"
         android:layout_width="match_parent"
-        android:layout_height="320dp"
+        android:layout_height="290dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_bitrate"
         app:layout_constraintBottom_toTopOf="@+id/barrier_bitrate"
-        android:layout_marginHorizontal="@dimen/horizontal_margin"
-        android:layout_marginBottom="@dimen/vertical_margin"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/row_bitrate"
+        android:clipToPadding="false"
         />
 
     <androidx.constraintlayout.widget.Barrier

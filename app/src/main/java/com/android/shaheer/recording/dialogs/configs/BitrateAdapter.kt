@@ -1,13 +1,12 @@
-package com.android.shaheer.recording.dialogs
+package com.android.shaheer.recording.dialogs.configs
 
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import butterknife.BindView
 import butterknife.ButterKnife
@@ -70,6 +69,8 @@ class BitrateAdapter(
     inner class ViewHolder(private val view: View): RecyclerView.ViewHolder(view){
         @BindView(R.id.tv_bitrate) lateinit var tvBitrate: TextView
         @BindView(R.id.tv_size) lateinit var tvSize: TextView
+        @BindView(R.id.cv_item) lateinit var cvItem: CardView
+        @BindView(R.id.cl_item) lateinit var clItem: ConstraintLayout
 
         init { ButterKnife.bind(this, view) }
 
@@ -79,14 +80,13 @@ class BitrateAdapter(
             tvBitrate.text = "${item.bitrate/1000} Kbps"
             tvSize.text = "${item.size} MB/Minute"
 
-            val textColor = if(item.isSelected) R.color.lightBlue else android.R.color.white
-            tvBitrate.setTextColor(ResourcesCompat.getColor(
-                    view.resources, textColor,null
-            ))
-
-            tvSize.setTextColor(ResourcesCompat.getColor(
-                    view.resources, textColor,null
-            ))
+            if(item.isSelected){
+                cvItem.cardElevation = cvItem.resources.getDimensionPixelSize(R.dimen.bitrate_cv_selected_elevation).toFloat()
+                clItem.background = clItem.resources.getDrawable(R.drawable.bg_row_bitrate_selected, null)
+            }else{
+                cvItem.cardElevation = cvItem.resources.getDimensionPixelSize(R.dimen.bitrate_cv_elevation).toFloat()
+                clItem.background = clItem.resources.getDrawable(R.drawable.bg_row_bitrate, null)
+            }
 
             view.setOnClickListener { onBitrateSelected(item.bitrate) }
         }

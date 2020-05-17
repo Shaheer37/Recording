@@ -2,7 +2,7 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/cv_record"
+    android:id="@+id/cv_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/record_row_horizontal_spacing"
@@ -12,7 +12,7 @@
 <!--    android:layout_marginBottom="@dimen/record_row_vertical_spacing"-->
 <!--    >-->
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_record"
+        android:id="@+id/cl_item"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/bg_row_record">

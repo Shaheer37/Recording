@@ -10,7 +10,10 @@
     <color name="recordItemStroke">#044e7d</color>
     <color name="recordItemBackground">#d9e2e9</color>
 
-    <color name="bgConfigBackground">#022358</color>
+    <color name="configBackground">#d9e2e9</color>
+    <color name="bitrateItemStroke">#FFF</color>
+    <color name="bitrateSelectedItemStroke">#427696</color>
+    <color name="notSelectedChannel">#FFF</color>
 
     <color name="icLauncherForeground">#FFFFFF</color>
 

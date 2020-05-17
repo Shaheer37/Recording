@@ -37,8 +37,8 @@ class RecordingListAdapter(
         @BindView(R.id.tv_recording_title) lateinit var tvRecordingTitle: TextView
         @BindView(R.id.tv_recording_duration) lateinit var tvRecordingDuration: TextView
         @BindView(R.id.btn_play_pause) lateinit var btnPlayPause: ImageButton
-        @BindView(R.id.cv_record) lateinit var cvRecord: CardView
-        @BindView(R.id.cl_record) lateinit var clRecord: ConstraintLayout
+        @BindView(R.id.cv_item) lateinit var cvItem: CardView
+        @BindView(R.id.cl_item) lateinit var clItem: ConstraintLayout
 
         init { ButterKnife.bind(this, view) }
 
@@ -48,18 +48,18 @@ class RecordingListAdapter(
             tvRecordingDuration.text = item.recordDuration
 
             if(item.isSelected){
-                cvRecord.cardElevation = cvRecord.resources.getDimensionPixelSize(R.dimen.record_cv_selected_elevation).toFloat()
-                clRecord.background = clRecord.resources.getDrawable(R.drawable.bg_row_record_selected, null)
+                cvItem.cardElevation = cvItem.resources.getDimensionPixelSize(R.dimen.record_cv_selected_elevation).toFloat()
+                clItem.background = clItem.resources.getDrawable(R.drawable.bg_row_record_selected, null)
             }else{
-                cvRecord.cardElevation = cvRecord.resources.getDimensionPixelSize(R.dimen.record_cv_elevation).toFloat()
-                clRecord.background = clRecord.resources.getDrawable(R.drawable.bg_row_record, null)
+                cvItem.cardElevation = cvItem.resources.getDimensionPixelSize(R.dimen.record_cv_elevation).toFloat()
+                clItem.background = clItem.resources.getDrawable(R.drawable.bg_row_record, null)
             }
 
-            cvRecord.setOnLongClickListener {
+            cvItem.setOnLongClickListener {
                 itemInteractionListener.onItemSelected(adapterPosition)
                 true
             }
-            cvRecord.setOnClickListener { itemInteractionListener.onItemClicked(adapterPosition) }
+            cvItem.setOnClickListener { itemInteractionListener.onItemClicked(adapterPosition) }
             btnPlayPause.setOnClickListener { itemInteractionListener.onItemPlayClicked(adapterPosition) }
         }
 

@@ -1,13 +1,11 @@
-package com.android.shaheer.recording.dialogs
+package com.android.shaheer.recording.dialogs.configs
 
 import android.app.Dialog
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
-import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import butterknife.BindView
@@ -17,6 +15,7 @@ import com.android.shaheer.recording.R
 import com.android.shaheer.recording.utils.Constants.Audio.CHANNELS_MONO
 import com.android.shaheer.recording.utils.Constants.Audio.CHANNELS_STEREO
 import com.android.shaheer.recording.utils.SessionManager
+import com.android.shaheer.recording.utils.SpacingItemDecoration
 
 class ConfigsDialog (
         context: Context,
@@ -49,6 +48,11 @@ class ConfigsDialog (
 
         val bitrates = BitrateAdapter.createBitrates(sessionManager.bitrate)
         rvBitrates.adapter = BitrateAdapter(bitrates.first, bitrates.second, this)
+        rvBitrates.addItemDecoration(
+                SpacingItemDecoration(
+                        context.resources.getDimension(R.dimen.record_row_vertical_spacing).toInt()
+                )
+        )
         setupChannelBtns(sessionManager.channels)
     }
 
@@ -82,7 +86,7 @@ class ConfigsDialog (
     }
 
     private fun Button.setChannelSelected(isSelected: Boolean = false){
-        val color = if(isSelected) R.color.lightBlue else android.R.color.white
+        val color = if(isSelected) R.color.textcolor else R.color.notSelectedChannel
         setTextColor(ResourcesCompat.getColor(context.resources,color, null))
     }
 
