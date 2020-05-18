@@ -41,8 +41,8 @@ class RecordingFragment : Fragment(), ConfigsDialog.OnCloseConfigsDialogListener
     @BindView(R.id.btn_play_last_recording) lateinit var btnPlayLastRecording: OmegaCenterIconButton
 
     @BindView(R.id.tv_record_duration) lateinit var tvRecordDuration: TextView
-    @BindView(R.id.btn_recording_action) lateinit var btnRecordAction: ImageButton
-    @BindView(R.id.btn_recording_stop) lateinit var btnRecordStop: ImageButton
+    @BindView(R.id.btn_recording_action) lateinit var btnRecordAction: Button
+    @BindView(R.id.btn_recording_stop) lateinit var btnRecordStop: Button
     @BindView(R.id.tv_recording_action) lateinit var tvRecordAction: TextView
 
     @BindView(R.id.btn_audio_archive) lateinit var btnAudioArchive: Button
@@ -61,7 +61,7 @@ class RecordingFragment : Fragment(), ConfigsDialog.OnCloseConfigsDialogListener
 
         val stroke = CommonMethods.dipToPixels(context, 2f)
         sineWaveView.addWave(0.5f, 0.5f, 0f, 0, 0f) // Fist wave is for the shape of other waves.
-        sineWaveView.addWave(0.5f, 6f, 1f, getColor(resources, R.color.lightBlue, requireActivity().theme), stroke)
+        sineWaveView.addWave(0.5f, 6f, 1f, getColor(resources, R.color.wave, requireActivity().theme), stroke)
 
         return view
     }
@@ -194,24 +194,25 @@ class RecordingFragment : Fragment(), ConfigsDialog.OnCloseConfigsDialogListener
 
     private fun setRecordingState(recordingStatus: Recorder.RecordingStatus) = when(recordingStatus){
             Recorder.RecordingStatus.recording -> {
-                btnRecordAction.setImageDrawable(context?.getDrawable(R.drawable.bg_recording_action_pause))
+                btnRecordAction.background = context?.getDrawable(R.drawable.bg_recording_action_pause)
                 tvRecordAction.setText(R.string.pause)
                 tvRecording.setText(R.string.recording)
                 sineWaveView.startAnimation()
             }
             Recorder.RecordingStatus.paused -> {
-                btnRecordAction.setImageDrawable(context?.getDrawable(R.drawable.bg_recording_action_record))
+                btnRecordAction.background = context?.getDrawable(R.drawable.bg_recording_action_record)
                 tvRecordAction.setText(R.string.resume)
                 tvRecording.setText(R.string.paused)
                 sineWaveView.stopAnimation()
             }
             Recorder.RecordingStatus.ended -> {
-                btnRecordAction.setImageDrawable(context?.getDrawable(R.drawable.bg_recording_action_record))
+                btnRecordAction.background = context?.getDrawable(R.drawable.bg_recording_action_record)
                 recordingViewModel.setStateInitial()
             }
             else -> {}
         }
 
+    //TODO: FIX THIS
     private fun setInitialLayout() {
         groupRecording.visibility = View.INVISIBLE
         btnStartRecording.visibility = View.VISIBLE
@@ -221,7 +222,7 @@ class RecordingFragment : Fragment(), ConfigsDialog.OnCloseConfigsDialogListener
         tvRecording.setText(R.string.start_recording)
 
         sineWaveView.visibility = View.VISIBLE
-        sineWaveView.baseWaveAmplitudeScale = 0f
+        sineWaveView.baseWaveAmplitudeScale = 1f
         sineWaveView.stopAnimation()
 
         recordingViewModel.setLastRecordingControls()

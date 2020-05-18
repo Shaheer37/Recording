@@ -8,10 +8,11 @@
     <dimen name="waves_background_size">300dp</dimen>
     <dimen name="waves_view_size">290dp</dimen>
 
-    <dimen name="recording_status_font_size">20sp</dimen>
+    <dimen name="recording_status_font_size">30sp</dimen>
 
-    <dimen name="recording_duration_side_padding">10dp</dimen>
-    <dimen name="recording_duration_text_size">16dp</dimen>
+    <dimen name="recording_duration_horizontal_padding">10dp</dimen>
+    <dimen name="recording_duration_vertical_padding">4dp</dimen>
+    <dimen name="recording_duration_text_size">20dp</dimen>
     <dimen name="recording_duration_pebble_radius">8dp</dimen>
 
 

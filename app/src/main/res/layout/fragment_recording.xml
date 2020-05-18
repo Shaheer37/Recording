@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".record.RecordingFragment">
+    tools:context=".record.RecordingFragment"
+    android:background="@color/background">
 
     <TextView
         android:id="@+id/tv_status"
@@ -15,31 +16,43 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:gravity="center"
-        android:textSize="@dimen/recording_status_font_size"
-        android:text="@string/start_recording"/>
+        android:textStyle="bold"
+        android:textColor="@color/title"
+        android:text="@string/start_recording"
+        android:textSize="@dimen/recording_status_font_size" />
 <!--        android:textColor="@color/darkBlue"/>-->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.12" />
+        app:layout_constraintGuide_percent="0.20" />
+
     <com.android.shaheer.recording.utils.DynamicSineWaveView
         android:id="@+id/view_sine_wave"
         android:layout_width="0dp"
-        android:layout_height="@dimen/waves_view_size"
+        android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@+id/guideline_top"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_center"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_gravity="center"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.60" />
 
     <com.omega_r.libs.OmegaCenterIconButton
         android:id="@+id/btn_start_recording"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view_sine_wave"
+        app:layout_constraintTop_toBottomOf="@+id/guideline_center"
         app:layout_constraintBottom_toTopOf="@+id/btn_play_last_recording"
         app:layout_constraintVertical_chainStyle="packed"
         android:layout_gravity="center"
@@ -47,7 +60,7 @@
         android:layout_marginEnd="@dimen/recording_btn_horizontal_margin"
         android:layout_marginBottom="@dimen/recording_btn_vertical_margin"
         android:background="@drawable/bg_recording_btn"
-        android:drawableStart="@drawable/ic_mic"
+        android:drawableStart="@drawable/ic_start_recording"
         android:text="@string/start_recording"
         android:textSize="@dimen/recording_btn_text_size"
         android:textColor="@android:color/white"
@@ -56,6 +69,7 @@
         android:id="@+id/btn_play_last_recording"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_start_recording"
@@ -74,27 +88,28 @@
         android:id="@+id/group_recording"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="invisible"
+        android:visibility="visible"
         app:constraint_referenced_ids="tv_record_duration,btn_recording_action,tv_recording_action,btn_recording_stop,tv_recording_stop"/>
 
     <TextView
         android:id="@+id/tv_record_duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/view_sine_wave"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_center"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:background="@drawable/bg_time_pebble"
         android:layout_marginTop="10dp"
-        android:paddingLeft="@dimen/recording_duration_side_padding"
-        android:paddingRight="@dimen/recording_duration_side_padding"
+        android:paddingHorizontal="@dimen/recording_duration_horizontal_padding"
+        android:paddingVertical="@dimen/recording_duration_vertical_padding"
         android:layout_centerHorizontal="true"
         android:gravity="center"
-        android:textSize="16sp"
-        android:textColor="@android:color/black"
+        android:textSize="@dimen/recording_duration_text_size"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
         android:text="0:00"/>
 
-    <ImageButton
+    <Button
         android:id="@+id/btn_recording_action"
         android:layout_width="@dimen/recording_action_btn_size"
         android:layout_height="@dimen/recording_action_btn_size"
@@ -104,8 +119,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btn_recording_stop"
         android:layout_marginEnd="@dimen/recording_btn_horizontal_margin"
-        android:src="@drawable/bg_recording_action_pause"
-        android:background="@android:color/transparent"
+        android:background="@drawable/bg_recording_action_pause"
         />
     <TextView
         android:id="@+id/tv_recording_action"
@@ -116,10 +130,10 @@
         app:layout_constraintTop_toBottomOf="@+id/btn_recording_action"
         android:layout_marginTop="@dimen/recording_action_btn_bottom_margin"
         android:gravity="center"
-        android:textColor="@color/darkBlue"
         android:text="@string/pause"
+        android:textStyle="bold"
         />
-    <ImageButton
+    <Button
         android:id="@+id/btn_recording_stop"
         android:layout_width="@dimen/recording_action_btn_size"
         android:layout_height="@dimen/recording_action_btn_size"
@@ -128,8 +142,7 @@
         app:layout_constraintStart_toEndOf="@+id/btn_recording_action"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="@dimen/recording_btn_horizontal_margin"
-        android:src="@drawable/bg_recording_action_stop"
-        android:background="@android:color/transparent"
+        android:background="@drawable/bg_recording_action_stop"
         />
     <TextView
         android:id="@+id/tv_recording_stop"
@@ -139,8 +152,8 @@
         app:layout_constraintEnd_toEndOf="@+id/btn_recording_stop"
         app:layout_constraintTop_toBottomOf="@+id/btn_recording_stop"
         android:layout_marginTop="@dimen/recording_action_btn_bottom_margin"
-        android:textColor="@color/darkBlue"
         android:text="@string/stop"
+        android:textStyle="bold"
         />
 
     <Button

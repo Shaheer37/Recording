@@ -125,6 +125,7 @@ public class RecordingViewModel(val sessionManager: SessionManager)
         }
     }
 
+    //TODO: FIX THIS
     fun setLastRecordingControls() {
         val state = _state.value?:RecordingFragment.RecordingStatus.notRecording
         if(state == RecordingFragment.RecordingStatus.notRecording){

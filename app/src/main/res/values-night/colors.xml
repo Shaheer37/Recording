@@ -1,21 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="primaryDark">#fafafa</color>
-    <color name="background">#2e2e2e</color>
+<!--    <color name="background">#2e2e2e</color>-->
+    <color name="background">#000</color>
     <color name="textcolor">#fafafa</color>
-    <color name="bottomNavBarColor">#535455</color>
-<!--    <color name="playRecordingButton">#427696</color>-->
+    <color name="bottomNavBarColor">#252525</color>
+
     <color name="playRecordingButton">#FFF</color>
+    <color name="startRecordingButton">#535455</color>
+<!--    <color name="startRecordingButton">#252525</color>-->
+
+    <color name="title">#FFF</color>
+
+<!--    <color name="recordingActionButton">#252525</color>-->
+    <color name="recordingActionButton">#535455</color>
+    <color name="recordingActionButtonIcon">#FFF</color>
 
     <color name="playerDialogButtonColor">#FFF</color>
 
-    <color name="recordItemStroke">#427696</color>
-    <color name="recordItemBackground">#535455</color>
+    <color name="recordItemStroke">#FFF</color>
+    <color name="recordItemBackground">#252525</color>
+<!--    <color name="recordItemBackground">#535455</color>-->
 
     <color name="icLauncherForeground">#022358</color>
     <color name="bitrateItemStroke">#78797A</color>
     <color name="bitrateSelectedItemStroke">#FFF</color>
     <color name="notSelectedChannel">#78797A</color>
 
-    <color name="configBackground">#535455</color>
+    <color name="configBackground">#252525</color>
+
+    <color name="wave">#FFF</color>
 </resources>

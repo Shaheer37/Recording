@@ -5,6 +5,13 @@
     <color name="bottomNavBarColor">#d9e2e9</color>
     <color name="playRecordingButton">#044e7d</color>
 
+    <color name="title">#044e7d</color>
+
+    <color name="startRecordingButton">#044e7d</color>
+
+    <color name="recordingActionButton">#044e7d</color>
+    <color name="recordingActionButtonIcon">#FFF</color>
+
     <color name="playerDialogButtonColor">#044e7d</color>
 
     <color name="recordItemStroke">#044e7d</color>
@@ -16,6 +23,8 @@
     <color name="notSelectedChannel">#FFF</color>
 
     <color name="icLauncherForeground">#FFFFFF</color>
+
+    <color name="wave">#427696</color>
 
     <color name="grey">#d9e2e9</color>
     <color name="darkBlue">#022358</color>
