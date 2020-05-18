@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
 public class FilesUtil {
     private static final String TAG = "FilesUtil";
 
-    public static final String RECORDING_FILE_REGEX = "^[\\w,:-]+\\.(m4a|wav)$";
+    public static final String RECORDING_FILE_REGEX = "^[\\s\\w,:-]+\\.(m4a|wav)$";
 
     public static final String DATE_FORMAT = "dd-MM-yyyy,HH:mm:ss";
     private static final String MERGED_FILE = "merged";

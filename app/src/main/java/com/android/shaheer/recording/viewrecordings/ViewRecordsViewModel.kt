@@ -6,15 +6,15 @@ import android.content.ServiceConnection
 import android.media.MediaMetadataRetriever
 import android.os.IBinder
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import com.android.shaheer.recording.model.RecordItem
 import com.android.shaheer.recording.services.PlayerService
 import com.android.shaheer.recording.utils.Event
 import com.android.shaheer.recording.utils.FilesUtil
 import com.android.shaheer.recording.utils.SessionManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
 class ViewRecordsViewModel(private val sessionManager: SessionManager): ViewModel(){
@@ -45,16 +45,20 @@ class ViewRecordsViewModel(private val sessionManager: SessionManager): ViewMode
         _playRecord.value = Event(Pair(position, recordingList.toCollection(ArrayList())))
     }
 
-    fun onRecordItemSelected(position: Int) = _recordings.value?.toMutableList()?.let { recordingList->
-        val record = recordingList[position].copy()
-        record.isSelected = !record.isSelected
+    fun onRecordItemSelected(position: Int) = viewModelScope.launch(Dispatchers.IO) {
+        _recordings.value?.toMutableList()?.let { recordingList ->
+            val record = recordingList[position].copy()
+            record.isSelected = !record.isSelected
 
-        _selectedRecordings.value?.let { count->
-            if(record.isSelected) _selectedRecordings.value = count + 1
-            else _selectedRecordings.value = count - 1
+            _selectedRecordings.value?.let { count ->
+                withContext(Dispatchers.Main) {
+                    if (record.isSelected) _selectedRecordings.value = count + 1
+                    else _selectedRecordings.value = count - 1
+                }
+            }
+
+            setRecordings(recordingList.also { it[position] = record })
         }
-
-        _recordings.value = recordingList.also { it[position] = record }
     }
 
     fun onRecordItemClicked(position: Int) = _recordings.value?.let {
@@ -68,25 +72,28 @@ class ViewRecordsViewModel(private val sessionManager: SessionManager): ViewMode
         }
     }
 
-    fun deleteSelectedItems(context: Context?){
+    fun deleteSelectedItems(context: Context?) = viewModelScope.launch(Dispatchers.IO){
         _recordings.value?.forEach {item ->
             if(item.isSelected){
                 val directory = File(FilesUtil.getDir(context))
                 val fileName = "${directory.absolutePath}/${item.recordAddress}.${item.recordExtension}"
 
                 if (sessionManager.lastRecording != null
-                        && fileName.equals(sessionManager.getLastRecording(), ignoreCase = true)
+                        && fileName.equals(sessionManager.lastRecording, ignoreCase = true)
                 ) {
-                    sessionManager.setLastRecording(null)
+                    sessionManager.lastRecording = null
                 }
                 File(fileName).delete()
             }
+        }
+
+        withContext(Dispatchers.Main){
             _selectedRecordings.value = 0
             _getRecordings.value = Event(true)
         }
     }
 
-    fun getRecordingsFromFiles(context: Context, forced: Boolean = false){
+    fun getRecordingsFromFiles(context: Context, forced: Boolean = false) = viewModelScope.launch(Dispatchers.IO){
         val recordingList = mutableListOf<RecordItem>()
         val directory = File(FilesUtil.getDir(context))
         val list = directory.listFiles()
@@ -102,7 +109,7 @@ class ViewRecordsViewModel(private val sessionManager: SessionManager): ViewMode
 
         recordingList.sortByDescending { it.recordAddress }
 
-        if(forced) _recordings.value = recordingList
+        if(forced) setRecordings(recordingList)
         else{
             _recordings.value?.let { recordings ->
 
@@ -118,23 +125,30 @@ class ViewRecordsViewModel(private val sessionManager: SessionManager): ViewMode
                         }
                         item
                     }
-                }else _recordings.value = recordingList
+                }else setRecordings(recordingList)
 
-            }?: run {_recordings.value = recordingList}
+            }?: run {setRecordings(recordingList)}
         }
     }
 
-    fun renameRecordingFile(context: Context?, newName: String, recordItem: RecordItem){
+    private suspend fun setRecordings(recordings: List<RecordItem>) = withContext(Dispatchers.Main){
+        _recordings.value = recordings
+    }
+
+    fun renameRecordingFile(context: Context?, newName: String, recordItem: RecordItem) = viewModelScope.launch(Dispatchers.IO){
         if(newName.compareTo(recordItem.recordAddress, ignoreCase = true) != 0){
             val itemWithSameName = _recordings.value?.find { it.recordAddress.compareTo(newName, ignoreCase = true) == 0}
-            if(itemWithSameName == null){
+            if(itemWithSameName == null) {
                 val directory = File(FilesUtil.getDir(context))
                 val audioFile = File("${directory.absolutePath}/${recordItem.recordAddress}.${recordItem.recordExtension}")
                 audioFile.renameTo(File("${directory.absolutePath}/$newName.${recordItem.recordExtension}"))
-                _selectedRecordings.value?.let { count-> _selectedRecordings.value = count - 1}
-                _getRecordings.value = Event(true)
+
+                withContext(Dispatchers.Main) {
+                    _selectedRecordings.value?.let { count -> _selectedRecordings.value = count - 1 }
+                    _getRecordings.value = Event(true)
+                }
             }else{
-                _showNameAlreadyExistsToast.value = Event(true)
+                withContext(Dispatchers.Main) { _showNameAlreadyExistsToast.value = Event(true) }
             }
         }
     }

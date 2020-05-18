@@ -8,10 +8,10 @@ import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
-import butterknife.BindView
-import butterknife.ButterKnife
 import com.android.shaheer.recording.R
 import com.android.shaheer.recording.utils.Constants
+import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.row_bitrate.*
 
 class BitrateAdapter(
         private val bitrates: MutableList<BitrateItem>,
@@ -66,29 +66,23 @@ class BitrateAdapter(
         }
     }
 
-    inner class ViewHolder(private val view: View): RecyclerView.ViewHolder(view){
-        @BindView(R.id.tv_bitrate) lateinit var tvBitrate: TextView
-        @BindView(R.id.tv_size) lateinit var tvSize: TextView
-        @BindView(R.id.cv_item) lateinit var cvItem: CardView
-        @BindView(R.id.cl_item) lateinit var clItem: ConstraintLayout
-
-        init { ButterKnife.bind(this, view) }
+    inner class ViewHolder(override val containerView: View): RecyclerView.ViewHolder(containerView), LayoutContainer{
 
         fun bindView(){
             val item = bitrates[adapterPosition]
 
-            tvBitrate.text = "${item.bitrate/1000} Kbps"
-            tvSize.text = "${item.size} MB/Minute"
+            tv_bitrate.text = "${item.bitrate/1000} Kbps"
+            tv_size.text = "${item.size} MB/Minute"
 
             if(item.isSelected){
-                cvItem.cardElevation = cvItem.resources.getDimensionPixelSize(R.dimen.bitrate_cv_selected_elevation).toFloat()
-                clItem.background = clItem.resources.getDrawable(R.drawable.bg_row_bitrate_selected, null)
+                cv_item.cardElevation = containerView.resources.getDimensionPixelSize(R.dimen.bitrate_cv_selected_elevation).toFloat()
+                cl_item.background = containerView.resources.getDrawable(R.drawable.bg_row_bitrate_selected, null)
             }else{
-                cvItem.cardElevation = cvItem.resources.getDimensionPixelSize(R.dimen.bitrate_cv_elevation).toFloat()
-                clItem.background = clItem.resources.getDrawable(R.drawable.bg_row_bitrate, null)
+                cv_item.cardElevation = containerView.resources.getDimensionPixelSize(R.dimen.bitrate_cv_elevation).toFloat()
+                cl_item.background = containerView.resources.getDrawable(R.drawable.bg_row_bitrate, null)
             }
 
-            view.setOnClickListener { onBitrateSelected(item.bitrate) }
+            containerView.setOnClickListener { onBitrateSelected(item.bitrate) }
         }
     }
 
