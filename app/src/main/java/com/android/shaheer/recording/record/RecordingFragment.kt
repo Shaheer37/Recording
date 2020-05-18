@@ -193,26 +193,25 @@ class RecordingFragment : Fragment(), ConfigsDialog.OnCloseConfigsDialogListener
     fun playLastRecording() = recordingViewModel.playRecording()
 
     private fun setRecordingState(recordingStatus: Recorder.RecordingStatus) = when(recordingStatus){
-            Recorder.RecordingStatus.recording -> {
-                btnRecordAction.background = context?.getDrawable(R.drawable.bg_recording_action_pause)
-                tvRecordAction.setText(R.string.pause)
-                tvRecording.setText(R.string.recording)
-                sineWaveView.startAnimation()
-            }
-            Recorder.RecordingStatus.paused -> {
-                btnRecordAction.background = context?.getDrawable(R.drawable.bg_recording_action_record)
-                tvRecordAction.setText(R.string.resume)
-                tvRecording.setText(R.string.paused)
-                sineWaveView.stopAnimation()
-            }
-            Recorder.RecordingStatus.ended -> {
-                btnRecordAction.background = context?.getDrawable(R.drawable.bg_recording_action_record)
-                recordingViewModel.setStateInitial()
-            }
-            else -> {}
+        Recorder.RecordingStatus.recording -> {
+            btnRecordAction.background = context?.getDrawable(R.drawable.bg_recording_action_pause)
+            tvRecordAction.setText(R.string.pause)
+            tvRecording.setText(R.string.recording)
+            sineWaveView.startAnimation()
         }
+        Recorder.RecordingStatus.paused -> {
+            btnRecordAction.background = context?.getDrawable(R.drawable.bg_recording_action_record)
+            tvRecordAction.setText(R.string.resume)
+            tvRecording.setText(R.string.paused)
+            sineWaveView.stopAnimation()
+        }
+        Recorder.RecordingStatus.ended -> {
+            btnRecordAction.background = context?.getDrawable(R.drawable.bg_recording_action_record)
+            recordingViewModel.setStateInitial()
+        }
+        else -> {}
+    }
 
-    //TODO: FIX THIS
     private fun setInitialLayout() {
         groupRecording.visibility = View.INVISIBLE
         btnStartRecording.visibility = View.VISIBLE
