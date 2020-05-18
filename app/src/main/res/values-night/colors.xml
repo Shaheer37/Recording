@@ -22,7 +22,6 @@
     <color name="recordItemBackground">#252525</color>
 <!--    <color name="recordItemBackground">#535455</color>-->
 
-    <color name="icLauncherForeground">#022358</color>
     <color name="bitrateItemStroke">#78797A</color>
     <color name="bitrateSelectedItemStroke">#FFF</color>
     <color name="notSelectedChannel">#78797A</color>
