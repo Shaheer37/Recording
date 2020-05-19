@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primaryDark">#2e2e2e</color>
-    <color name="background">#fafafa</color>
+
+    <color name="accentColor">#044e7d</color>
+    <color name="mdColorButtonText">#044e7d</color>
+    <color name="mdBackgroundColor">#FFF</color>
+
+    <color name="background">#FFF</color>
     <color name="bottomNavBarColor">#d9e2e9</color>
     <color name="playRecordingButton">#044e7d</color>
 
@@ -12,6 +16,8 @@
     <color name="recordingActionButton">#044e7d</color>
     <color name="recordingActionButtonIcon">#FFF</color>
 
+
+    <color name="playerBackground">#FFF</color>
     <color name="playerDialogButtonColor">#044e7d</color>
 
     <color name="recordItemStroke">#044e7d</color>

@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primaryDark">#fafafa</color>
+
+    <color name="accentColor">#FFF</color>
+
+    <color name="mdColorButtonText">#FFF</color>
+    <color name="mdBackgroundColor">#252525</color>
+
 <!--    <color name="background">#2e2e2e</color>-->
     <color name="background">#000</color>
-    <color name="textcolor">#fafafa</color>
+    <color name="textcolor">#FFF</color>
     <color name="bottomNavBarColor">#252525</color>
 
+    <color name="playerBackground">#252525</color>
     <color name="playRecordingButton">#FFF</color>
+
     <color name="startRecordingButton">#535455</color>
 <!--    <color name="startRecordingButton">#252525</color>-->
 

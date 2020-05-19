@@ -123,7 +123,7 @@ class PlayerService : Service(), Player.PlayerEventListener {
     }
 
     override fun onTrackStarted(duration: Long) {
-//        btnPlay.setImageDrawable(context.getDrawable(R.drawable.ic_pause_24dp))
+//        btnPlay.setImageDrawable(context.getDrawable(R.drawable.ic_pause_player))
         if(isForeground){
             formatDuration(duration)
         }else{

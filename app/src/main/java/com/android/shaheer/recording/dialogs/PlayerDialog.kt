@@ -6,9 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
-import android.widget.ImageButton
 import android.widget.SeekBar
-import android.widget.TextView
 import com.android.shaheer.recording.R
 import com.android.shaheer.recording.model.RecordItem
 import com.android.shaheer.recording.utils.FilesUtil
@@ -28,6 +26,7 @@ class PlayerDialog(
         val view = View.inflate(context, R.layout.dialog_player, null)
         setContentView(view)
 
+//        tv_title.isSelected = true
         setBtnEvents()
     }
 
@@ -65,11 +64,11 @@ class PlayerDialog(
     }
 
     fun pause(){
-        btn_play.setImageDrawable(context.getDrawable(R.drawable.ic_play_24dp))
+        btn_play.setImageDrawable(context.getDrawable(R.drawable.ic_play_player))
     }
 
     fun play(){
-        btn_play.setImageDrawable(context.getDrawable(R.drawable.ic_pause_24dp))
+        btn_play.setImageDrawable(context.getDrawable(R.drawable.ic_pause_player))
     }
 
     fun durationUpdate(position: Double, duration: Double) {

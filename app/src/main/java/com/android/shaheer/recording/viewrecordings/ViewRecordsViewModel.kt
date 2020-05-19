@@ -140,8 +140,14 @@ class ViewRecordsViewModel(private val sessionManager: SessionManager): ViewMode
             val itemWithSameName = _recordings.value?.find { it.recordAddress.compareTo(newName, ignoreCase = true) == 0}
             if(itemWithSameName == null) {
                 val directory = File(FilesUtil.getDir(context))
-                val audioFile = File("${directory.absolutePath}/${recordItem.recordAddress}.${recordItem.recordExtension}")
-                audioFile.renameTo(File("${directory.absolutePath}/$newName.${recordItem.recordExtension}"))
+                val oldFileName = "${recordItem.recordAddress}.${recordItem.recordExtension}"
+                val newFileName = "$newName.${recordItem.recordExtension}"
+                val audioFile = File("${directory.absolutePath}/$oldFileName")
+                audioFile.renameTo(File("${directory.absolutePath}/$newFileName"))
+
+                if(sessionManager.lastRecording == "${directory.absolutePath}/$oldFileName"){
+                    sessionManager.lastRecording = "${directory.absolutePath}/$newFileName"
+                }
 
                 withContext(Dispatchers.Main) {
                     _selectedRecordings.value?.let { count -> _selectedRecordings.value = count - 1 }
