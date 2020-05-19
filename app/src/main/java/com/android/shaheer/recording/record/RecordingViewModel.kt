@@ -6,6 +6,7 @@ import android.media.MediaMetadataRetriever
 import android.os.IBinder
 import android.util.Log
 import androidx.lifecycle.*
+import com.android.shaheer.recording.R
 import com.android.shaheer.recording.model.RecordItem
 import com.android.shaheer.recording.services.RecordingService
 import com.android.shaheer.recording.utils.Event
@@ -55,7 +56,7 @@ public class RecordingViewModel(val sessionManager: SessionManager)
 
     private var recordingFile: String? = null
 
-    private var recordingServiceConnection: ServiceConnection = object : ServiceConnection {
+    var recordingServiceConnection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(componentName: ComponentName, iBinder: IBinder) {
             Log.e(TAG, "onServiceConnected")
             if (RecordingService::class.java.name == componentName.className) {
@@ -63,7 +64,10 @@ public class RecordingViewModel(val sessionManager: SessionManager)
                 serviceInterface?.setRecordingInterface(this@RecordingViewModel)
                 recordingFile = serviceInterface?.filePath
                 _isServiceBound.value = Event(true)
-                setStateRecording()
+                if(serviceInterface?.isRecording != true && serviceInterface?.isPaused != true)
+                    serviceInterface?.startRecording()
+                else
+                    setStateRecording()
             }
         }
         override fun onServiceDisconnected(componentName: ComponentName) {
@@ -91,7 +95,7 @@ public class RecordingViewModel(val sessionManager: SessionManager)
     }
 
     fun unbindService(){
-        unbind()
+        unbind(null)
     }
 
     fun onRecordingAction(){
@@ -137,6 +141,10 @@ public class RecordingViewModel(val sessionManager: SessionManager)
         }
     }
 
+    override fun onRecordingStart() {
+        setStateRecording()
+    }
+
     override fun onRecordingPause() {
         _recordingState.value = Event(Recorder.RecordingStatus.paused)
     }
@@ -149,11 +157,14 @@ public class RecordingViewModel(val sessionManager: SessionManager)
         _recordingState.value = Event(Recorder.RecordingStatus.ended)
     }
 
-    override fun unbind() {
+    override fun unbind(e:Exception?) {
         _isServiceBound.value?.let {
             if(it.peekContent()) _isServiceBound.value = Event(false)
             serviceInterface = null
             _unbindService.value = Event(recordingServiceConnection)
+        }
+        e?.run {
+            _showErrorToast.value = Event(R.string.recording_error)
         }
     }
 

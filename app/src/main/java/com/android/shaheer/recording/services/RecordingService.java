@@ -87,9 +87,8 @@ public class RecordingService extends Service implements Recorder.RecorderTickLi
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        if (intent != null) {
-            String action = intent.getAction();
-            performAction(action);
+        if (intent != null && intent.getAction() != null) {
+            performAction(intent.getAction());
         }
 
         return START_NOT_STICKY;
@@ -98,18 +97,25 @@ public class RecordingService extends Service implements Recorder.RecorderTickLi
     private void performAction(String action){
         switch (action) {
             case ACTION_START:
-                if(mRecorder.startRecording(mRecorder.getOutputFile())) {
+                try{
+                    mRecorder.startRecording(mRecorder.getOutputFile());
                     startForeground(NOTIFICATION_ID, setupNotification(Recorder.RecordingStatus.recording));
                     mTelephonyManager.listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE);
-
                     sessionManager.setLastRecording(mServiceInterface.getFilePath());
+                    if (mRecordingInterface != null) mRecordingInterface.onRecordingStart();
+                }catch (Exception e){
+                    stopForegroundService(e);
                 }
                 break;
             case ACTION_RESUME:
-                mRecorder.resumeRecording();
-                notifyUpdate(Recorder.RecordingStatus.recording);
-                if(mRecordingInterface != null){
-                    mRecordingInterface.onRecordingResume();
+                try {
+                    mRecorder.resumeRecording();
+                    notifyUpdate(Recorder.RecordingStatus.recording);
+                    if (mRecordingInterface != null) {
+                        mRecordingInterface.onRecordingResume();
+                    }
+                }catch (Exception e){
+                    stopForegroundService(e);
                 }
                 break;
             case ACTION_PAUSE:
@@ -120,10 +126,13 @@ public class RecordingService extends Service implements Recorder.RecorderTickLi
                 }
                 break;
             case ACTION_STOP:
-                stopForegroundService();
+                stopForegroundService(null);
                 if(mRecordingInterface != null){
                     mRecordingInterface.onRecordingStop();
                 }
+                break;
+            default:
+                stopForegroundService(null);
                 break;
         }
     }
@@ -133,16 +142,15 @@ public class RecordingService extends Service implements Recorder.RecorderTickLi
         public boolean isPaused() {return (mRecorder.getmRecordingStatus() == Recorder.RecordingStatus.paused);}
         public Recorder.RecordingStatus getRecorderStatus(){return mRecorder.getmRecordingStatus();}
         public String getFilePath(){return FilesUtil.getDir(getApplicationContext()) +"/"+ mFileName;}
-        public void pauseRecording(){
-            performAction(ACTION_PAUSE);
-        }
+        public void startRecording(){ performAction(ACTION_START); }
+        public void pauseRecording(){ performAction(ACTION_PAUSE); }
         public void resumeRecording(){
             performAction(ACTION_RESUME);
         }
         public void stopRecording(){
             performAction(ACTION_STOP);
         }
-        public void stopService(){stopForegroundService();}
+        public void stopService(){stopForegroundService(null);}
         public void setRecordingInterface(RecordingInterface recordingInterface){
             mRecordingInterface = recordingInterface;
         }
@@ -160,12 +168,16 @@ public class RecordingService extends Service implements Recorder.RecorderTickLi
         public void onCallStateChanged(int state, String incomingNumber) {
             switch (state) {
                 case TelephonyManager.CALL_STATE_IDLE:
-                    if(mRecorder.getmRecordingStatus() == Recorder.RecordingStatus.paused){
-                        mRecorder.resumeRecording();
-                        notifyUpdate(Recorder.RecordingStatus.recording);
-                        if(mRecordingInterface != null){
-                            mRecordingInterface.onRecordingResume();
+                    try{
+                        if(mRecorder.getmRecordingStatus() == Recorder.RecordingStatus.paused){
+                            mRecorder.resumeRecording();
+                            notifyUpdate(Recorder.RecordingStatus.recording);
+                            if(mRecordingInterface != null){
+                                mRecordingInterface.onRecordingResume();
+                            }
                         }
+                    }catch (Exception e){
+                        stopForegroundService(e);
                     }
                     break;
                 case TelephonyManager.CALL_STATE_OFFHOOK:
@@ -182,13 +194,13 @@ public class RecordingService extends Service implements Recorder.RecorderTickLi
         }
     };
 
-    private void stopForegroundService() {
+    private void stopForegroundService(Exception e) {
         Log.d(TAG, "Stop foreground service.");
 
         if(mRecorder != null) mRecorder.stopRecording();
 
         if(mRecordingInterface != null){
-            mRecordingInterface.unbind();
+            mRecordingInterface.unbind(e);
         }
         else{
             Log.e(TAG, "interface null.");
@@ -226,7 +238,8 @@ public class RecordingService extends Service implements Recorder.RecorderTickLi
                 .setSmallIcon(R.drawable.ic_notif)
                 .setOnlyAlertOnce(true)
                 .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
-                .setCustomContentView(notificationLayout);
+                .setCustomContentView(notificationLayout)
+                .setSound(null);
 
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
@@ -257,7 +270,7 @@ public class RecordingService extends Service implements Recorder.RecorderTickLi
             NotificationChannel notificationChannel = new NotificationChannel(
                     channelId,
                     channelName,
-                    NotificationManager.IMPORTANCE_HIGH
+                    NotificationManager.IMPORTANCE_LOW
             );
 
             notificationChannel.setShowBadge(false);
@@ -271,10 +284,11 @@ public class RecordingService extends Service implements Recorder.RecorderTickLi
     }
 
     public interface RecordingInterface{
+        void onRecordingStart();
         void onRecordingPause();
         void onRecordingResume();
         void onRecordingStop();
-        void unbind();
+        void unbind(Exception e);
         void onDurationChange(String duration, float amp);
     }
 }

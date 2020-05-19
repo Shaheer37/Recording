@@ -36,8 +36,35 @@ public class FilesUtil {
     private static final String MERGED_FILE = "merged";
 
     public static String getDir(Context context){
-        return Environment.getExternalStorageDirectory().getAbsolutePath()
+        String dirString = Environment.getExternalStorageDirectory().getAbsolutePath()
                 + "/"+context.getString(R.string.app_name);
+        File dir = new File(dirString);
+        if(!dir.exists()) dir.mkdir();
+        return dirString;
+    }
+
+    public static RecordItem createRecordItem(File recording, MediaMetadataRetriever metaRetriever){
+        String fileName = recording.getName();
+        if (fileName.matches(RECORDING_FILE_REGEX)) {
+            String[] split = fileName.split("\\.");
+            String audioFileName = split[0];
+            String audioFileExt = split[1];
+            metaRetriever.setDataSource(recording.getAbsolutePath());
+
+            // convert duration to minute:seconds
+            String durationString = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+            long duration = Long.parseLong(durationString);
+            String totalTime = formatDuration(duration);
+            return new RecordItem(audioFileName, audioFileExt, totalTime, false);
+        }else return null;
+    }
+
+    public static String formatDuration(Long duration){
+        long hours = TimeUnit.MILLISECONDS.toHours(duration);
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(duration);
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(duration);
+        if(hours>0) return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+        else return String.format("%02d:%02d", minutes, seconds);
     }
 
     private ArrayList<File> recordPieces;
@@ -106,29 +133,5 @@ public class FilesUtil {
             Log.e(TAG, "Error merging media files. exception: "+e.getMessage());
             return false;
         }
-    }
-
-    public static RecordItem createRecordItem(File recording, MediaMetadataRetriever metaRetriever){
-        String fileName = recording.getName();
-        if (fileName.matches(RECORDING_FILE_REGEX)) {
-            String[] split = fileName.split("\\.");
-            String audioFileName = split[0];
-            String audioFileExt = split[1];
-            metaRetriever.setDataSource(recording.getAbsolutePath());
-
-            // convert duration to minute:seconds
-            String durationString = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-            long duration = Long.parseLong(durationString);
-            String totalTime = formatDuration(duration);
-            return new RecordItem(audioFileName, audioFileExt, totalTime, false);
-        }else return null;
-    }
-
-    public static String formatDuration(Long duration){
-        long hours = TimeUnit.MILLISECONDS.toHours(duration);
-        long minutes = TimeUnit.MILLISECONDS.toMinutes(duration);
-        long seconds = TimeUnit.MILLISECONDS.toSeconds(duration);
-        if(hours>0) return String.format("%02d:%02d:%02d", hours, minutes, seconds);
-        else return String.format("%02d:%02d", minutes, seconds);
     }
 }

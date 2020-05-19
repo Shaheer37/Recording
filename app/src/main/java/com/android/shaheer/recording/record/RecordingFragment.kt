@@ -36,6 +36,23 @@ class RecordingFragment : Fragment(), ConfigsDialog.OnCloseConfigsDialogListener
 
     private var configsDialog: ConfigsDialog? = null
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        activity?.let {
+            mainViewModel = ViewModelProvider(
+                    it.viewModelStore,
+                    MainViewModelFactory()
+            ).get(MainViewModel::class.java)
+        }
+
+        recordingViewModel = ViewModelProvider(
+                viewModelStore,
+                RecordingViewModelFactory(SessionManager(context.applicationContext)
+                )
+        ).get(RecordingViewModel::class.java)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -66,23 +83,6 @@ class RecordingFragment : Fragment(), ConfigsDialog.OnCloseConfigsDialogListener
         }
 
         btn_play_last_recording.setOnClickListener { recordingViewModel.playRecording() }
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-        activity?.let {
-            mainViewModel = ViewModelProvider(
-                    it.viewModelStore,
-                    MainViewModelFactory()
-            ).get(MainViewModel::class.java)
-        }
-
-        recordingViewModel = ViewModelProvider(
-                viewModelStore,
-                RecordingViewModelFactory(SessionManager(context.applicationContext)
-            )
-        ).get(RecordingViewModel::class.java)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -127,7 +127,7 @@ class RecordingFragment : Fragment(), ConfigsDialog.OnCloseConfigsDialogListener
         mainViewModel.hasAllPermissions.observe(viewLifecycleOwner, EventObserver{
             if(it){
                 val intent = Intent(context, RecordingService::class.java)
-                intent.action = RecordingService.ACTION_START
+                //intent.action = RecordingService.ACTION_START
                 context?.startService(intent)
 
                 recordingViewModel.bindService()
@@ -147,8 +147,6 @@ class RecordingFragment : Fragment(), ConfigsDialog.OnCloseConfigsDialogListener
     override fun onPause() {
         super.onPause()
 
-        recordingViewModel.setStateInitial()
-
         if (CommonMethods.isServiceRunning(RecordingService::class.java, context)) {
             recordingViewModel.unbindService()
         }
@@ -160,11 +158,9 @@ class RecordingFragment : Fragment(), ConfigsDialog.OnCloseConfigsDialogListener
 
     override fun onResume() {
         super.onResume()
-        recordingViewModel.setStateInitial()
 
-        if (CommonMethods.isServiceRunning(RecordingService::class.java, context)) {
-            recordingViewModel.bindService()
-        }
+        if (CommonMethods.isServiceRunning(RecordingService::class.java, context)) recordingViewModel.bindService()
+        else recordingViewModel.setStateInitial()
     }
 
     override fun onCloseConfigsDialog() {
