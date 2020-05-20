@@ -65,15 +65,20 @@ class MainViewModel: ViewModel(), PlayerService.PlayerListener {
     private val _currentPlayingTrack = MutableLiveData<Event<RecordItem>>()
     public val currentPlayingTrack: LiveData<Event<RecordItem>> = _currentPlayingTrack
 
+    private val _showErrorToast = MutableLiveData<Event<Int>>()
+    public val showErrorToast: LiveData<Event<Int>> = _showErrorToast
+
     private var serviceInterface: PlayerService.PlayerInterface? = null
 
     val playerServiceConnection: PlayerServiceConnection = PlayerServiceConnection()
 
-    override fun unbind() {
+    override fun unbind(e:Exception?) {
         Log.d(TAG, "unbind()")
         _isPlayingServiceBound.value = Event(false)
         serviceInterface?.setPlayerListener(null)
         serviceInterface = null
+
+        e?.let { _showErrorToast.value = Event(R.string.playback_error) }
     }
 
     override fun onDurationUpdate(position: Double, duration: Double) {
@@ -89,7 +94,7 @@ class MainViewModel: ViewModel(), PlayerService.PlayerListener {
     }
 
     fun getPlayerstatus() = serviceInterface?.run{
-        _currentPlayingTrack.value = Event(getPlayingTrack())
+        _currentPlayingTrack.value = Event( getPlayingTrack())
         val duration = getTrackDuration()
         val position = getTrackPosition()
         if(duration>0 && position>0){
@@ -126,6 +131,9 @@ class MainViewModel: ViewModel(), PlayerService.PlayerListener {
                 serviceInterface = iBinder as PlayerService.PlayerInterface
                 serviceInterface?.setPlayerListener(this@MainViewModel)
                 _isPlayingServiceBound.value = Event(true)
+                if(!serviceInterface!!.isPlaying() && !serviceInterface!!.isPaused()){
+                    serviceInterface?.play()
+                }
             }
         }
         override fun onServiceDisconnected(componentName: ComponentName) {

@@ -3,9 +3,7 @@ package com.android.shaheer.recording.services
 import android.app.*
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.os.Binder
-import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import android.widget.RemoteViews
@@ -16,7 +14,6 @@ import com.android.shaheer.recording.R
 import com.android.shaheer.recording.model.RecordItem
 import com.android.shaheer.recording.utils.FilesUtil
 import com.android.shaheer.recording.utils.Player
-import com.android.shaheer.recording.utils.Recorder
 import com.android.shaheer.recording.utils.createChannel
 import java.util.concurrent.TimeUnit
 
@@ -37,7 +34,7 @@ class PlayerService : Service(), Player.PlayerEventListener {
     private var isForeground = false
 
     private lateinit var tracks: List<RecordItem>
-    private var playingTrackPosition: Int = -1
+    private var playingTrackPosition: Int = 0
 
     private val player = Player(this)
 
@@ -54,6 +51,15 @@ class PlayerService : Service(), Player.PlayerEventListener {
     }
 
     inner class PlayerInterface: Binder() {
+        fun play(){
+            if(::tracks.isInitialized && tracks.isNotEmpty()) {
+                try {
+                    playTrackAtIndex(playingTrackPosition)
+                } catch (e:Exception) {
+                    stopPlayerService(e)
+                }
+            }else stopPlayerService(Exception(getString(R.string.empty_tracks_exception)))
+        }
         fun setPlayerListener(playerListener: PlayerListener?){
             this@PlayerService.playerListener = playerListener
         }
@@ -68,7 +74,7 @@ class PlayerService : Service(), Player.PlayerEventListener {
             notifyUpdate(player.playingStatus)
         }
         fun seek(position: Int) = player.seek(position.toDouble())
-        fun stopPlayer() = stopService()
+        fun stopPlayer() = stopPlayerService(null)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -82,14 +88,11 @@ class PlayerService : Service(), Player.PlayerEventListener {
         when(action){
             ACTION_START -> {
                 val tracks = intent.extras?.getParcelableArrayList<RecordItem>(TRACKS)
-                val position:Int = intent.extras?.getInt(POSITION)?:0
-                tracks?.let{
-                    this.tracks = it
-                    playTrackAtIndex(position)
-                }?: stopSelf()
+                playingTrackPosition = intent.extras?.getInt(POSITION)?:0
+                tracks?.let{ this.tracks = it }
             }
             ACTION_STOP -> {
-                stopService()
+                stopPlayerService(null)
             }
             ACTION_RESUME -> {
                 if(!player.isPlaying && player.resume()){
@@ -106,10 +109,10 @@ class PlayerService : Service(), Player.PlayerEventListener {
         }
     }
 
-    private fun stopService() {
+    private fun stopPlayerService(e:Exception?) {
         Log.d(RecordingService.TAG, "stopService()")
 
-        playerListener?.unbind()
+        playerListener?.unbind(e)
         player.stop()
         stopForeground(true)
         stopSelf()
@@ -132,7 +135,7 @@ class PlayerService : Service(), Player.PlayerEventListener {
     }
 
     override fun onTrackCompleted() {
-        stopService()
+        stopPlayerService(null)
     }
 
     override fun onDurationUpdate(position: Double, duration: Double) {
@@ -202,7 +205,7 @@ class PlayerService : Service(), Player.PlayerEventListener {
     }
 
     interface PlayerListener {
-        fun unbind()
+        fun unbind(e:Exception?)
         fun onDurationUpdate(position: Double, duration: Double)
         fun pause()
         fun resume()
