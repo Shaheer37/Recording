@@ -60,7 +60,6 @@ class MainActivity :
 
             viewModel.bindService()
         })
-
         viewModel.isPlayingServiceBound.observe(this, EventObserver{
             Log.d(TAG, "service bound: $it")
             if(it){

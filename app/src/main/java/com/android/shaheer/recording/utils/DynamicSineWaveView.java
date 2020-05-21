@@ -68,14 +68,15 @@ public class DynamicSineWaveView extends View {
      *
      * After data change, the computer post a invalidate to redraw.
      */
-    private boolean requestFutureChange = false;
-    private final Object requestCondition = new Object();
+//    private boolean requestFutureChange = false;
+//    private final Object requestCondition = new Object();
 
     private long startAnimateTime = 0;
 
     private Runnable animateTicker = new Runnable() {
         public void run() {
-            requestUpdateFrame();
+//            requestUpdateFrame();
+            createComputationThread().start();
             ViewCompat.postOnAnimation(DynamicSineWaveView.this, this);
         }
     };
@@ -105,7 +106,7 @@ public class DynamicSineWaveView extends View {
             return;
         }
 
-        createComputationThread().start();
+//        createComputationThread().start();
     }
 
     /**
@@ -177,15 +178,15 @@ public class DynamicSineWaveView extends View {
         return baseWaveAmplitudeScale;
     }
 
-    /**
-     * Update just one frame.
-     */
-    public void requestUpdateFrame() {
-        synchronized (requestCondition) {
-            requestFutureChange = true;
-            requestCondition.notify();
-        }
-    }
+//    /**
+//     * Update just one frame.
+//     */
+//    public void requestUpdateFrame() {
+//        synchronized (requestCondition) {
+//            requestFutureChange = true;
+//            requestCondition.notify();
+//        }
+//    }
 
     @Override
     protected void onDetachedFromWindow() {
@@ -231,24 +232,24 @@ public class DynamicSineWaveView extends View {
         return new Thread(new Runnable() {
             @Override
             public void run() {
-                while (true) {
-                    synchronized (requestCondition) {
-                        try {
-                            if (!requestFutureChange)
-                                requestCondition.wait();
-                            if (!requestFutureChange)
-                                continue;
-                            requestFutureChange = false;
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    // If tick has new data offered, post a invalidate notify.
+//                while (true) {
+//                    synchronized (requestCondition) {
+//                        try {
+//                            if (!requestFutureChange)
+//                                requestCondition.wait();
+//                            if (!requestFutureChange)
+//                                continue;
+//                            requestFutureChange = false;
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//
+//                    // If tick has new data offered, post a invalidate notify.
                     if (tick()) {
                         postInvalidate();
                     }
-                }
+//                }
             }
         });
     }

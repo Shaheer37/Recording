@@ -56,9 +56,7 @@ class RecordingFragment : Fragment(), ConfigsDialog.OnCloseConfigsDialogListener
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_recording, container, false)
-
-        return view
+        return inflater.inflate(R.layout.fragment_recording, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -83,6 +81,10 @@ class RecordingFragment : Fragment(), ConfigsDialog.OnCloseConfigsDialogListener
         }
 
         btn_play_last_recording.setOnClickListener { recordingViewModel.playRecording() }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -154,6 +156,8 @@ class RecordingFragment : Fragment(), ConfigsDialog.OnCloseConfigsDialogListener
         if(configsDialog != null && configsDialog?.isShowing == true){
             configsDialog?.dismiss()
         }
+
+        view_sine_wave.stopAnimation()
     }
 
     override fun onResume() {
