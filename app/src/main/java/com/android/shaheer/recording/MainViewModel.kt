@@ -85,6 +85,11 @@ class MainViewModel: ViewModel(), PlayerService.PlayerListener {
         _playerDurationUpdate.value = Pair(position, duration)
     }
 
+    override fun start() {
+        if(serviceInterface?.isPlaying() == true)
+            _playerState.value = Event(PlayerDialog.PlayerState.Playing)
+    }
+
     override fun pause() {
         _playerState.value = Event(PlayerDialog.PlayerState.Paused)
     }

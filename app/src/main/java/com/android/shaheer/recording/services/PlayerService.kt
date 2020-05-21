@@ -132,6 +132,7 @@ class PlayerService : Service(), Player.PlayerEventListener {
         }else{
             startForeground(NOTIFICATION_ID, setupNotification(player.playingStatus))
         }
+        playerListener?.start()
     }
 
     override fun onTrackCompleted() {
@@ -207,6 +208,7 @@ class PlayerService : Service(), Player.PlayerEventListener {
     interface PlayerListener {
         fun unbind(e:Exception?)
         fun onDurationUpdate(position: Double, duration: Double)
+        fun start()
         fun pause()
         fun resume()
     }
