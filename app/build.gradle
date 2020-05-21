@@ -42,22 +42,17 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
     implementation 'pub.devrel:easypermissions:3.0.0'
-//    implementation 'com.googlecode.mp4parser:isoparser:1.1.21'
     implementation 'org.mp4parser:isoparser:1.9.41'
     implementation 'org.mp4parser:muxer:1.9.41'
 
     implementation 'com.github.Omega-R:OmegaCenterIconButton:0.0.4@aar'
-
-    implementation 'com.jakewharton:butterknife:9.0.0-rc1'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    kapt 'com.jakewharton:butterknife-compiler:10.1.0'
 
     implementation 'com.afollestad.material-dialogs:input:3.2.1'
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.3'
 
 
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+//    testImplementation 'junit:junit:4.12'
+//    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+//    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }

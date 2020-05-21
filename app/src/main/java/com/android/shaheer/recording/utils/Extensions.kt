@@ -6,6 +6,7 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Build
 import android.util.TypedValue
+import android.view.Gravity
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -14,6 +15,7 @@ import com.google.android.material.snackbar.Snackbar
 
 fun Context.showToast(stringResource: Int, duration: Int = Toast.LENGTH_SHORT){
     val toast = Toast.makeText(this, getString(stringResource), duration)
+    toast.setGravity(Gravity.CENTER, 0,0)
     toast.show()
 }
 
@@ -34,7 +36,7 @@ fun NotificationManager.createChannel(channelId: String, channelName: String, ch
         val notificationChannel = NotificationChannel(
             channelId,
             channelName,
-            NotificationManager.IMPORTANCE_HIGH
+            NotificationManager.IMPORTANCE_LOW
         )
         .apply {
             setShowBadge(false)

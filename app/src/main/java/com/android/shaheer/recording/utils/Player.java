@@ -59,8 +59,9 @@ public class Player {
         mEventListener = playerEventListener;
     }
 
-    public boolean play(String track){
+    public void play(String track) throws IOException {
         try {
+
             mMediaPlayer = new MediaPlayer();
             mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
@@ -81,9 +82,8 @@ public class Player {
         }catch (IOException exception){
             isPrepared = false;
             exception.printStackTrace();
-            return false;
+            throw exception;
         }
-        return true;
     }
 
     private void start(){

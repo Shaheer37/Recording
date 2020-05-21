@@ -32,6 +32,8 @@ public class Recorder {
     private RecordingStatus mRecordingStatus = RecordingStatus.initiated;
     public RecordingStatus getmRecordingStatus() {return mRecordingStatus;}
 
+    private boolean isPrepared = false;
+
     private long mStartTime = 0;
 
     private File mOutputFile;
@@ -75,7 +77,7 @@ public class Recorder {
         return mOutputFile.getName();
     }
 
-    public boolean startRecording(File outputFile) {
+    public void startRecording(File outputFile) throws Exception {
         mRecorder = new MediaRecorder();
         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
@@ -83,24 +85,22 @@ public class Recorder {
         mRecorder.setAudioEncodingBitRate(bitrate);
         mRecorder.setAudioChannels(channels);
         mRecorder.setAudioSamplingRate(Constants.Audio.SAMPLE_RATE_441);
-        outputFile.getParentFile().mkdirs();
         mRecorder.setOutputFile(outputFile.getAbsolutePath());
 
         try {
             mRecorder.prepare();
             mRecorder.start();
 
+            isPrepared = true;
+
             mHandler.postDelayed(mTickExecutor, DELAY_MILLI);
             mRecordingStatus = RecordingStatus.recording;
             Log.d(TAG,"started recording to "+outputFile.getAbsolutePath());
-        } catch (IOException e) {
+        } catch (Exception e) {
+            isPrepared = false;
             Log.e(TAG, "prepare() failed "+e.getMessage());
-            return false;
-        } catch (IllegalStateException e){
-            Log.e(TAG, "prepare() failed "+e.getMessage());
-            return false;
+            throw e;
         }
-        return true;
     }
 
     public void pauseRecording(){
@@ -116,7 +116,7 @@ public class Recorder {
         }
     }
 
-    public void resumeRecording(){
+    public void resumeRecording() throws Exception {
         Log.e(TAG, "resumeRecording()");
         if(mRecordingStatus == RecordingStatus.paused) {
             mRecordingStatus = RecordingStatus.recording;
@@ -126,22 +126,22 @@ public class Recorder {
             } else {
                 File file = filesUtil.getFile(mContext, null, Constants.Audio.FILE_EXT_M4A);
                 filesUtil.addRecordingPiece(file);
-                Log.e(TAG, "is Recording started: "+startRecording(file));
+                startRecording(file);
             }
         }
     }
 
     public void stopRecording() {
         if(mRecorder != null) {
-            mRecorder.stop();
+            if(isPrepared) mRecorder.stop();
+
             mRecorder.release();
             mRecorder = null;
+
             mHandler.removeCallbacks(mTickExecutor);
             if (Build.VERSION.SDK_INT < 24) filesUtil.mergeFiles(mContext, mOutputFile, Constants.Audio.FILE_EXT_M4A);
         }
-        else{
-            Log.e(TAG, "recorder is null");
-        }
+        else Log.e(TAG, "recorder is null");
     }
 
     private void tick() {

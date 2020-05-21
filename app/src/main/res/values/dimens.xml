@@ -4,6 +4,7 @@
     <dimen name="vertical_margin">16dp</dimen>
 
     <dimen name="player_dialog_view_spacing">10dp</dimen>
+    <dimen name="player_dialog_btn_spacing">20dp</dimen>
 
     <dimen name="waves_background_size">300dp</dimen>
     <dimen name="waves_view_size">290dp</dimen>
@@ -39,4 +40,5 @@
     <dimen name="record_row_vertical_spacing">5dp</dimen>
     <dimen name="record_row_horizontal_spacing">10dp</dimen>
     <dimen name="bg_notification_icon_corner_radius">10dp</dimen>
+    <dimen name="player_dialog_title_size">20sp</dimen>
 </resources>

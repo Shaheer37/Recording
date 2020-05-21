@@ -88,7 +88,7 @@
         android:id="@+id/group_recording"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:constraint_referenced_ids="tv_record_duration,btn_recording_action,tv_recording_action,btn_recording_stop,tv_recording_stop"/>
 
     <TextView

@@ -9,8 +9,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import butterknife.BindView
-import butterknife.ButterKnife
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.input.input
 import com.android.shaheer.recording.MainViewModel
@@ -21,6 +19,7 @@ import com.android.shaheer.recording.model.RecordItem
 import com.android.shaheer.recording.utils.*
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.fragment_view_records.*
 
 class ViewRecordsFragment : Fragment(),
         RecordingListAdapter.ItemInteractionListener
@@ -29,9 +28,6 @@ class ViewRecordsFragment : Fragment(),
     companion object{
         private const val TAG = "ViewRecordsFragment"
     }
-
-    @BindView(R.id.rv_recordings) lateinit var rvRecordings: RecyclerView
-    @BindView(R.id.toolbar) lateinit var toolbar: Toolbar
 
     lateinit var renameMenuAction: MenuItem
     lateinit var deleteMenuAction: MenuItem
@@ -59,9 +55,7 @@ class ViewRecordsFragment : Fragment(),
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_view_records, container, false)
-        ButterKnife.bind(this, view)
-        return view
+        return inflater.inflate(R.layout.fragment_view_records, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -69,7 +63,7 @@ class ViewRecordsFragment : Fragment(),
 
         setupMenuActionButtons()
 
-        rvRecordings.apply {
+        rv_recordings.apply {
             adapter = recordingAdapter
             addItemDecoration(
                     SpacingItemDecoration(

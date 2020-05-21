@@ -14,6 +14,7 @@ import com.android.shaheer.recording.services.PlayerService
 import com.android.shaheer.recording.utils.CommonMethods
 import com.android.shaheer.recording.utils.Constants
 import com.android.shaheer.recording.utils.EventObserver
+import com.android.shaheer.recording.utils.showToast
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 
@@ -99,13 +100,15 @@ class MainActivity :
                 playerDialog?.setCurrentPlayingTrack(it)
             }
         })
+
+        viewModel.showErrorToast.observe(this, EventObserver{showToast(it)})
     }
 
     override fun onPause() {
         super.onPause()
 
         if (CommonMethods.isServiceRunning(PlayerService::class.java, this)) {
-            viewModel.unbind()
+            viewModel.unbind(null)
         }
     }
 
