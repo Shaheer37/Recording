@@ -12,7 +12,6 @@ android {
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
-//        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -30,10 +29,6 @@ android {
     }
 }
 
-//configurations.all {
-//    exclude group:'junit', module:'junit'
-//}
-
 dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -44,6 +39,7 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
     implementation 'pub.devrel:easypermissions:3.0.0'
+
     implementation('org.mp4parser:isoparser:1.9.41') {
         exclude group: 'junit', module: 'junit'
     }
@@ -56,9 +52,4 @@ dependencies {
     implementation 'com.afollestad.material-dialogs:input:3.2.1'
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.3'
-
-
-//    testImplementation 'junit:junit:4.12'
-//    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-//    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }
