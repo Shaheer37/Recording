@@ -3,17 +3,19 @@ package com.android.shaheer.recording.dialogs.configs
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import androidx.core.content.res.ResourcesCompat
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.android.shaheer.recording.R
+import com.android.shaheer.recording.databinding.DialogConfigsBinding
 import com.android.shaheer.recording.utils.Constants.Audio.CHANNELS_MONO
 import com.android.shaheer.recording.utils.Constants.Audio.CHANNELS_STEREO
 import com.android.shaheer.recording.utils.SessionManager
 import com.android.shaheer.recording.utils.SpacingItemDecoration
-import kotlinx.android.synthetic.main.dialog_configs.*
 
 class ConfigsDialog (
         context: Context,
@@ -22,6 +24,8 @@ class ConfigsDialog (
 
     private val sessionManager = SessionManager(context)
 
+    private val binding: DialogConfigsBinding = DialogConfigsBinding.inflate(LayoutInflater.from(context))
+
     override fun onBackPressed() {
         super.onBackPressed()
         listener.onCloseConfigsDialog()
@@ -29,15 +33,15 @@ class ConfigsDialog (
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val view = View.inflate(context, R.layout.dialog_configs, null)
-        setContentView(view)
 
-        btn_channel_mono.setOnClickListener {
+        setContentView(binding.root)
+
+        binding.btnChannelMono.setOnClickListener {
             sessionManager.channels = CHANNELS_MONO
             setupChannelBtns(CHANNELS_MONO)
         }
 
-        btn_channel_stereo.setOnClickListener {
+        binding.btnChannelStereo.setOnClickListener {
             sessionManager.channels = CHANNELS_STEREO
             setupChannelBtns(CHANNELS_STEREO)
         }
@@ -50,8 +54,8 @@ class ConfigsDialog (
         window?.decorView?.background?.alpha = 0
 
         val bitrates = BitrateAdapter.createBitrates(sessionManager.bitrate)
-        rv_bitrates.adapter = BitrateAdapter(bitrates.first, bitrates.second, this)
-        rv_bitrates.addItemDecoration(
+        binding.rvBitrates.adapter = BitrateAdapter(bitrates.first, bitrates.second, this)
+        binding.rvBitrates.addItemDecoration(
                 SpacingItemDecoration(
                         context.resources.getDimension(R.dimen.record_row_vertical_spacing).toInt()
                 )
@@ -62,12 +66,12 @@ class ConfigsDialog (
     private fun setupChannelBtns(channels: Int){
         when(channels){
             CHANNELS_MONO -> {
-                btn_channel_mono.setChannelSelected(true)
-                btn_channel_stereo.setChannelSelected(false)
+                binding.btnChannelMono.setChannelSelected(true)
+                binding.btnChannelStereo.setChannelSelected(false)
             }
             CHANNELS_STEREO-> {
-                btn_channel_mono.setChannelSelected(false)
-                btn_channel_stereo.setChannelSelected(true)
+                binding.btnChannelMono.setChannelSelected(false)
+                binding.btnChannelStereo.setChannelSelected(true)
             }
         }
     }

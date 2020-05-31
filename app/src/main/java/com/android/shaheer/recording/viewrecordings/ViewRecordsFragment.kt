@@ -16,11 +16,11 @@ import com.afollestad.materialdialogs.input.input
 import com.android.shaheer.recording.MainViewModel
 import com.android.shaheer.recording.MainViewModelFactory
 import com.android.shaheer.recording.R
+import com.android.shaheer.recording.databinding.FragmentViewRecordsBinding
 import com.android.shaheer.recording.model.RecordItem
 import com.android.shaheer.recording.utils.*
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.fragment_view_records.*
 
 class ViewRecordsFragment : Fragment(),
         RecordingListAdapter.ItemInteractionListener
@@ -30,8 +30,11 @@ class ViewRecordsFragment : Fragment(),
         private const val TAG = "ViewRecordsFragment"
     }
 
-    lateinit var renameMenuAction: MenuItem
-    lateinit var deleteMenuAction: MenuItem
+    private var _binding: FragmentViewRecordsBinding? = null
+    private val binding get() = _binding!!
+
+    private lateinit var renameMenuAction: MenuItem
+    private lateinit var deleteMenuAction: MenuItem
 
     private lateinit var viewModel: ViewRecordsViewModel
     private lateinit var mainViewModel: MainViewModel
@@ -58,7 +61,10 @@ class ViewRecordsFragment : Fragment(),
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_view_records, container, false)
+        _binding = FragmentViewRecordsBinding.inflate(inflater,container,false)
+        val view = binding.root
+        return view
+//        return inflater.inflate(R.layout.fragment_view_records, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -66,7 +72,7 @@ class ViewRecordsFragment : Fragment(),
 
         setupMenuActionButtons()
 
-        rv_recordings.apply {
+        binding.rvRecordings.apply {
             setHasFixedSize(true)
             adapter = recordingAdapter
             addItemDecoration(
@@ -109,10 +115,10 @@ class ViewRecordsFragment : Fragment(),
 
     private fun setupMenuActionButtons(){
 
-        toolbar.setNavigationOnClickListener { findNavController().navigateUp() }
+        binding.toolbar.setNavigationOnClickListener { findNavController().navigateUp() }
 
-        deleteMenuAction = toolbar.menu.findItem(R.id.action_delete)
-        renameMenuAction = toolbar.menu.findItem(R.id.action_rename)
+        deleteMenuAction = binding.toolbar.menu.findItem(R.id.action_delete)
+        renameMenuAction = binding.toolbar.menu.findItem(R.id.action_rename)
 
         renameMenuAction.setOnMenuItemClickListener {
             viewModel.renameSelectedItem()
@@ -146,17 +152,17 @@ class ViewRecordsFragment : Fragment(),
         selectedCount == 1 -> {
             renameMenuAction.isVisible = true
             deleteMenuAction.isVisible = true
-            (toolbar.layoutParams as AppBarLayout.LayoutParams).scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_NO_SCROLL
+            (binding.toolbar.layoutParams as AppBarLayout.LayoutParams).scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_NO_SCROLL
         }
         selectedCount > 1 -> {
             renameMenuAction.isVisible = false
             deleteMenuAction.isVisible = true
-            (toolbar.layoutParams as AppBarLayout.LayoutParams).scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_NO_SCROLL
+            (binding.toolbar.layoutParams as AppBarLayout.LayoutParams).scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_NO_SCROLL
         }
         else -> {
             renameMenuAction.isVisible = false
             deleteMenuAction.isVisible = false
-            (toolbar.layoutParams as AppBarLayout.LayoutParams).scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
+            (binding.toolbar.layoutParams as AppBarLayout.LayoutParams).scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
         }
     }
 

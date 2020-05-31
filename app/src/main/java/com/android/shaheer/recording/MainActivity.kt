@@ -7,8 +7,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.android.shaheer.recording.databinding.ActivityMainBinding
 import com.android.shaheer.recording.dialogs.PlayerDialog
 import com.android.shaheer.recording.services.PlayerService
 import com.android.shaheer.recording.utils.CommonMethods
@@ -36,7 +38,7 @@ class MainActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        val binding: ActivityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         viewModel = ViewModelProvider(
                 viewModelStore,

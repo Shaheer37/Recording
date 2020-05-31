@@ -1,47 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/cv_item"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/record_row_horizontal_spacing"
-    android:layout_marginEnd="@dimen/record_row_horizontal_spacing"
-    app:cardElevation="@dimen/record_cv_elevation">
-    <RelativeLayout
-        android:id="@+id/cl_item"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="item"
+            type="com.android.shaheer.recording.model.RecordItem"/>
+    </data>
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_row_record">
-        <ImageView
-            android:id="@+id/btn_play_pause"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_centerVertical="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="@dimen/record_icon_margins"
-            android:layout_marginBottom="@dimen/record_icon_margins"
-            android:layout_marginStart="@dimen/record_icon_margins"
-            android:scaleType="center"
-            android:src="@drawable/ic_play_circle"
-            android:background="@android:color/transparent"/>
-        <TextView
-            android:id="@+id/tv_recording_title"
-            android:layout_width="wrap_content"
+        android:layout_marginStart="@dimen/record_row_horizontal_spacing"
+        android:layout_marginEnd="@dimen/record_row_horizontal_spacing"
+        app:cardElevation="@dimen/record_cv_elevation"
+        app:isSelected="@{item.selected}">
+        <RelativeLayout
+            android:id="@+id/cl_item"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignTop="@+id/btn_play_pause"
-            android:layout_toEndOf="@+id/btn_play_pause"
-            android:layout_marginStart="@dimen/record_icon_margins"
-            android:textSize="15sp"
-            android:textStyle="bold"/>
-        <TextView
-            android:id="@+id/tv_recording_duration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignBottom="@+id/btn_play_pause"
-            android:layout_toEndOf="@+id/btn_play_pause"
-            android:layout_marginStart="@dimen/record_icon_margins" />
-    </RelativeLayout>
-</androidx.cardview.widget.CardView>
+            app:isSelected="@{item.selected}">
+            <ImageView
+                android:id="@+id/btn_play_pause"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="@dimen/record_icon_margins"
+                android:layout_marginBottom="@dimen/record_icon_margins"
+                android:layout_marginStart="@dimen/record_icon_margins"
+                android:scaleType="center"
+                android:src="@drawable/ic_play_circle"
+                android:background="@android:color/transparent"/>
+            <TextView
+                android:id="@+id/tv_recording_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignTop="@+id/btn_play_pause"
+                android:layout_toEndOf="@+id/btn_play_pause"
+                android:layout_marginStart="@dimen/record_icon_margins"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:text="@{item.recordAddress}"/>
+            <TextView
+                android:id="@+id/tv_recording_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignBottom="@+id/btn_play_pause"
+                android:layout_toEndOf="@+id/btn_play_pause"
+                android:layout_marginStart="@dimen/record_icon_margins"
+                android:text="@{item.recordDuration}"/>
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</layout>

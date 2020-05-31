@@ -4,13 +4,14 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import android.widget.SeekBar
 import com.android.shaheer.recording.R
+import com.android.shaheer.recording.databinding.DialogPlayerBinding
 import com.android.shaheer.recording.model.RecordItem
 import com.android.shaheer.recording.utils.FilesUtil
-import kotlinx.android.synthetic.main.dialog_player.*
 
 class PlayerDialog(
         context: Context,
@@ -21,12 +22,12 @@ class PlayerDialog(
         Playing, Paused
     }
 
+    private val binding = DialogPlayerBinding.inflate(LayoutInflater.from(context))
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val view = View.inflate(context, R.layout.dialog_player, null)
-        setContentView(view)
+        setContentView(binding.root)
 
-//        tv_title.isSelected = true
         setBtnEvents()
     }
 
@@ -42,11 +43,11 @@ class PlayerDialog(
         super.onBackPressed()
     }
 
-    fun setBtnEvents(){
-        btn_stop.setOnClickListener { playerDialogListener.stopPlayer() }
-        btn_play.setOnClickListener { playerDialogListener.onPlayToggle() }
+    private fun setBtnEvents(){
+        binding.btnStop.setOnClickListener { playerDialogListener.stopPlayer() }
+        binding.btnPlay.setOnClickListener { playerDialogListener.onPlayToggle() }
 
-        sb_progress.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener{
+        binding.sbProgress.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener{
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if(fromUser){
                     Log.d("PlayerDialog", progress.toString())
@@ -59,21 +60,21 @@ class PlayerDialog(
     }
 
     fun setCurrentPlayingTrack(recordItem: RecordItem){
-        tv_title.text = recordItem.recordAddress
-        tv_duration.text = recordItem.recordDuration
+        binding.tvTitle.text = recordItem.recordAddress
+        binding.tvDuration.text = recordItem.recordDuration
     }
 
     fun pause(){
-        btn_play.setImageDrawable(context.getDrawable(R.drawable.ic_play_player))
+        binding.btnPlay.setImageDrawable(context.getDrawable(R.drawable.ic_play_player))
     }
 
     fun play(){
-        btn_play.setImageDrawable(context.getDrawable(R.drawable.ic_pause_player))
+        binding.btnPlay.setImageDrawable(context.getDrawable(R.drawable.ic_pause_player))
     }
 
     fun durationUpdate(position: Double, duration: Double) {
-        sb_progress.progress = ((position/duration)*100).toInt()
-        tv_progress.text = FilesUtil.formatDuration(position.toLong())
+        binding.sbProgress.progress = ((position/duration)*100).toInt()
+        binding.tvProgress.text = FilesUtil.formatDuration(position.toLong())
     }
 
     interface PlayerDialogListener{
