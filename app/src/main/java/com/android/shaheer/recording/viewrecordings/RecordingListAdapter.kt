@@ -3,6 +3,7 @@ package com.android.shaheer.recording.viewrecordings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.cardview.widget.CardView
@@ -10,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.vectordrawable.graphics.drawable.AnimationUtilsCompat
 import com.android.shaheer.recording.R
 import com.android.shaheer.recording.model.RecordItem
 import kotlinx.android.extensions.LayoutContainer
@@ -35,8 +37,19 @@ class RecordingListAdapter(
 
     inner class ViewHolder(override val containerView: View): RecyclerView.ViewHolder(containerView), LayoutContainer{
 
+        init {
+            containerView.setOnClickListener { itemInteractionListener.onItemClicked(adapterPosition) }
+            containerView.setOnLongClickListener {
+                itemInteractionListener.onItemSelected(adapterPosition)
+                true
+            }
+        }
+
         fun bindView(){
             val item = getItem(adapterPosition)
+
+//            cv_item.animation = AnimationUtils.loadAnimation(containerView.context, R.anim.fade_in)
+
             tv_recording_title.text = item.recordAddress
             tv_recording_duration.text = item.recordDuration
 
@@ -47,22 +60,12 @@ class RecordingListAdapter(
                 cv_item.cardElevation = containerView.resources.getDimensionPixelSize(R.dimen.record_cv_elevation).toFloat()
                 cl_item.background = containerView.resources.getDrawable(R.drawable.bg_row_record, null)
             }
-
-            cv_item.setOnLongClickListener {
-                itemInteractionListener.onItemSelected(adapterPosition)
-                true
-            }
-            cv_item.setOnClickListener { itemInteractionListener.onItemClicked(adapterPosition) }
-            btn_play_pause.setOnClickListener { itemInteractionListener.onItemPlayClicked(adapterPosition) }
         }
-
-
     }
 
     interface ItemInteractionListener{
         fun onItemSelected(position: Int)
         fun onItemClicked(position: Int)
-        fun onItemPlayClicked(position: Int)
     }
 }
 

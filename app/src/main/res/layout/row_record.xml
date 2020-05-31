@@ -8,45 +8,30 @@
     android:layout_marginStart="@dimen/record_row_horizontal_spacing"
     android:layout_marginEnd="@dimen/record_row_horizontal_spacing"
     app:cardElevation="@dimen/record_cv_elevation">
-<!--    android:layout_marginTop="@dimen/record_row_vertical_spacing"-->
-<!--    android:layout_marginBottom="@dimen/record_row_vertical_spacing"-->
-<!--    >-->
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
         android:id="@+id/cl_item"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@drawable/bg_row_record">
-        <ImageButton
+        <ImageView
             android:id="@+id/btn_play_pause"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/barrier_icon"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true"
             android:layout_marginTop="@dimen/record_icon_margins"
             android:layout_marginBottom="@dimen/record_icon_margins"
             android:layout_marginStart="@dimen/record_icon_margins"
             android:scaleType="center"
             android:src="@drawable/ic_play_circle"
             android:background="@android:color/transparent"/>
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/barrier_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="end"
-            app:constraint_referenced_ids="btn_play_pause"
-            />
         <TextView
             android:id="@+id/tv_recording_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/tv_recording_duration"
-            app:layout_constraintStart_toEndOf="@id/barrier_icon"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"
-            app:layout_constraintHorizontal_bias="0"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@+id/btn_play_pause"
+            android:layout_toEndOf="@+id/btn_play_pause"
             android:layout_marginStart="@dimen/record_icon_margins"
             android:textSize="15sp"
             android:textStyle="bold"/>
@@ -54,11 +39,9 @@
             android:id="@+id/tv_recording_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/tv_recording_title"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/barrier_icon"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0"
+            android:layout_alignParentEnd="true"
+            android:layout_alignBottom="@+id/btn_play_pause"
+            android:layout_toEndOf="@+id/btn_play_pause"
             android:layout_marginStart="@dimen/record_icon_margins" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </RelativeLayout>
 </androidx.cardview.widget.CardView>

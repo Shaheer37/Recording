@@ -41,10 +41,6 @@ class ViewRecordsViewModel(private val sessionManager: SessionManager): ViewMode
     private var _playRecord = MutableLiveData<Event<Pair<Int, ArrayList<RecordItem>>>>()
     val playRecord: LiveData<Event<Pair<Int, ArrayList<RecordItem>>>> = _playRecord
 
-    fun onItemPlayClicked(context:Context, position: Int) = _recordings.value?.let { recordingList->
-        _playRecord.value = Event(Pair(position, recordingList.toCollection(ArrayList())))
-    }
-
     fun onRecordItemSelected(position: Int) = viewModelScope.launch(Dispatchers.IO) {
         _recordings.value?.toMutableList()?.let { recordingList ->
             val record = recordingList[position].copy()
@@ -63,6 +59,7 @@ class ViewRecordsViewModel(private val sessionManager: SessionManager): ViewMode
 
     fun onRecordItemClicked(position: Int) = _recordings.value?.let {
         if(it[position].isSelected) onRecordItemSelected(position)
+        else _playRecord.value = Event(Pair(position, it.toCollection(ArrayList())))
     }
 
 

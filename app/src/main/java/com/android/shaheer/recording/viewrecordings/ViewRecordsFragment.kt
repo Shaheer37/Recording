@@ -2,18 +2,19 @@ package com.android.shaheer.recording.viewrecordings
 
 import android.content.Context
 import android.os.Bundle
-import android.view.*
+import android.os.Handler
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.input.input
 import com.android.shaheer.recording.MainViewModel
 import com.android.shaheer.recording.MainViewModelFactory
-
 import com.android.shaheer.recording.R
 import com.android.shaheer.recording.model.RecordItem
 import com.android.shaheer.recording.utils.*
@@ -39,6 +40,8 @@ class ViewRecordsFragment : Fragment(),
 
     private val recordingAdapter = RecordingListAdapter(this)
 
+    private val handler = Handler()
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
@@ -58,12 +61,13 @@ class ViewRecordsFragment : Fragment(),
         return inflater.inflate(R.layout.fragment_view_records, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         setupMenuActionButtons()
 
         rv_recordings.apply {
+            setHasFixedSize(true)
             adapter = recordingAdapter
             addItemDecoration(
                     SpacingItemDecoration(
@@ -73,9 +77,9 @@ class ViewRecordsFragment : Fragment(),
         }
 
         viewModel.getRecordings.observe(viewLifecycleOwner,
-            EventObserver{ forced ->
-                context?.let { viewModel.getRecordingsFromFiles(it, forced) }
-            }
+                EventObserver{ forced ->
+                    context?.let { viewModel.getRecordingsFromFiles(it, forced) }
+                }
         )
 
         viewModel.recordings.observe(viewLifecycleOwner, Observer { recordingAdapter.submitList(it) })
@@ -89,12 +93,11 @@ class ViewRecordsFragment : Fragment(),
         viewModel.playRecord.observe(viewLifecycleOwner, EventObserver{
             mainViewModel.playRecord(it)
         })
-
     }
 
     override fun onResume() {
         super.onResume()
-        context?.let { viewModel.getRecordingsFromFiles(it) }
+        handler.postDelayed({ context?.let { viewModel.getRecordingsFromFiles(it) } }, 50)
     }
 
     override fun onPause() {
@@ -137,10 +140,6 @@ class ViewRecordsFragment : Fragment(),
 
     override fun onItemClicked(position: Int) {
         viewModel.onRecordItemClicked(position)
-    }
-
-    override fun onItemPlayClicked(position: Int) {
-        context?.let { viewModel.onItemPlayClicked(it, position) }
     }
 
     private fun onRecordingsSelected(selectedCount: Int) = when{
