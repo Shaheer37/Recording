@@ -19,6 +19,7 @@ import com.android.shaheer.recording.utils.EventObserver
 import com.android.shaheer.recording.utils.showToast
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
+import java.lang.IllegalArgumentException
 
 class MainActivity :
     AppCompatActivity(),
@@ -74,7 +75,8 @@ class MainActivity :
                     playerDialog?.dismiss()
                     playerDialog = null
                 }
-                unbindService(viewModel.playerServiceConnection)
+                try { unbindService(viewModel.playerServiceConnection) }
+                catch (e: IllegalArgumentException){e.printStackTrace()}
             }
         })
 
