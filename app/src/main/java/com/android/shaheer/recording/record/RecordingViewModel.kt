@@ -83,6 +83,7 @@ public class RecordingViewModel(val sessionManager: SessionManager)
 
     fun setStateInitial(){
         _state.value = RecordingFragment.RecordingStatus.notRecording
+        _amplitude.value = 1f
     }
     fun setStateRecording(){
         _state.value = RecordingFragment.RecordingStatus.recording

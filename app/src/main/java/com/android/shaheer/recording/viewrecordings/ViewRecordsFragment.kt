@@ -62,8 +62,8 @@ class ViewRecordsFragment : Fragment(),
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         _binding = FragmentViewRecordsBinding.inflate(inflater,container,false)
-        val view = binding.root
-        return view
+
+        return binding.root
 //        return inflater.inflate(R.layout.fragment_view_records, container, false)
     }
 

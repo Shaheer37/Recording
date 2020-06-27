@@ -21,3 +21,9 @@ fun setRowElevation(viewGroup: ViewGroup, isSelected: Boolean) {
     if(isSelected) viewGroup.background = viewGroup.resources.getDrawable(R.drawable.bg_row_record_selected, null)
     else viewGroup.background = viewGroup.resources.getDrawable(R.drawable.bg_row_record, null)
 }
+
+@BindingAdapter("app:isVisible")
+fun toggleVisibility(view: View, isVisible:Boolean?){
+    view.visibility = if(isVisible == true) View.VISIBLE
+        else View.INVISIBLE
+}

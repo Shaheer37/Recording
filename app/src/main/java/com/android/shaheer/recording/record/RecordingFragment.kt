@@ -17,12 +17,15 @@ import androidx.navigation.fragment.findNavController
 import com.android.shaheer.recording.MainViewModel
 import com.android.shaheer.recording.MainViewModelFactory
 import com.android.shaheer.recording.R
+import com.android.shaheer.recording.databinding.FragmentRecordingBinding
+import com.android.shaheer.recording.databinding.FragmentViewRecordsBinding
 import com.android.shaheer.recording.dialogs.configs.ConfigsDialog
 import com.android.shaheer.recording.services.RecordingService
 import com.android.shaheer.recording.utils.*
 import com.omega_r.libs.OmegaCenterIconButton
 import kotlinx.android.synthetic.main.fragment_recording.*
 import kotlinx.android.synthetic.main.row_record.*
+import java.lang.IllegalArgumentException
 
 
 class RecordingFragment : Fragment(), ConfigsDialog.OnCloseConfigsDialogListener {
@@ -30,6 +33,9 @@ class RecordingFragment : Fragment(), ConfigsDialog.OnCloseConfigsDialogListener
     enum class RecordingStatus {
         notRecording, recording
     }
+
+    private var _binding: FragmentRecordingBinding? = null
+    private val binding get() = _binding!!
 
     private lateinit var recordingViewModel: RecordingViewModel
     private lateinit var mainViewModel: MainViewModel
@@ -56,15 +62,19 @@ class RecordingFragment : Fragment(), ConfigsDialog.OnCloseConfigsDialogListener
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_recording, container, false)
+        //inflater.inflate(R.layout.fragment_recording, container, false)
+        _binding = FragmentRecordingBinding.inflate(inflater, container, false)
+        binding.viewmodel = recordingViewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val stroke = CommonMethods.dipToPixels(context, 2f)
-        view_sine_wave.addWave(0.5f, 0.5f, 0f, 0, 0f) // Fist wave is for the shape of other waves.
-        view_sine_wave.addWave(0.5f, 6f, 1f, getColor(resources, R.color.wave, requireActivity().theme), stroke)
+        binding.viewSineWave.addWave(0.5f, 0.5f, 0f, 0, 0f) // Fist wave is for the shape of other waves.
+        binding.viewSineWave.addWave(0.5f, 6f, 1f, getColor(resources, R.color.wave, requireActivity().theme), stroke)
 
 
         btn_start_recording.setOnClickListener{mainViewModel.checkPermissions()}
@@ -80,7 +90,7 @@ class RecordingFragment : Fragment(), ConfigsDialog.OnCloseConfigsDialogListener
             configsDialog?.show()
         }
 
-        btn_play_last_recording.setOnClickListener { recordingViewModel.playRecording() }
+//        btn_play_last_recording.setOnClickListener { recordingViewModel.playRecording() }
     }
 
     override fun onDestroyView() {
@@ -96,7 +106,8 @@ class RecordingFragment : Fragment(), ConfigsDialog.OnCloseConfigsDialogListener
         })
 
         recordingViewModel.unbindService.observe(viewLifecycleOwner, EventObserver {
-            context?.unbindService(it)
+            try { context?.unbindService(it) }
+            catch (e: IllegalArgumentException){e.printStackTrace()}
         })
 
         recordingViewModel.isServiceBound.observe(viewLifecycleOwner, EventObserver{/*TODO: do something*/})
@@ -110,13 +121,13 @@ class RecordingFragment : Fragment(), ConfigsDialog.OnCloseConfigsDialogListener
 
         recordingViewModel.recordingState.observe(viewLifecycleOwner, EventObserver{setRecordingState(it)})
 
-        recordingViewModel.showLastRecordingButton.observe(viewLifecycleOwner, EventObserver{
-            if(it) btn_play_last_recording.visibility = View.VISIBLE
-            else btn_play_last_recording.visibility = View.INVISIBLE
-        })
+//        recordingViewModel.showLastRecordingButton.observe(viewLifecycleOwner, EventObserver{
+//            if(it) btn_play_last_recording.visibility = View.VISIBLE
+//            else btn_play_last_recording.visibility = View.INVISIBLE
+//        })
 
-        recordingViewModel.duration.observe(viewLifecycleOwner, Observer { tv_record_duration.text = it  })
-        recordingViewModel.amplitude.observe(viewLifecycleOwner, Observer { view_sine_wave.baseWaveAmplitudeScale = it  })
+//        recordingViewModel.duration.observe(viewLifecycleOwner, Observer { tv_record_duration.text = it  })
+        recordingViewModel.amplitude.observe(viewLifecycleOwner, Observer { binding.viewSineWave.baseWaveAmplitudeScale = it  })
 
         recordingViewModel.playRecord.observe(viewLifecycleOwner, EventObserver {
             mainViewModel.playRecord(it)
@@ -157,7 +168,7 @@ class RecordingFragment : Fragment(), ConfigsDialog.OnCloseConfigsDialogListener
             configsDialog?.dismiss()
         }
 
-        view_sine_wave.stopAnimation()
+        binding.viewSineWave.stopAnimation()
     }
 
     override fun onResume() {
@@ -176,13 +187,13 @@ class RecordingFragment : Fragment(), ConfigsDialog.OnCloseConfigsDialogListener
             btn_recording_action.background = context?.getDrawable(R.drawable.bg_recording_action_pause)
             tv_recording_action.setText(R.string.pause)
             tv_status.setText(R.string.recording)
-            view_sine_wave.startAnimation()
+            binding.viewSineWave.startAnimation()
         }
         Recorder.RecordingStatus.paused -> {
             btn_recording_action.background = context?.getDrawable(R.drawable.bg_recording_action_record)
             tv_recording_action.setText(R.string.resume)
             tv_status.setText(R.string.paused)
-            view_sine_wave.stopAnimation()
+            binding.viewSineWave.stopAnimation()
         }
         Recorder.RecordingStatus.ended -> {
             btn_recording_action.background = context?.getDrawable(R.drawable.bg_recording_action_record)
@@ -199,9 +210,7 @@ class RecordingFragment : Fragment(), ConfigsDialog.OnCloseConfigsDialogListener
 
         tv_status.setText(R.string.start_recording)
 
-        view_sine_wave.visibility = View.VISIBLE
-        view_sine_wave.baseWaveAmplitudeScale = 1f
-        view_sine_wave.stopAnimation()
+        binding.viewSineWave.stopAnimation()
 
         recordingViewModel.setLastRecordingControls()
     }
@@ -214,7 +223,6 @@ class RecordingFragment : Fragment(), ConfigsDialog.OnCloseConfigsDialogListener
 
         tv_status.setText(R.string.recording)
 
-        view_sine_wave.visibility = View.VISIBLE
-        view_sine_wave.startAnimation()
+        binding.viewSineWave.startAnimation()
     }
 }
