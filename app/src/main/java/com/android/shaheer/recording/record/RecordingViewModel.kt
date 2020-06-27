@@ -22,6 +22,10 @@ public class RecordingViewModel(val sessionManager: SessionManager)
         private const val TAG = "RecordingViewModel"
     }
 
+    enum class RecordingState{
+        NotRecording, Recording, Paused
+    }
+
     private val _isServiceBound = MutableLiveData<Event<Boolean>>()
     public val isServiceBound: LiveData<Event<Boolean>> = _isServiceBound
 
@@ -31,11 +35,8 @@ public class RecordingViewModel(val sessionManager: SessionManager)
     private val _unbindService = MutableLiveData<Event<ServiceConnection>>()
     public val unbindService: LiveData<Event<ServiceConnection>> = _unbindService
 
-    private val _state = MutableLiveData<RecordingFragment.RecordingStatus>()
-    public val state: LiveData<RecordingFragment.RecordingStatus> = _state
-
-    private val _recordingState = MutableLiveData<Event<Recorder.RecordingStatus>>()
-    public val recordingState: LiveData<Event<Recorder.RecordingStatus>> = _recordingState
+    private val _state = MutableLiveData<RecordingState>()
+    public val state: LiveData<RecordingState> = _state
 
     private val _duration = MutableLiveData<String>()
     public val duration: LiveData<String> = _duration
@@ -82,12 +83,21 @@ public class RecordingViewModel(val sessionManager: SessionManager)
 
 
     fun setStateInitial(){
-        _state.value = RecordingFragment.RecordingStatus.notRecording
+        _state.value = RecordingState.NotRecording
         _amplitude.value = 1f
     }
     fun setStateRecording(){
-        _state.value = RecordingFragment.RecordingStatus.recording
-        _recordingState.value = Event(serviceInterface?.recorderStatus?:Recorder.RecordingStatus.recording)
+        val recordingState = serviceInterface?.recorderStatus?:Recorder.RecordingStatus.recording
+        _state.value = when(recordingState){
+            Recorder.RecordingStatus.recording -> RecordingState.Recording
+            Recorder.RecordingStatus.paused -> {
+                serviceInterface?.duration?.let {
+                    _duration.value = it
+                }
+                RecordingState.Paused
+            }
+            else -> RecordingState.NotRecording
+        }
         _showLastRecordingButton.value = Event(false)
     }
 
@@ -102,10 +112,10 @@ public class RecordingViewModel(val sessionManager: SessionManager)
     fun onRecordingAction(){
         serviceInterface?.let { service ->
             if (service.isPaused) {
-                _recordingState.value = Event(Recorder.RecordingStatus.recording)
+                _state.value = RecordingState.Recording
                 service.resumeRecording()
             } else {
-                _recordingState.value = Event(Recorder.RecordingStatus.paused)
+                _state.value = RecordingState.Paused
                 service.pauseRecording()
             }
         }
@@ -132,8 +142,8 @@ public class RecordingViewModel(val sessionManager: SessionManager)
 
 
     fun setLastRecordingControls() {
-        val state = _state.value?:RecordingFragment.RecordingStatus.notRecording
-        if(state == RecordingFragment.RecordingStatus.notRecording){
+        val state = _state.value?:RecordingState.NotRecording
+        if(state == RecordingState.NotRecording){
             sessionManager.lastRecording?.let {
                 _showLastRecordingButton.value = Event(true)
             }?: run {
@@ -147,15 +157,15 @@ public class RecordingViewModel(val sessionManager: SessionManager)
     }
 
     override fun onRecordingPause() {
-        _recordingState.value = Event(Recorder.RecordingStatus.paused)
+        _state.value = RecordingState.Paused
     }
 
     override fun onRecordingResume() {
-        _recordingState.value = Event(Recorder.RecordingStatus.recording)
+        _state.value = RecordingState.Recording
     }
 
     override fun onRecordingStop() {
-        _recordingState.value = Event(Recorder.RecordingStatus.ended)
+        setStateInitial()
     }
 
     override fun unbind(e:Exception?) {

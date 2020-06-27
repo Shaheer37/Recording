@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.util.Log;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.DecimalFormat;
 
 public class Recorder {
@@ -34,7 +33,7 @@ public class Recorder {
 
     private boolean isPrepared = false;
 
-    private long mStartTime = 0;
+    private long mDuration = 0;
 
     private File mOutputFile;
     public File getOutputFile() {return mOutputFile;}
@@ -145,14 +144,11 @@ public class Recorder {
     }
 
     private void tick() {
-        mStartTime = mStartTime + 100;
-//        Log.e(TAG, "StartTime: "+mStartTime+" | "+"minutes: "+((mStartTime  / 60000))+ " | Seconds: "+((mStartTime  / 1000) % 60));
-        int minutes = (int) (mStartTime  / HOUR_IN_MILLISECONDS);
-        int seconds = (int) (mStartTime  / SECOND_IN_MILLISECONDS) % HOUR_IN_MINUTES;
-        String duration = minutes+":"+(seconds < 10 ? "0"+seconds : seconds);
-//        Log.e(TAG, duration);
 
         if (mRecorder != null && mTickListener != null) {
+            mDuration = mDuration + 100;
+            String duration = getFormatedDuration();
+
             float maxAmp = (float)mRecorder.getMaxAmplitude();
             float maxAmpPercent = maxAmp/MAX_SUPPORTED_AMPLITUDE;
             Log.d(TAG, "Max Amp: "+maxAmp);
@@ -160,6 +156,14 @@ public class Recorder {
 
             mTickListener.onTick(duration, maxAmpPercent);
         }
+    }
+
+    public String getFormatedDuration(){
+        int minutes = (int) (mDuration / HOUR_IN_MILLISECONDS);
+        int seconds = (int) (mDuration / SECOND_IN_MILLISECONDS) % HOUR_IN_MINUTES;
+        String duration = minutes+":"+(seconds<10 ? "0"+seconds : seconds);
+//        Log.e(TAG, duration);
+        return duration;
     }
 
     public interface RecorderTickListener{

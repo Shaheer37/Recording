@@ -127,7 +127,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btn_recording_stop"
             android:layout_marginEnd="@dimen/recording_btn_horizontal_margin"
-            android:background="@drawable/bg_recording_action_pause" />
+            android:background="@drawable/bg_recording_action_pause"
+            android:onClick="@{() -> viewmodel.onRecordingAction()}"/>
 
         <TextView
             android:id="@+id/tv_recording_action"
@@ -150,7 +151,8 @@
             app:layout_constraintStart_toEndOf="@+id/btn_recording_action"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginStart="@dimen/recording_btn_horizontal_margin"
-            android:background="@drawable/bg_recording_action_stop" />
+            android:background="@drawable/bg_recording_action_stop"
+            android:onClick="@{ () -> viewmodel.stopRecording() }"/>
 
         <TextView
             android:id="@+id/tv_recording_stop"

@@ -142,6 +142,7 @@ public class RecordingService extends Service implements Recorder.RecorderTickLi
         public boolean isPaused() {return (mRecorder.getmRecordingStatus() == Recorder.RecordingStatus.paused);}
         public Recorder.RecordingStatus getRecorderStatus(){return mRecorder.getmRecordingStatus();}
         public String getFilePath(){return FilesUtil.getDir(getApplicationContext()) +"/"+ mFileName;}
+        public String getDuration(){ return mRecorder.getFormatedDuration(); }
         public void startRecording(){ performAction(ACTION_START); }
         public void pauseRecording(){ performAction(ACTION_PAUSE); }
         public void resumeRecording(){

@@ -77,15 +77,15 @@ class RecordingFragment : Fragment(), ConfigsDialog.OnCloseConfigsDialogListener
         binding.viewSineWave.addWave(0.5f, 6f, 1f, getColor(resources, R.color.wave, requireActivity().theme), stroke)
 
 
-        btn_start_recording.setOnClickListener{mainViewModel.checkPermissions()}
+        binding.btnStartRecording.setOnClickListener{mainViewModel.checkPermissions()}
 
-        btn_recording_action.setOnClickListener { recordingViewModel.onRecordingAction() }
+//        binding.btnRecordingAction.setOnClickListener { recordingViewModel.onRecordingAction() }
 
-        btn_recording_stop.setOnClickListener { recordingViewModel.stopRecording() }
+//        btn_recording_stop.setOnClickListener { recordingViewModel.stopRecording() }
 
-        btn_audio_archive.setOnClickListener { mainViewModel.checkStoragePermission()}
+        binding.btnAudioArchive.setOnClickListener { mainViewModel.checkStoragePermission()}
 
-        btn_configs.setOnClickListener {
+        binding.btnConfigs.setOnClickListener {
             configsDialog = ConfigsDialog(requireContext(), this)
             configsDialog?.show()
         }
@@ -114,12 +114,11 @@ class RecordingFragment : Fragment(), ConfigsDialog.OnCloseConfigsDialogListener
 
         recordingViewModel.state.observe(viewLifecycleOwner, Observer{
             when(it){
-                RecordingStatus.recording -> setRecordingLayout()
-                RecordingStatus.notRecording -> setInitialLayout()
+                RecordingViewModel.RecordingState.NotRecording -> setInitialLayout()
+                RecordingViewModel.RecordingState.Recording -> setRecordingLayout()
+                RecordingViewModel.RecordingState.Paused -> setPausedLayout()
             }
         })
-
-        recordingViewModel.recordingState.observe(viewLifecycleOwner, EventObserver{setRecordingState(it)})
 
 //        recordingViewModel.showLastRecordingButton.observe(viewLifecycleOwner, EventObserver{
 //            if(it) btn_play_last_recording.visibility = View.VISIBLE
@@ -182,33 +181,14 @@ class RecordingFragment : Fragment(), ConfigsDialog.OnCloseConfigsDialogListener
         configsDialog = null
     }
 
-    private fun setRecordingState(recordingStatus: Recorder.RecordingStatus) = when(recordingStatus){
-        Recorder.RecordingStatus.recording -> {
-            btn_recording_action.background = context?.getDrawable(R.drawable.bg_recording_action_pause)
-            tv_recording_action.setText(R.string.pause)
-            tv_status.setText(R.string.recording)
-            binding.viewSineWave.startAnimation()
-        }
-        Recorder.RecordingStatus.paused -> {
-            btn_recording_action.background = context?.getDrawable(R.drawable.bg_recording_action_record)
-            tv_recording_action.setText(R.string.resume)
-            tv_status.setText(R.string.paused)
-            binding.viewSineWave.stopAnimation()
-        }
-        Recorder.RecordingStatus.ended -> {
-            btn_recording_action.background = context?.getDrawable(R.drawable.bg_recording_action_record)
-            recordingViewModel.setStateInitial()
-        }
-        else -> {}
-    }
-
     private fun setInitialLayout() {
-        group_recording.visibility = View.INVISIBLE
-        btn_start_recording.visibility = View.VISIBLE
-        btn_audio_archive.visibility = View.VISIBLE
-        btn_configs.visibility = View.VISIBLE
+        binding.groupRecording.visibility = View.INVISIBLE
+        binding.btnStartRecording.visibility = View.VISIBLE
+        binding.btnAudioArchive.visibility = View.VISIBLE
+        binding.btnConfigs.visibility = View.VISIBLE
 
-        tv_status.setText(R.string.start_recording)
+        binding.btnRecordingAction.background = context?.getDrawable(R.drawable.bg_recording_action_record)
+        binding.tvStatus.setText(R.string.start_recording)
 
         binding.viewSineWave.stopAnimation()
 
@@ -216,13 +196,26 @@ class RecordingFragment : Fragment(), ConfigsDialog.OnCloseConfigsDialogListener
     }
 
     private fun setRecordingLayout(){
-        btn_start_recording.visibility = View.INVISIBLE
-        btn_audio_archive.visibility = View.INVISIBLE
-        btn_configs.visibility = View.INVISIBLE
-        group_recording.visibility = View.VISIBLE
+        binding.btnStartRecording.visibility = View.INVISIBLE
+        binding.btnAudioArchive.visibility = View.INVISIBLE
+        binding.btnConfigs.visibility = View.INVISIBLE
+        binding.groupRecording.visibility = View.VISIBLE
 
-        tv_status.setText(R.string.recording)
-
+        binding.btnRecordingAction.background = context?.getDrawable(R.drawable.bg_recording_action_pause)
+        binding.tvRecordingAction.setText(R.string.pause)
+        binding.tvStatus.setText(R.string.recording)
         binding.viewSineWave.startAnimation()
+    }
+
+    private fun setPausedLayout(){
+        binding.btnStartRecording.visibility = View.INVISIBLE
+        binding.btnAudioArchive.visibility = View.INVISIBLE
+        binding.btnConfigs.visibility = View.INVISIBLE
+        binding.groupRecording.visibility = View.VISIBLE
+
+        binding.btnRecordingAction.background = context?.getDrawable(R.drawable.bg_recording_action_record)
+        binding.tvRecordingAction.setText(R.string.resume)
+        binding.tvStatus.setText(R.string.paused)
+        binding.viewSineWave.stopAnimation()
     }
 }
