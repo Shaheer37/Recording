@@ -67,6 +67,11 @@ class ViewRecordsFragment : Fragment(),
 //        return inflater.inflate(R.layout.fragment_view_records, container, false)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

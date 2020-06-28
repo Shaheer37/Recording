@@ -127,9 +127,6 @@ public class RecordingService extends Service implements Recorder.RecorderTickLi
                 break;
             case ACTION_STOP:
                 stopForegroundService(null);
-                if(mRecordingInterface != null){
-                    mRecordingInterface.onRecordingStop();
-                }
                 break;
             default:
                 stopForegroundService(null);
@@ -201,6 +198,7 @@ public class RecordingService extends Service implements Recorder.RecorderTickLi
         if(mRecorder != null) mRecorder.stopRecording();
 
         if(mRecordingInterface != null){
+            mRecordingInterface.onRecordingStop();
             mRecordingInterface.unbind(e);
         }
         else{

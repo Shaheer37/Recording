@@ -171,6 +171,7 @@ public class RecordingViewModel(val sessionManager: SessionManager)
     override fun unbind(e:Exception?) {
         _isServiceBound.value?.let {
             if(it.peekContent()) _isServiceBound.value = Event(false)
+            serviceInterface?.setRecordingInterface(null)
             serviceInterface = null
             _unbindService.value = Event(recordingServiceConnection)
         }

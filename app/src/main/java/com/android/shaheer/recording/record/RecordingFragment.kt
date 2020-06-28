@@ -69,6 +69,11 @@ class RecordingFragment : Fragment(), ConfigsDialog.OnCloseConfigsDialogListener
         return binding.root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -91,10 +96,6 @@ class RecordingFragment : Fragment(), ConfigsDialog.OnCloseConfigsDialogListener
         }
 
 //        btn_play_last_recording.setOnClickListener { recordingViewModel.playRecording() }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
